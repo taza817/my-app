@@ -1,0 +1,13 @@
+{% extends 'sns/base.html' %}
+
+{% block content %}
+
+    <h1>詳細</h1>
+    <div>
+        {{ post.caption }} <br>
+        {{ post.post_date }} <br>
+        <a href="{% url 'update' post.pk %}">編集</a>
+        <a href="{% url 'delete' post.pk %}">削除</a>
+    </div>
+
+{% endblock %}

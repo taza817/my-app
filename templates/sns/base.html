@@ -7,6 +7,8 @@
   <title>Document</title>
 </head>
 <body>
+    <a href="{% url 'post_list' %}">ホーム</a>
+    <a href="{% url 'create' %}">作成</a>
     {% block content %}
     {% endblock %}
 </body>

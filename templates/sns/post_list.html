@@ -3,12 +3,12 @@
 {% block content %}
 
     {% for post in object_list %}
-
         <div>
             <p>{{ post.caption|linebreaksbr }}</p>
             <p>{{ post.post_date }}</p>
+            <a href="{% url 'detail' post.pk %}">詳細</a>
+            <p>-------------------------</p>
         </div>
-
     {% endfor %}
 
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'sns/base.html' %}
+
+{% block content %}
+
+    <h1>新規作成</h1>
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="投稿">
+        </form>
+    </div>
+
+{% endblock %}
