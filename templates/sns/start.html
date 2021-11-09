@@ -7,8 +7,30 @@
   <title>start</title>
 </head>
 <body>
-  <a href="{% url 'create_account' %}">新規登録</a>
-  <a href="{% url 'login' %}">ログイン</a>
+  <nav class="navbar navbar-expand-md navbar-dark bg-primary">
+    <a class="navbar-brand" href="{% url 'home:top' %}">APP</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'top' %}">Top</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">ログイン</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="pl-4 small" style="background-color: #e2e3e5 ; border-bottom: solid 1px #f3f3f3;">
+    {% if not user.is_authenticated %}
+      こんにちは！ ゲスト さん
+    {% else %}
+      こんにちは！ {{ user.username }} さん
+    {% endif %}
+  </div>
   {% block content %}
   {% endblock %}
 </body>

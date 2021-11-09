@@ -1,0 +1,41 @@
+{% extends 'sns/base.html' %}
+
+{% block content %}
+
+    <h1>{{ process_name }}</h1>
+    <div>
+        <form method="POST" action="{% url 'signup' %}">    <!-- データの送信先を指定 -->
+          {% csrf_token %}
+          <ul>
+            <li>
+              <label>メールアドレス</label>
+              {{ user.email }}
+              {{ user.email.errors }}
+            </li>
+            <li>
+              <label>パスワード</label>
+              {{ user.password1 }}
+              {{ user.passwprd1.errors }}
+            </li>
+            <li>
+              <label>パスワード（確認）</label>
+              {{ user.password2 }}
+              {{ user.password2.errors }}
+            </li>
+            <li>
+              <label>ユーザーID</label>
+              {{ user.username }}
+              {{ user.username.errors }}
+            </li>
+            <li>
+              <label>ユーザーネーム</label>
+              {{ user.first_name }}
+              {{ user.first_name.errors }}
+            </li>
+          </ul>
+          <button type="button" onclick="history.back()">キャンセル</button>
+          <input type="submit" value="登録">
+        </form>
+    </div>
+
+{% endblock %}
