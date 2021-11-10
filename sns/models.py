@@ -14,6 +14,9 @@ class Account(models.Model) :
     location = models.CharField(max_length=20, blank=True)
     intro = models.TextField(max_length=400, blank=True)
     account_image = models.ImageField(upload_to="plofile_pics", blank=True)
+    # USERNAME_FIELD = 'email'
+    # REQUIRED_FIELDS = ['username']
+
 
 @receiver(post_save, sender=User)
 def create_user(sender, instance, created, **kwargs) :
@@ -21,7 +24,7 @@ def create_user(sender, instance, created, **kwargs) :
         Account.objects.create(user=instance)
 
 @receiver(post_save, sender=User) 
-def save_user(sender, instance, **kwargs) :
+def save_user_account(sender, instance, **kwargs) :
     instance.account.save()
 
 

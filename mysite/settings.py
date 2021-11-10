@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'sns.apps.SnsConfig',
 ]
 
-# AUTH_USER_MODEL = 'sns.UserEx'
+AUTH_USER_MODEL = 'sns.Account'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -145,5 +145,5 @@ STATIC_ROOT = [STATIC_DIR]
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = "/media/"
 
-LOGIN_URL = 'sns:login'
-LOGIN_REDIRECT_URL = 'sns:top'   #ログイン完了後の遷移先
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/top/'   #ログイン完了後の遷移先
