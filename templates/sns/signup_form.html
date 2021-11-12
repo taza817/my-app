@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <h1>{{ process_name }}</h1>
+    <h1>Sign Up</h1>
     <div>
         <form method="POST" action="{% url 'signup' %}">    <!-- データの送信先を指定 -->
           {% csrf_token %}

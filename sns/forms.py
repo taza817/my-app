@@ -3,7 +3,7 @@
 # from django.contrib.auth import get_user_model   #ユーザーモデルを取得する
 # from .models import Account
 
-# User = get_user_model()
+# User = Account.objects.get(id=1)
 
 # ''' LoginForm '''
 # class LoginForm(AuthenticationForm) :
@@ -19,12 +19,24 @@
         
 #     class Meta :
 #         model = User
-#         fields = ('email', 'password1', 'password2', 'username', 'first_name', )
+#         fields = ('User.user.email', 'User.user.password1', 'User.user.password2', 'User.user.username', 'User.user.first_name', )
         
 #     def __init__(self, *args, **kwargs) :
 #         super().__init__(*args, **kwargs)
 #         for field in self.fields.values() :
 #             field.widget.attrs['class'] = 'form-control'
 #             field.widget.attrs['required'] = ''    #全項目を入力必須に
+
+
+# ''' PostCreateForm '''
+# class PostForm(forms.ModelForm) :
+#     def __init__(self, *args, **kwargs) :
+#         super().__init__(*args, **kwargs)
+#         for field in self.fields.values() :
+#             field.widget.attrs['class'] = 'form-control'
+        
+#     class Meta :
+#         model = Post
+#         fields = ('caption')    #あとでファイルとタグを追加
 
         

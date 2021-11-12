@@ -1,10 +1,12 @@
 # from django.shortcuts import render, redirect
 # # from django.contrib.auth.models import User
 # # from django.contrib.auth import login, authenticate
-# from .forms import LoginForm, SignupForm
+# from .forms import LoginForm, SignupForm, PostForm
+# from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.contrib.auth.views import LoginView, LogoutView
 # from .models import Post
 # from django.views import generic
+# from .mixins import OnlyYouMixin
 # from django.urls import reverse, reverse_lazy
 
 # # Create your views here.
@@ -40,7 +42,7 @@
 # #             email = form.cleaned_data.get('email')
 # #             password = form.cleaned_data.get('password1')
 # #             username = form.cleaned_data.get('username')
-# #             last_name = form.cleaned_data.get('last_name')
+# #             first_name = form.cleaned_data.get('first_name')
 # #             #ユーザー認証
 # #             user = authenticate(username=username, password=password)
 # #             #ログイン
@@ -81,19 +83,35 @@
 # # @login_required 
 
 
-# # Post
-# class PostList(generic.ListView) :
-#     model = Post
+# # Top タイムラインとしてフォローしているユーザーの投稿を表示したい
+# class Top(generic.ListView) :
+#     queryset = Post.objects.filter(user_followers=user)   #フォローしてるユーザーのアイテム一覧取得
+#     template_name = 'sns/top.html'
+#     paginate_by = 10
+
+
+# #マイページに表示する自分の投稿リスト
+# class Mypage(generic.ListView) :
+#     queryset = Post.objects.filter(user=self.request.user)  #自分の投稿だけ
+#     template_name = 'sns/mypage.html'
+
+
+# class PostCreate(OnlyYouMixin, generic.CreateView) :
+#     #template_name = 'sns/post_form.html'
+#     form_class = PostForm
+
+#     def form_valid(self, form) :
+#         self.instance.user = self.request.user     #現在ログインしているユーザーを代入
+#         return super().form.valid(form)
+      
+#     def get_success_url(self) :
+#         return resolve_url('Top')
 
 
 # class PostDetail(generic.DetailView) :
 #     model = Post
 
 
-# class PostCreate(generic.CreateView) :
-#     model = Post
-#     fields = ['caption']
-#     success_url = reverse_lazy('post_list')
 
 
 # class PostUpdate(generic.UpdateView) :
@@ -106,5 +124,5 @@
 
 # class PostDelete(generic.DeleteView) :
 #     model = Post
-#     success_url = reverse_lazy('post_list')
+#     success_url = reverse_lazy('Top')
 
