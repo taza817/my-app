@@ -11,10 +11,6 @@
 
 # # Create your views here.
 
-# # TopPage
-# class TopView(generic.TemplateView) :
-#     template_name = 'sns/top.html'
-
 # # SignupPage
 # class Signup(generic.CreateView) :
 #     template_name = 'sns/signup_form.html'
@@ -85,9 +81,15 @@
 
 # # Top タイムラインとしてフォローしているユーザーの投稿を表示したい
 # class Top(generic.ListView) :
-#     queryset = Post.objects.filter(user_followers=user)   #フォローしてるユーザーのアイテム一覧取得
+#     model = Post
 #     template_name = 'sns/top.html'
-#     paginate_by = 10
+#     # paginate_by = 10
+
+#     def get_queryset(self) :
+#         '''フォローリスト内にユーザーが含まれている場合のみクエリセット返す'''
+#         connection = Connection.objects.get_or_create(user=self.request.user)
+#         following = connection[0].following.all()
+#         return Post.objects.filter(user__in=following)     #フォローしていればオブジェクトを返す
 
 
 # #マイページに表示する自分の投稿リスト
@@ -95,7 +97,14 @@
 #     queryset = Post.objects.filter(user=self.request.user)  #自分の投稿だけ
 #     template_name = 'sns/mypage.html'
 
+#     def get_context_data(self, *args, **kwargs) :      #フォローしているかどうかの情報を取得してテンプレートに渡す
+#     '''コネクションに関するオブジェクト情報をコンテクストに追加'''
+#         context = super().get_context_data(*args, **kwargs)
+#         context['connection'] = connection = Connection.objects.get_or_create(user=self.request.user)
+#         return context
 
+
+# # Post
 # class PostCreate(OnlyYouMixin, generic.CreateView) :
 #     #template_name = 'sns/post_form.html'
 #     form_class = PostForm
@@ -111,7 +120,11 @@
 # class PostDetail(generic.DetailView) :
 #     model = Post
 
-
+#     def get_context_data(self, *args, **kwargs) :
+#         '''コネクションに関するオブジェクト情報をコンテクストに追加'''
+#         context = super().get_context_data(*args, **kwargs)
+#         context['connection'] = connection = Connection.objects.get_or_create(user=self.request.user)
+#         return context
 
 
 # class PostUpdate(generic.UpdateView) :
@@ -121,8 +134,80 @@
 
 #     def get_success_url(self) :
 #         return reverse('detail', kwargs={'pk': self.object.pk})
+    
+#     ''' アクセス制限 '''
+#     def test_func(self, **kwargs) :
+#         pk = self.kwargs['pk']
+#         post = Post.objects.get(pk=pk)
+#         return(post.user == self.request.user)
+
+
 
 # class PostDelete(generic.DeleteView) :
 #     model = Post
 #     success_url = reverse_lazy('Top')
 
+#     ''' アクセス制限 '''
+#     def test_func(self, **kwargs) :
+#         pk = self.kwargs['pk']
+#         post = Post.objects.get(pk=pk)
+#         return(post.user == self.request.user)
+
+
+# # Good
+# class GoodBase(LoginRequiredMixin, generic.View) :
+#     ''' いいねのベースになるクラス '''
+#     def get(self, request, *args, **kwargs) :
+
+# 		# 投稿の特定
+#         pk = self.kwargs['pk']              #slugにする?
+# 		related_post = Post.objects.get(pk=pk)
+
+# 		# いいねテーブルに既にユーザーが存在するかどうか（いいね中かどうか）
+#         if self.request.user in related_post.good.all() :
+#             obj = related_post.like.remove(self.request.user)
+#         else :
+#             obj = related_post.like.add(self.request.user)
+#         return obj
+
+# class GoodTop(GoodBase) :
+#     ''' タイムラインでいいねした場合 '''
+#     def get(self, request, *args, **kwargs) :
+#         super().get(request, *args, **kwargs)    #GoodBaseでリターンしたobjの情報を継承
+#         return redirect('top')     #同じページにとどまるにはjsで非同期化
+
+# class GoodDetail(GoodBase) :
+#     ''' 詳細ページでイイネした場合 '''
+#     def get(self, request, *args, **kwargs) :
+#         super().get(request, *args, **kwargs)
+#         pk = self.kwargs['pk']
+#         return redirect('detail', pk)
+
+
+# # Follow
+# class FollowBase(LoginRequiredMixin, generic.View) :
+#     ''' フォローのベースになるクラス '''
+#     def get(self, request, *args, **kwargs) :
+#         pk = self.kwargs['pk']
+#         target_user = Post.objects.get(pk=pk).user
+#         # ユーザー情報よりコネクション情報を取得, 無ければ作成
+#         connection = Connection.objects.get_or_create(user=self.request.user)
+#         # フォローテーブルに既にユーザーが存在するかどうか（フォロー中かどうか）
+#         if target_user in connection[0].following.all() :
+#             obj = connection[0].following.remove(target_user)     #get_or_createメソッドの戻り値は[0]にオブジェクト，[1]にTrue/Falseが入るタプル
+#         else :
+#             obj = connection[0].following.add(target_user)
+#         return obj
+
+# class FollowPage(FollowBase) :
+#     ''' ユーザーのマイページでフォローした場合 '''
+#     def get(self, request, *args, **kwargs) :
+#         super().get(request, *args, **kwargs)
+#         return redirect('top')
+
+# class FollowDetail(FollowBase) :
+#     ''' 投稿の詳細ページでフォローした場合 '''
+#         def get(self, request, *args, **kwargs) :
+#         super().get(request, *args, **kwargs)
+#         pk = self.kwargs['pk']
+#         return redirect('detail', pk)

@@ -22,6 +22,11 @@ class Account(models.Model) :
     location = models.CharField(max_length=20, blank=True)
     intro = models.TextField(max_length=400, blank=True)
     account_image = models.ImageField(upload_to="plofile_pics", blank=True)
+    following = models.ManyToManyField(User, related_name='following', blank=True)    #フォローしているユーザー
+
+    def __str__(self) :
+        return self.user.username
+
     # # Follow
     # followees = models.ManyToManyField(
     #     'Account', verbose_name='フォロー中のユーザー', through='Frendship', 
@@ -65,6 +70,7 @@ def save_user_account(sender, instance, **kwargs) :
 #     post_url = models.UrlField(_('URL'), blank=True)
 #     slug = models.SlugField(unique=True, default=random_url)
 #     post_date = models.DateTimeField(default=timezone.now)
+#     good = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='related_post', blank=True)
 
 #     def get_absolute_url(self) :
 #         return reversed('series', kwargs={'slug': self.slug})    #urlの指定
