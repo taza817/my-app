@@ -63,7 +63,7 @@ class PostCreate(LoginRequiredMixin, CreateView) :
     template_name = 'sns/post_form.html'
 
     def form_valid(self, form) :
-        self.objects.user_id = self.request.user     #現在ログインしているユーザーを代入
+        form.instance.user_id = self.request.user     #現在ログインしているユーザーを代入
         return super().form_valid(form)
 
 
@@ -78,7 +78,7 @@ class PostUpdate(UpdateView) :
 
 class PostDelete(DeleteView) :
     model = Post
-    success_url = reverse_lazy('top')
+    success_url = reverse_lazy('post_list')
 
 
 
