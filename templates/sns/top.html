@@ -1,0 +1,16 @@
+{% extends 'sns/base.html' %}
+
+{% block content %}
+
+    {% if not user.is_authenticated %}
+        <!-- ログアウト・未登録 -->
+        <h1>Welcome!</h1>
+        <a class="nav-link" href="{% url 'signup' %}">サインアップ</a>
+        <a class="nav-link" href="{% url 'login' %}">ログイン</a>
+    {% else %}
+        <!-- ログイン中 -->
+        <p>タイムライン</p>
+
+    {% endif %}
+
+{% endblock %}
