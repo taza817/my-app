@@ -1,8 +1,8 @@
 from .forms import LoginForm ,SignUpForm, PostForm
 from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render
-from .models import Post, Account
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import render, redirect
+from .models import Post, Account, Follow
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -36,21 +36,53 @@ class Login(LoginView) :
 class Logout(LogoutView) :
     template_name = 'sns/logout.html'
 
+
+# Follow
+class FollowBase(LoginRequiredMixin, View) :
+    def get(self, request, *args, **kwargs) :
+        #ユーザーの特定
+        pk = self.kwargs['pk']
+        target_user = Post.objects.get(pk=pk).user_id
+        #フォロー情報を取得,存在しなければ作成
+        follow_info = Follow.objects.get_or_create(user=self.request.user)
+        #フォローテーブルに既にユーザーが存在するか
+        if target_user in follow_info[0].following.all() :
+            obj = follow_info[0].following.remove(target_user)
+        else :
+            obj = follow_info[0].following.add(target_user)
+        return obj
+
+class FollowTop(FollowBase) :       #マイページでやりたい
+    def get(self, request, *args, **kwargs) :
+        super().get(request, *args, **kwargs)
+        return redirect('top')
+
+
 # Top
-class Top(ListView) :
+class Top(LoginRequiredMixin, ListView) :
     model = Post
     template_name = 'sns/top.html'
-    # # paginate_by = 10
+
     # def get_queryset(self) :
     #     '''フォローリスト内にユーザーが含まれている場合のみクエリセット返す'''
-    #     connection = Connection.objects.get_or_create(user=self.request.user)
-    #     following = connection[0].following.all()
-    #     return Post.objects.filter(user__in=following)     #フォローしていればオブジェクトを返す
+    #     follow_info = Follow.objects.get_or_create(user=self.request.user)
+    #     following = follow_info[0].following.all()
+    #     #フォローしていればオブジェクトを返す
+    #     return Post.objects.filter(user_id__in=following)
+    
+    # def get_context_data(self, *args, **kwargs) :
+    #     context = super().get_context_data(*args, **kwargs)
+    #     context['following'] = Follow.objects.get_or_create(user=self.request.user)
 
 
 # Post
-class PostList(ListView) :
+class Mypage(ListView) :
+    template_name = 'sns/mypage.html'
     model = Post
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['following'] = Follow.objects.get_or_create(user=self.request.user)
 
 
 class PostDetail(DetailView) :
@@ -78,7 +110,7 @@ class PostUpdate(UpdateView) :
 
 class PostDelete(DeleteView) :
     model = Post
-    success_url = reverse_lazy('post_list')
+    success_url = reverse_lazy('top')
 
 
 

@@ -2,7 +2,9 @@
 
 {% block content %}
 
-    <h1>詳細</h1>
+    <div>
+        <a href="{% url 'mypage' post.user_id %}">{{ post.user_id }}</a>
+    </div>
     <div>
         {{ post.caption }} <br>
         {{ post.post_date }} <br>

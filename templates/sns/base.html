@@ -19,13 +19,13 @@
       </li>
       {% else %}
       <li class="nav-item">
-      <a href="{% url 'top' %}">ホーム</a>
+      <a href="{% url 'top' %}">トップ</a>
       </li>
       <li class="nav-item">
       <a href="{% url 'create' %}">作成</a>
       </li>
       <li class="nav-item">
-        <a href="{% url 'post_list' %}">自分の投稿</a>
+        <a href="{% url 'mypage' user.username %}">マイページ</a>
       </li>
       <li class="nav-item">
       <a href="{% url 'logout' %}">ログアウト</a>
