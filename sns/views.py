@@ -1,9 +1,10 @@
-from .forms import LoginForm ,SignUpForm
+from .forms import LoginForm ,SignUpForm, PostForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render
 from .models import Post, Account
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
@@ -56,10 +57,15 @@ class PostDetail(DetailView) :
     model = Post
 
 
-class PostCreate(CreateView) :
-    model = Post
-    fields = ['caption']
+class PostCreate(LoginRequiredMixin, CreateView) :
+    form_class = PostForm
     success_url = reverse_lazy('top')
+    template_name = 'sns/post_form.html'
+
+    def form_valid(self, form) :
+        self.objects.user_id = self.request.user     #現在ログインしているユーザーを代入
+        return super().form_valid(form)
+
 
 
 class PostUpdate(UpdateView) :

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from .models import Post
 
 #SignUp
 class SignUpForm(UserCreationForm) :
@@ -21,3 +22,15 @@ class LoginForm(AuthenticationForm) :
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['class'] = 'form-control'
+
+
+# Post
+class PostForm(forms.ModelForm) :
+    def __init__(self, *args, **kwargs) :
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values() :
+            field.widget.attrs['class'] = 'form-control'
+
+    class Meta :
+        model = Post
+        fields = ('caption',)     #あとでファイルとタグを追加
