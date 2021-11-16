@@ -53,10 +53,15 @@ class FollowBase(LoginRequiredMixin, View) :
             obj = follow_info[0].following.add(target_user)
         return obj
 
-class FollowTop(FollowBase) :       #マイページでやりたい
+class FollowTop(FollowBase) :
     def get(self, request, *args, **kwargs) :
         super().get(request, *args, **kwargs)
         return redirect('top')
+
+class FollowMypage(FollowBase) :
+    def get(self, request, *args, **kwargs) :
+        super().get(request, *args, **kwargs)
+        return redirect('mypage')
 
 
 # Top
@@ -65,10 +70,9 @@ class Top(LoginRequiredMixin, ListView) :
     template_name = 'sns/top.html'
 
     def get_queryset(self) :
-        '''フォローリスト内にユーザーが含まれている場合のみクエリセット返す'''
+        #フォローリスト内にユーザーが含まれている場合のみクエリセット返す
         follow_info = Follow.objects.get_or_create(user=self.request.user)
         following = follow_info[0].following.all()
-        #フォローしていればオブジェクトを返す
         return Post.objects.filter(user_id__in=following)
 
     def get_context_data(self, *args, **kwargs) :
@@ -77,15 +81,20 @@ class Top(LoginRequiredMixin, ListView) :
         return context
 
 
-# Post
+# Mypage
 class Mypage(DetailView) :
     template_name = 'sns/mypage.html'
     model = User
     slug_field = 'username'
     slug_url_kwarg = 'username'
 
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['following'] = Follow.objects.get_or_create(user=self.request.user)
+        return context
 
 
+# Post
 class PostDetail(DetailView) :
     model = Post
 

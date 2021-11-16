@@ -4,14 +4,14 @@
 
     <!-- プロフィール情報 -->
 
-    <h2>{{ object.username }}</h2>
-    {% if not user.is_authenticated %}    <!-- 自分以外のページ -->
-        {% if object.user_id in following.0.following.all %}<!-- contextから情報が渡ってきている -->
-            <a href="{% url 'follow_mypage' object.user_id %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
+    <h2>{{ object.first_name }}</h2>
+
+        {% if object.user in following.0.following.all %}<!-- contextから情報が渡ってきている -->
+            <a href="{% url 'follow_mypage' object.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
         {% else %}
-            <a href="{% url 'follow_mypage' object.user_id %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
+            <a href="{% url 'follow_mypage' object.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
         {% endif %}
-    {% endif %}
+
 
         {% for post in object.post_set.all %}
             <div>

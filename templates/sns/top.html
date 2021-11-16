@@ -9,15 +9,14 @@
         <a class="nav-link" href="{% url 'login' %}">ログイン</a>
     {% else %}
         <!-- ログイン中 -->
-        {% for post in object_list %}
-
+    {% for post in object_list %}
         <div>
             <a href="{% url 'mypage' post.user_id %}">{{ post.user_id }}</a>
 
             {% if post.user_id in following.0.following.all %}<!-- contextから情報が渡ってきている -->
-                <a href="{% url 'follow_mypage' post.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
+                <a href="{% url 'follow_top' post.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
             {% else %}
-                <a href="{% url 'follow_mypage' post.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
+                <a href="{% url 'follow_top' post.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
             {% endif %}
 
             <p>{{ post.caption|linebreaksbr }}</p>

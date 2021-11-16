@@ -11,5 +11,6 @@ urlpatterns = [
     path('login/', views.Login.as_view(), name="login"),
     path('logout/', views.Logout.as_view(), name="logout"),
     path('signup/', views.SignUp.as_view(), name="signup"),
-    path('follow_top/<int:pk>/', views.FollowTop.as_view(), name="follow_mypage"),    #マイページでやりたい
+    path('follow_top/<int:pk>/', views.FollowTop.as_view(), name="follow_top"),    #マイページでやりたい
+    path('follow_mypage/<int:pk>/', views.FollowMypage.as_view(), name="follow_mypage"),
 ]
