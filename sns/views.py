@@ -61,7 +61,8 @@ class FollowTop(FollowBase) :
 class FollowMypage(FollowBase) :
     def get(self, request, *args, **kwargs) :
         super().get(request, *args, **kwargs)
-        return redirect('mypage')
+        username = self.kwargs['username']
+        return redirect('mypage', username)
 
 
 # Top
@@ -122,5 +123,30 @@ class PostDelete(DeleteView) :
     model = Post
     success_url = reverse_lazy('top')
 
+
+
+# Good
+class GoodBase(LoginRequiredMixin, View) :
+    def get(self, request, *args, **kwargs) :
+        #記事の特定
+        pk = self.kwargs['pk']
+        related_post = Post.objects.get(pk=pk)
+
+        if self.request.user in related_post.good.all() :
+            obj = related_post.good.remove(self.request.user)
+        else :
+            obj = related_post.good.add(self.request.user)
+        return obj
+
+class GoodTop(GoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().get(request, *args, **kwargs)
+        return redirect('top')
+
+class GoodDetail(GoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().get(request, *args, **kwargs)
+        pk = self.kwargs['pk']
+        return redirect('detail', pk)
 
 

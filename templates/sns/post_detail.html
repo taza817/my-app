@@ -10,6 +10,12 @@
         {{ post.post_date }} <br>
         <a href="{% url 'update' post.pk %}">編集</a>
         <a href="{% url 'delete' post.pk %}">削除</a>
+
+        {% if request.user in post.good.all %}
+            <a href="{% url 'good_detail' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i>♡</a>{{post.good.count}}
+        {% else %}
+            <a href="{% url 'good_detail' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i>♡</a>{{post.good.count}}
+        {% endif %}
     </div>
 
 {% endblock %}

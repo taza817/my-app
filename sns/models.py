@@ -32,12 +32,17 @@ class Post(models.Model) :
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # post_file = FileField()
     caption = models.TextField(max_length=400)
-    # post_tag = 
-    # post_good_count = IntegerField()
     post_date = models.DateTimeField(default=timezone.now)
+    # post_tag = 
+    good = models.ManyToManyField(User, related_name='good_post', blank=True)
 
     def publish(self) :
         self.save()
     
     def __str__(self) :
         return self.post_id
+    
+    class Meta :
+        ordering = ["-post_date"]
+
+# Good
