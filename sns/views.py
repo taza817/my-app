@@ -2,6 +2,7 @@ from .forms import LoginForm ,SignUpForm, PostForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect
 from .models import Post, Account, Follow
+from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -63,26 +64,26 @@ class Top(LoginRequiredMixin, ListView) :
     model = Post
     template_name = 'sns/top.html'
 
-    # def get_queryset(self) :
-    #     '''フォローリスト内にユーザーが含まれている場合のみクエリセット返す'''
-    #     follow_info = Follow.objects.get_or_create(user=self.request.user)
-    #     following = follow_info[0].following.all()
-    #     #フォローしていればオブジェクトを返す
-    #     return Post.objects.filter(user_id__in=following)
-    
-    # def get_context_data(self, *args, **kwargs) :
-    #     context = super().get_context_data(*args, **kwargs)
-    #     context['following'] = Follow.objects.get_or_create(user=self.request.user)
-
-
-# Post
-class Mypage(ListView) :
-    template_name = 'sns/mypage.html'
-    model = Post
+    def get_queryset(self) :
+        '''フォローリスト内にユーザーが含まれている場合のみクエリセット返す'''
+        follow_info = Follow.objects.get_or_create(user=self.request.user)
+        following = follow_info[0].following.all()
+        #フォローしていればオブジェクトを返す
+        return Post.objects.filter(user_id__in=following)
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['following'] = Follow.objects.get_or_create(user=self.request.user)
+        return context
+
+
+# Post
+class Mypage(DetailView) :
+    template_name = 'sns/mypage.html'
+    model = User
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+
 
 
 class PostDetail(DetailView) :
