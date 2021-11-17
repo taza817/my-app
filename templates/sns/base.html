@@ -8,32 +8,33 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 </head>
 <body>
-  <nav>
-    <ul>
-      {% if not user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'signup' %}">サインアップ</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'login' %}">ログイン</a>
-      </li>
-      {% else %}
-      <li class="nav-item">
-      <a href="{% url 'top' %}">トップ</a>
-      </li>
-      <li class="nav-item">
-      <a href="{% url 'create' %}">作成</a>
-      </li>
-      <li class="nav-item">
-        <a href="{% url 'mypage' user.username %}">マイページ</a>
-      </li>
-      <li class="nav-item">
-      <a href="{% url 'logout' %}">ログアウト</a>
-      </li>
+  {% if not user.is_authenticated %}
+    <nav>
+      <ul>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'signup' %}">サインアップ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">ログイン</a>
+        </li>
+    {% else %}
+        <li class="nav-item">
+        <a href="{% url 'top' %}">トップ</a>
+        </li>
+        <li class="nav-item">
+        <a href="{% url 'create' %}">作成</a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'mypage' user.username %}">マイページ</a>
+        </li>
+        <li class="nav-item">
+        <a href="{% url 'logout' %}">ログアウト</a>
+        </li>
       {% endif %}
-    </ul>
-  </nav>
-  <div class="pl-4 small" style="background-color: #e2e3e5 ; border-bottom: solid 1px #f3f3f3;">
+      </ul>
+    </nav>  
+
+  <div class="pl-4 small" style="background-color: #e2e3e5 ; border-bottom: solid 1px #f3f3f3; margin-bottom: 1rem;">
     {% if not user.is_authenticated %}
       こんにちは！ ゲスト さん
     {% else %}

@@ -14,12 +14,19 @@
 
 
         {% for post in object.post_set.all %}
-            <div>
-                <p>{{ post.caption|linebreaksbr }}</p>
-                <p>{{ post.post_date }}</p>
-                <a href="{% url 'detail' post.pk %}">詳細</a>
-                <p>-------------------------</p>
+        <div　class="card">
+            <div class="card-body" style="width: 18rem; border: solid 1px; padding: 0;">
+                <div class="card-header">
+                    <a href="{% url 'mypage' post.user_id %}" >@{{ post.user_id }}</a>
+                </div>
+                <p class="card-text" style="font-size: 1.5rem;">{{ post.caption|linebreaksbr }}</p>
+                <div class="card-footer">
+                    <p class="card-text">{{ post.post_date }}</p>
+                    <a href="{% url 'detail' post.pk %}" class="btn btn-primary">詳細</a>
+                </div>
             </div>
+        </div>
+
         {% endfor %}
 
 

@@ -116,6 +116,10 @@ class PostUpdate(UpdateView) :
     model = Post
     fields = ['caption']
 
+    # ユーザー制限
+    def get_obj(self) :
+        return User.objects.get(id=self.request.user.id)
+
     def get_success_url(self) :
         return reverse('detail', kwargs={'pk': self.object.pk})
 

@@ -10,25 +10,30 @@
     {% else %}
         <!-- ログイン中 -->
     {% for post in object_list %}
-        <div>
-            <a href="{% url 'mypage' post.user_id %}">{{ post.user_id }}</a>
+        <div　class="card" >
+            <div class="card-body" style="border: solid 1px; width: 30rem; padding: 0;">
+                <div class="card-header">
+                    <a href="{% url 'mypage' post.user_id %}" >@{{ post.user_id }}</a>
+                    {% if post.user_id in following.0.following.all %}<!-- contextから情報が渡ってきている -->
+                        <a href="{% url 'follow_top' post.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
+                    {% else %}
+                        <a href="{% url 'follow_top' post.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
+                    {% endif %}
+                </div>
 
-            {% if post.user_id in following.0.following.all %}<!-- contextから情報が渡ってきている -->
-                <a href="{% url 'follow_top' post.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
-            {% else %}
-                <a href="{% url 'follow_top' post.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
-            {% endif %}
+                <p class="card-text" style="font-size: 1.5rem;">{{ post.caption|linebreaksbr }}</p>
 
-            <p>{{ post.caption|linebreaksbr }}</p>
-            <p>{{ post.post_date }}</p>
-            <a href="{% url 'detail' post.pk %}">詳細</a>
+                <div class="card-footer">
+                    <p class="card-text">{{ post.post_date }}</p>
+                    <a href="{% url 'detail' post.pk %}" class="btn btn-primary">詳細</a>
 
-            {% if request.user in post.good.all %}
-                <a href="{% url 'good_top' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i>♡</a>{{post.good.count}}
-            {% else %}
-                <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i>♡</a>{{post.good.count}}
-            {% endif %}
-            <p>-------------------------</p>
+                    {% if request.user in post.good.all %}
+                        <a href="{% url 'good_top' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i>♡</a>{{post.good.count}}
+                    {% else %}
+                        <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i>♡</a>{{post.good.count}}
+                    {% endif %}
+                </div>
+            </div>
         </div>
     {% endfor %}
 
