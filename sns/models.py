@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User, AbstractUser
 
+
 # Create your models here.
 
 class Account(models.Model) :
@@ -27,13 +28,23 @@ class Follow(models.Model) :
 
 
 # Post
+class Tag(models.Model) :
+    name = models.CharField(max_length=20)
+
+    def __str__(self) :
+        return self.name
+    
+    class Meta :
+        ordering = ('name',)
+
+
 class Post(models.Model) :
     post_id = models.CharField(max_length=20, default="000")    #投稿を識別できればなんでもいい
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # post_file = FileField()
     caption = models.TextField(max_length=400)
     post_date = models.DateTimeField(default=timezone.now)
-    # post_tag = 
+    post_tag = models.ManyToManyField(Tag, blank=True)
     good = models.ManyToManyField(User, related_name='good_post', blank=True)
 
     def publish(self) :
@@ -45,4 +56,3 @@ class Post(models.Model) :
     class Meta :
         ordering = ["-post_date"]
 
-# Good

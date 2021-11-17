@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, Tag
 
 #SignUp
 class SignUpForm(UserCreationForm) :
@@ -33,4 +33,5 @@ class PostForm(forms.ModelForm) :
 
     class Meta :
         model = Post
-        fields = ('caption',)     #あとでファイルとタグを追加
+        fields = ['caption', 'post_tag']     #あとでファイルとタグを追加
+        # exclude = ('post_tag',)

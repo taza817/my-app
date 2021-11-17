@@ -114,7 +114,7 @@ class PostCreate(LoginRequiredMixin, CreateView) :
 class PostUpdate(UpdateView) :
     template_name = 'sns/post_update_form.html'
     model = Post
-    fields = ['caption']
+    fields = ['caption', 'post_tag']
 
     # ユーザー制限
     def get_obj(self) :

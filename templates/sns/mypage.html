@@ -20,6 +20,7 @@
                     <a href="{% url 'mypage' post.user_id %}" >@{{ post.user_id }}</a>
                 </div>
                 <p class="card-text" style="font-size: 1.5rem;">{{ post.caption|linebreaksbr }}</p>
+                <p class="card-text" style="font-size: 0.9rem;">{{ post.post_tag.name }}</p>
                 <div class="card-footer">
                     <p class="card-text">{{ post.post_date }}</p>
                     <a href="{% url 'detail' post.pk %}" class="btn btn-primary">詳細</a>
