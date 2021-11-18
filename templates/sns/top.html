@@ -11,7 +11,7 @@
         <!-- ログイン中 -->
         {% for post in object_list %}
             <div　class="card" >
-                <div class="card-body" style="border: solid 1px; width: 30rem; padding: 0;">
+                <div class="card-body" style="border: solid 1px; width: 50rem; padding: 0;">
                     <div class="card-header">
                         <a href="{% url 'mypage' post.user_id %}" >@{{ post.user_id }}</a>
                         {% if post.user_id in following.0.following.all %}<!-- contextから情報が渡ってきている -->
@@ -20,7 +20,10 @@
                             <a href="{% url 'follow_top' post.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
                         {% endif %}
                     </div>
-
+                    
+                    {% if post.post_image %}
+                    <img src="/{{ post.post_image.url }}" style="width: 300px; height: auto;">
+                    {% endif %}
                     <p class="card-text" style="font-size: 1.5rem;">{{ post.caption|linebreaksbr }}</p>
 
                     <div class="card-footer">

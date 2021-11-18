@@ -33,5 +33,5 @@ class PostForm(forms.ModelForm) :
 
     class Meta :
         model = Post
-        fields = ['caption', 'post_tag']     #あとでファイルとタグを追加
+        fields = [ 'post_image', 'caption', 'post_tag']
         # exclude = ('post_tag',)

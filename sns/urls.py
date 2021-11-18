@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+# from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 
 
 urlpatterns = [
@@ -17,3 +20,7 @@ urlpatterns = [
     path('good_top/<int:pk>', views.GoodTop.as_view(), name="good_top"),
     path('good_detail/<int:pk>', views.GoodDetail.as_view(), name="good_detail"),
 ]
+
+if settings.DEBUG :
+    urlpatterns += staticfiles_urlpatterns()
+    urlpatterns += static(settings.IMAGE_URL, document_root=settings.IMAGE_ROOT)

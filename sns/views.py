@@ -125,7 +125,7 @@ class PostUpdate(UpdateView) :
 
 class PostDelete(DeleteView) :
     model = Post
-    success_url = reverse_lazy('top')
+    success_url = reverse_lazy('mypage')
 
 
 

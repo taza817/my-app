@@ -15,10 +15,13 @@
 
         {% for post in object.post_set.all %}
         <div　class="card">
-            <div class="card-body" style="width: 18rem; border: solid 1px; padding: 0;">
+            <div class="card-body" style="width: 50rem; border: solid 1px; padding: 0;">
                 <div class="card-header">
                     <a href="{% url 'mypage' post.user_id %}" >@{{ post.user_id }}</a>
                 </div>
+                {% if post.post_image %}
+                <img src="/{{ post.post_image.url }}" download="output" style="width: 300px; height: auto;">
+                {% endif %}
                 <p class="card-text" style="font-size: 1.5rem;">{{ post.caption|linebreaksbr }}</p>
                 <p class="card-text" style="font-size: 0.9rem;">{{ post.post_tag.name }}</p>
                 <div class="card-footer">
@@ -27,7 +30,6 @@
                 </div>
             </div>
         </div>
-
         {% endfor %}
 
 

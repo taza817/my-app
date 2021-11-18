@@ -129,3 +129,6 @@ LOGIN_REDIRECT_URL = '/'   #あとでタイムラインにする
 LOGOUT_REDIRECT_URL = ''
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+IMAGE_ROOT = os.path.join(BASE_DIR, 'images')
+IMAGE_URL = '/images/'
