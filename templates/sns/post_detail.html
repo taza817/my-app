@@ -3,7 +3,7 @@
 {% block content %}
 
     <div>
-        <a href="{% url 'mypage' post.user_id %}">{{ post.user_id }}</a>
+        <a href="{% url 'mypage' post.user_id.pk %}">{{ post.user_id }}</a>
     </div>
     <div>
         {{ post.caption }} <br>

@@ -42,8 +42,8 @@ class Logout(LogoutView) :
 class FollowBase(LoginRequiredMixin, View) :
     def get(self, request, *args, **kwargs) :
         #ユーザーの特定
-        pk = self.kwargs['pk']
-        target_user = Post.objects.get(pk=pk).user_id
+        pk = int(self.kwargs['pk']) +1
+        target_user = User.objects.get(pk=pk)
         #フォロー情報を取得,存在しなければ作成
         follow_info = Follow.objects.get_or_create(user=self.request.user)
         #フォローテーブルに既にユーザーが存在するか
@@ -52,11 +52,6 @@ class FollowBase(LoginRequiredMixin, View) :
         else :
             obj = follow_info[0].following.add(target_user)
         return obj
-
-class FollowTop(FollowBase) :
-    def get(self, request, *args, **kwargs) :
-        super().get(request, *args, **kwargs)
-        return redirect('top')
 
 class FollowMypage(FollowBase) :
     def get(self, request, *args, **kwargs) :
@@ -73,20 +68,24 @@ class Top(LoginRequiredMixin, ListView) :
         #フォローリスト内にユーザーが含まれている場合のみクエリセット返す
         follow_info = Follow.objects.get_or_create(user=self.request.user)
         following = follow_info[0].following.all()
-        return Post.objects.filter(user_id__in=following)
+        return Post.objects.all().order_by('-post_date')
+        # return Post.objects.filter(user_id__in=following).order_by('-post_date')
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['following'] = Follow.objects.get_or_create(user=self.request.user)
         return context
 
+# UserMypage
+class UserMypage(DetailView) :
+    template_name = 'sns/user_mypage.html'
+    model = User
+
 
 # Mypage
 class Mypage(DetailView) :
     template_name = 'sns/mypage.html'
-    model = User
-    slug_field = 'username'
-    slug_url_kwarg = 'username'
+    model = Account
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)

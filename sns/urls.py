@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.Top.as_view(), name="top"),
-    path('mypage/<username>/', views.Mypage.as_view(), name="mypage"),
+    path('user_mypage/<int:pk>', views.UserMypage.as_view(), name="user_mypage" ),
+    path('mypage/<int:pk>/', views.Mypage.as_view(), name="mypage"),
     path('post/<int:pk>/', views.PostDetail.as_view(), name="detail"),
     path('post/<int:pk>/update/', views.PostUpdate.as_view(), name="update"),
     path('post/create/', views.PostCreate.as_view(), name="create"),
@@ -11,6 +12,5 @@ urlpatterns = [
     path('login/', views.Login.as_view(), name="login"),
     path('logout/', views.Logout.as_view(), name="logout"),
     path('signup/', views.SignUp.as_view(), name="signup"),
-    path('follow_top/<int:pk>/', views.FollowTop.as_view(), name="follow_top"),    #マイページでやりたい
     path('follow_mypage/<int:pk>/', views.FollowMypage.as_view(), name="follow_mypage"),
 ]

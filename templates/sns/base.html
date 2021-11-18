@@ -25,7 +25,7 @@
       <a href="{% url 'create' %}">作成</a>
       </li>
       <li class="nav-item">
-        <a href="{% url 'mypage' user.username %}">マイページ</a>
+        <a href="{% url 'user_mypage' user.pk %}">マイページ</a>
       </li>
       <li class="nav-item">
       <a href="{% url 'logout' %}">ログアウト</a>
