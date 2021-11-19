@@ -1,10 +1,66 @@
 {% extends 'sns/base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
-  <h2>Sign up</h2>
-  <form method="post">
+<div class="container">
+  <div class="col-md-6 offset-md-3">
+    <div class="card mt-3 mb-3 bg-light">
+      <div class="card-header bg-primary text-light">
+        <h4>サインアップ</h4>
+      </div>
+      <!-- カードボディー -->
+      <div class="card-body">
+        <form method="POST">
+          <ul>
+            <li>
+              <label>メールアドレス</label>
+              {{ form.email |add_class:"form-control" }}
+              {{ form.email.errors }}
+            </li>
+            <li>
+              <label>パスワード</label>
+              {{ form.password1 |add_class:"form-control" }}
+              {{ form.passwprd1.errors }}
+            </li>
+            <li>
+              <label>パスワード（確認）</label>
+              {{ form.password2 |add_class:"form-control" }}
+              {{ form.passwprd2.errors }}
+            </li>
+            <li>
+              <label>ユーザーID</label>
+              {{ form.username |add_class:"form-control" }}
+              {{ form.username.errors }}
+            </li>
+            <li>
+              <label>ユーザーネーム</label>
+              {{ form.first_name |add_class:"form-control" }}
+              {{ form.first_name.errors }}
+            </li>
+            <li>
+              <label>性別</label>
+              {{ form.gender |add_class:"form-control" }}
+              {{ form.gender.errors }}
+            </li>
+            <li>
+              <label>生年月日</label>
+              {{ form.birth_date |add_class:"form-control" }}
+              {{ form.birth_date.errors }}
+            </li>
+            <li>
+              <label>居住地</label>
+              {{ form.location |add_class:"form-control" }}
+              {{ form.location.errors }}
+            </li>
+          </ul>
+            <br>
+          <button type="submit" class="btn btn-primary" >登録</button>
+          <input type="hidden" name="next" value="{{ next }}" />
+          {% csrf_token %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>  
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">登録</button>
-  </form>
 {% endblock %}
