@@ -7,16 +7,17 @@
             <a href="{% url 'mypage' post.user_id %}">@{{ post.user_id }}</a>
         </div>
         <p class="card-text" style="font-size: 1.5rem; height: 8rem;">{{ post.caption }}</p>
+        <p class="card-text" style="font-size: 1.5rem;">{{ post.post_tag.name }}</p>
 
         <div class="card-footer">
             <p class="card-text">{{ post.post_date }}</p>
-            <a href="{% url 'update' post.pk %}" class="btn btn-primary">編集</a>
-            <a href="{% url 'delete' post.pk %}" class="btn btn-primary">削除</a>
+            <a href="{% url 'update' post.pk %}" class="btn btn-outline-secondary btn-sm">編集</a>
+            <a href="{% url 'delete' post.pk %}" class="btn btn-outline-secondary btn-sm">削除</a>
 
             {% if request.user in post.good.all %}
-                <a href="{% url 'good_detail' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i>♡</a>{{post.good.count}}
+                <a href="{% url 'good_detail' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart" style="color: red;"></i></a> {{post.good.count}}
             {% else %}
-                <a href="{% url 'good_detail' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i>♡</a>{{post.good.count}}
+                <a href="{% url 'good_detail' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart" style="color: rgb(167, 166, 166);"></i></a> {{post.good.count}}
             {% endif %}
         </div>
     </div>

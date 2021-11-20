@@ -41,7 +41,7 @@ class Tag(models.Model) :
 class Post(models.Model) :
     post_id = models.CharField(max_length=20, default="000")    #投稿を識別できればなんでもいい
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
-    post_image = models.ImageField(upload_to='images', blank=True)
+    post_image = models.ImageField(upload_to='images', blank=False)
     caption = models.TextField(max_length=400)
     post_date = models.DateTimeField(default=timezone.now)
     post_tag = models.ManyToManyField(Tag, blank=True)

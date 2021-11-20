@@ -15,9 +15,9 @@
                     <div class="card-header">
                         <a href="{% url 'mypage' post.user_id %}" >@{{ post.user_id }}</a>
                         {% if post.user_id in following.0.following.all %}<!-- contextから情報が渡ってきている -->
-                            <a href="{% url 'follow_top' post.pk %}" class="btn btn-danger ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー解除</a>
+                            <a href="{% url 'follow_top' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-check" style="color: rgb(0, 98, 255);"></i></a>
                         {% else %}
-                            <a href="{% url 'follow_top' post.pk %}" class="btn btn-primary ms-3" tabindex="-1" role="button" aria-disabled="true">フォロー</a>
+                            <a href="{% url 'follow_top' post.pk %}" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-plus" style="color: rgb(167, 166, 166);"></i></a>
                         {% endif %}
                     </div>
                     
@@ -25,15 +25,16 @@
                     <img src="/{{ post.post_image.url }}" style="width: 300px; height: auto;">
                     {% endif %}
                     <p class="card-text" style="font-size: 1.5rem;">{{ post.caption|linebreaksbr }}</p>
+                    <p class="card-text" style="font-size: 1.5rem;">{{ post.post_tag.name }}</p>
 
                     <div class="card-footer">
                         <p class="card-text">{{ post.post_date }}</p>
-                        <a href="{% url 'detail' post.pk %}" class="btn btn-primary">詳細</a>
+                        <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm">詳細</a>
 
                         {% if request.user in post.good.all %}
-                            <a href="{% url 'good_top' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart"></i>♡</a>{{post.good.count}}
+                            <a href="{% url 'good_top' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart like-btn" style="color: red;"></i></a> {{post.good.count}}
                         {% else %}
-                            <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart"></i>♡</a>{{post.good.count}}
+                            <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart like-btn" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}}
                         {% endif %}
                     </div>
                 </div>

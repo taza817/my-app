@@ -2,14 +2,26 @@
 
 {% block content %}
 
-    <h1>削除確認</h1>
-    <div>
-        <form method="POST">
-            {% csrf_token %}
-            {{post.caption}} <br><br>
-            を削除しますか？
-            <input type="submit" value="削除する">
-        </form>
+<form method="POST">
+        {% csrf_token %}
+    <div class="card">
+        <div class="card-body" style="width: 30rem; border: solid 1px; padding: 0;">
+            <div class="card-header">
+                <a href="{% url 'mypage' post.user_id %}">@{{ post.user_id }}</a>
+            </div>
+            <p class="card-text" style="font-size: 1.5rem; height: 8rem;">{{ post.caption }}</p>
+    
+            <div class="card-footer">
+                <p class="card-text">{{ post.post_date }}</p>
+            </div>
+        </div>
     </div>
+    <br>
+    <input class="btn btn-outline-danger btn-sm" style="width: 70px;" type="submit" value="削除する">
+    <a href="{ url 'detail' post.pk }" class="btn btn-outline-secondary btn-sm">キャンセル</a>
+</form>
+
+
+    
 
 {% endblock %}

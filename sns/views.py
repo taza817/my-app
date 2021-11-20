@@ -74,7 +74,8 @@ class Top(LoginRequiredMixin, ListView) :
         #フォローリスト内にユーザーが含まれている場合のみクエリセット返す
         follow_info = Follow.objects.get_or_create(user=self.request.user)
         following = follow_info[0].following.all()
-        return Post.objects.filter(user_id__in=following)
+        # return Post.objects.filter(user_id__in=following)
+        return Post.objects.all()
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
@@ -123,9 +124,10 @@ class PostUpdate(UpdateView) :
     def get_success_url(self) :
         return reverse('detail', kwargs={'pk': self.object.pk})
 
+
 class PostDelete(DeleteView) :
     model = Post
-    success_url = reverse_lazy('mypage')
+    success_url = reverse_lazy('mypage')   #accountのpk渡す
 
 
 
@@ -145,7 +147,7 @@ class GoodBase(LoginRequiredMixin, View) :
 class GoodTop(GoodBase) :
     def get(self, request, *args, **kwargs) :
         super().get(request, *args, **kwargs)
-        return redirect('top')
+        return redirect('top')                 #その場にとどまるにはjs
 
 class GoodDetail(GoodBase) :
     def get(self, request, *args, **kwargs) :
