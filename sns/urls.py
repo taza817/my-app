@@ -21,6 +21,3 @@ urlpatterns = [
     path('good_detail/<int:pk>', views.GoodDetail.as_view(), name="good_detail"),
 ]
 
-if settings.DEBUG :
-    urlpatterns += staticfiles_urlpatterns()
-    urlpatterns += static(settings.IMAGE_URL, document_root=settings.IMAGE_ROOT)
