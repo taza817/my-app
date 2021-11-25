@@ -11,7 +11,7 @@
         <!-- ログイン中 -->
     {% for post in object_list %}
         <div>
-            <a href="{% url 'mypage' post.user_id.pk %}">{{ post.user_id }}</a>
+            <a href="{% url 'mypage' post.user.pk %}">{{ post.user }}</a>
 
             <p>{{ post.caption|linebreaksbr }}</p>
             <p>{{ post.post_date }}</p>
