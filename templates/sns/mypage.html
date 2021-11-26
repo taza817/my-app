@@ -2,22 +2,26 @@
 
 {% block content %}
 
-    <!-- プロフィール情報 -->
+    <h2>{{ account.user.first_name }}</h2>
+    <p>@{{ account.user.username }}</p>
 
-    <h2>{{ object.first_name }}</h2>
-
+    {% if request.user == account.user %}
+        <a href="" class="btn btn-primary">プロフィール編集</a>
+        <a href=""><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
+    {% else %}
         {% if object.user in following.0.following.all %}<!-- contextから情報が渡ってきている -->
-            <a href="{% url 'follow_mypage' object.username %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-check" style="color: rgb(0, 98, 255);"></i></a>
+            <a href="{% url 'follow_mypage' account.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-check" style="color: rgb(0, 98, 255);"></i></a>
         {% else %}
-            <a href="{% url 'follow_mypage' object.username %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-plus" style="color: rgb(167, 166, 166);"></i></a>
+            <a href="{% url 'follow_mypage' account.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-plus" style="color: rgb(167, 166, 166);"></i></a>
         {% endif %}
+    {% endif %}
 
 
-        {% for post in object.post_set.all %}
+    {% for post in object.post_set.all reversed %}
         <div　class="card">
             <div class="card-body" style="width: 50rem; border: solid 1px; padding: 0;">
                 <div class="card-header">
-                    <a href="{% url 'mypage' post.user_id %}" >@{{ post.user_id }}</a>
+                    <a href="{% url 'mypage' post.user.pk %}" >@{{ post.user }}</a>
                 </div>
                 {% if post.post_image %}
                 <img src="/{{ post.post_image.url }}" download="output" style="width: 300px; height: auto;">
@@ -30,7 +34,7 @@
                 </div>
             </div>
         </div>
-        {% endfor %}
+    {% endfor %}
 
 
 {% endblock %}

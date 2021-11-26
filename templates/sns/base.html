@@ -37,9 +37,11 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'create' %}"><i class="fas fa-plus-square fa-lg"></i></a>
               </li>
+              {% if account_pk %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'mypage' user.username %}"><i class="fas fa-user-circle fa-lg"></i></a>
+                <a class="nav-link" href="{% url 'mypage' account_pk.pk %}"><i class="fas fa-user-circle fa-lg"></i></a>
               </li>
+              {% endif %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt fa-lg"></i></a>
               </li>
@@ -51,6 +53,7 @@
     </nav>  
 
   <div class="pl-4 small" style="background-color: #e2e3e5 ; border-bottom: solid 1px #f3f3f3; margin-bottom: 1rem;">
+
     {% if not user.is_authenticated %}
       こんにちは！ ゲスト さん
     {% else %}
