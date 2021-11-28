@@ -134,7 +134,16 @@ class PostUpdate(UpdateView) :
 
 class PostDelete(DeleteView) :
     model = Post
-    success_url = reverse_lazy('mypage')   #accountのpk渡す
+
+    def get_success_url(self, *args, **kwargs) :
+        pk = self.get_object().user.pk
+        success_url = reverse_lazy('mypage', kwargs={'pk': pk})   #accountのpk渡す
+        return success_url
+    
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
 
 
 

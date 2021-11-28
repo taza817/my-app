@@ -15,7 +15,10 @@ urlpatterns = [
     path('login/', views.Login.as_view(), name="login"),
     path('logout/', views.Logout.as_view(), name="logout"),
     path('signup/', views.SignUp.as_view(), name="signup"),
-    path('good_top/<int:pk>', views.GoodTop.as_view(), name="good_top"),
-    path('good_detail/<int:pk>', views.GoodDetail.as_view(), name="good_detail"),
+    path('good_top/<int:pk>/', views.GoodTop.as_view(), name="good_top"),
+    path('good_detail/<int:pk>/', views.GoodDetail.as_view(), name="good_detail"),
     path('follow_mypage/<int:pk>/', views.FollowMypage.as_view(), name="follow_mypage"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.IMAGE_URL, document_root=settings.IMAGE_ROOT)
