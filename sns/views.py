@@ -1,9 +1,9 @@
 from django.http import request
 from django.views.generic.base import TemplateResponseMixin
-from .forms import LoginForm ,SignUpForm, PostForm
+from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect
-from .models import Post, Account
+from .models import Post, Account, Question
 from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -75,7 +75,6 @@ class Top(LoginRequiredMixin, ListView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['following'] = Account.objects.get_or_create(user=self.request.user)
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
 
@@ -104,8 +103,10 @@ class PostDetail(DetailView) :
 
 class PostCreate(LoginRequiredMixin, CreateView) :
     form_class = PostForm
-    success_url = reverse_lazy('top')
     template_name = 'sns/post_form.html'
+
+    def get_success_url(self) :
+        return reverse('detail', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form) :
         form.instance.user = Account.objects.get(user=self.request.user)    #現在ログインしているユーザーを代入
@@ -171,4 +172,78 @@ class GoodDetail(GoodBase) :
         pk = self.kwargs['pk']
         return redirect('detail', pk)
 
+
+# Question
+class QuestionTop(ListView) :     #みんなの投稿
+    model = Question
+    template_name = 'sns/question_top.html'
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
+
+class QuestionCreate(CreateView) :
+    form_class = QuestionForm
+    template_name = 'sns/question_form.html'
+
+    def get_success_url(self) :
+        return reverse('q_detail', kwargs={'pk': self.object.pk})
+
+    def form_valid(self, form) :
+        form.instance.user = Account.objects.get(user=self.request.user)    #現在ログインしているユーザーを代入
+        return super().form_valid(form)
+    
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
+
+class QuestionDetail(DetailView) :
+    model = Question
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
+
+class QuestionUpdate(UpdateView) :
+    template_name = 'sns/q_update_form.html'
+    model = Question
+    fields = ['title', 'text', 'q_image']
+
+    def get_success_url(self) :
+        return reverse('q_detail', kwargs={'pk': self.object.pk})
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
+
+class QuestionDelete(DeleteView) :
+    model = Question
+
+    def get_success_url(self, *args, **kwargs) :
+        pk = self.get_object().user.pk
+        success_url = reverse_lazy('my_question', kwargs={'pk': pk})
+        return success_url
+    
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
+
+class MyQuestion(DetailView) :
+    model = Account
+    template_name = 'sns/q_mypage.html'
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
 

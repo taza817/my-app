@@ -18,6 +18,12 @@ urlpatterns = [
     path('good_top/<int:pk>/', views.GoodTop.as_view(), name="good_top"),
     path('good_detail/<int:pk>/', views.GoodDetail.as_view(), name="good_detail"),
     path('follow_mypage/<int:pk>/', views.FollowMypage.as_view(), name="follow_mypage"),
+    path('soudan/', views.QuestionTop.as_view(), name="q_top"),
+    path('soudan/mypost/<int:pk>/', views.MyQuestion.as_view(), name="my_question"),
+    path('soudan/create/', views.QuestionCreate.as_view(), name="q_create"),
+    path('soudan/<int:pk>/', views.QuestionDetail.as_view(), name="q_detail"),
+    path('soudan/<int:pk>/update/', views.QuestionUpdate.as_view(), name="q_update"),
+    path('soudan/<int:pk>/delete/', views.QuestionDelete.as_view(), name="q_delete"),
 ]
 
 if settings.DEBUG:

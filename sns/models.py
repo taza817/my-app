@@ -33,7 +33,7 @@ class Tag(models.Model) :
 class Post(models.Model) :
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     post_image = models.ImageField(upload_to='images', blank=False)
-    caption = models.TextField(max_length=400)
+    caption = models.TextField(max_length=400, blank=True)
     post_date = models.DateTimeField(default=timezone.now)
     post_tag = models.ManyToManyField(Tag, blank=True)
     good = models.ManyToManyField(User, related_name='good_post', blank=True)
@@ -44,3 +44,17 @@ class Post(models.Model) :
     def __str__(self) :
         return self.user
 
+
+
+class Question(models.Model) :
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    title = models.CharField(max_length=40, blank=False)
+    q_image = models.ImageField(upload_to='images', blank=True)
+    text = models.TextField(max_length=1000)
+    q_date = models.DateTimeField(default=timezone.now)   #dateだけでいい
+
+    def publish(self) :
+        self.save()
+    
+    def __str__(self) :
+        return self.title
