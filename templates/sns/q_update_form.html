@@ -21,7 +21,8 @@
       {{ form.text.errors }}
     </li>
   </ul>
-  <input type="submit" class="save btn btn-primary" value="保存">
+  <input type="submit" class="save btn btn-primary btn-sm" value="保存">
+  <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
 </form>
 
   {% endblock %}

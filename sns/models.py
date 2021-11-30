@@ -15,8 +15,20 @@ class Account(models.Model) :
     account_image = models.ImageField(upload_to="plofile_pics", blank=True)
     following = models.ManyToManyField("self", related_name='following', blank=True)    #フォローしているユーザー
 
+    def follow_num(self) :
+        return len(Follow.objects.filter(owner=self))
+
+    def follower_num(self) :
+        return len(Follow.objects.filter(follow_target=self))
+
     def __str__(self) :
         return self.user.username
+
+
+# Follow
+class Follow(models.Model) :
+    owner = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='do_follow')
+    follow_target = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='accept_follow')
 
 
 # Post

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Post, Tag, Question
+from .models import Post, Tag, Question, Follow
 
 #SignUp
 class SignUpForm(UserCreationForm) :
@@ -23,6 +23,13 @@ class LoginForm(AuthenticationForm) :
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['class'] = 'form-control'
+
+
+# Follow
+class FollowForm(forms.Form) :
+    class Meta :
+        model = Follow
+        fields = ('woner', 'follow_target')
 
 
 # Post

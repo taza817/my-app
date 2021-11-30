@@ -4,16 +4,25 @@
 
     <h2>{{ account.user.first_name }}</h2>
     <p>@{{ account.user.username }}</p>
+    <p>フォロー {{ account.follow_num }}</p>
+    <p>フォロワー {{ account.follower_num }}</p>
 
     {% if request.user == account.user %}
         <a href="" class="btn btn-outline-secondary btn-sm">プロフィール編集</a>
         <a href=""><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
     {% else %}
-        {% if account in connection.0.following.all %}<!-- contextから情報が渡ってきている -->
+        <form action="{% url 'follow_mypage' account.pk %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="フォロー" class="btn-submit">
+        </form>
+
+        <!-- 
+        {% if account in connection.0.following.all %}
             <a href="{% url 'follow_mypage' account.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-check fa-lg" style="color: rgb(0, 98, 255);"></i></a>
         {% else %}
             <a href="{% url 'follow_mypage' account.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-plus fa-lg" style="color: rgb(167, 166, 166);"></i></a>
-        {% endif %}
+        {% endif %} 
+        -->
     {% endif %}
 
 

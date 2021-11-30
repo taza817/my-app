@@ -10,7 +10,7 @@
         <a class="nav-link" href="{% url 'login' %}">ログイン</a>
     {% else %}
         <!-- ログイン中 -->
-        {% for post in object_list %}
+        {% for post in object_list reversed %}
             <div　class="card" style="position: center;">
                 <div class="card-body" style="border: solid 1px; width: 40%; padding: 0;">
                     <div class="card-header">

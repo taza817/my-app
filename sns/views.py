@@ -1,9 +1,9 @@
-from django.http import request
+from django.http import request, response
 from django.views.generic.base import TemplateResponseMixin
-from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm
+from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm
 from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render, redirect
-from .models import Post, Account, Question
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Post, Account, Question, Follow
 from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -40,27 +40,45 @@ class Logout(LogoutView) :
 
 
 # Follow
-class FollowBase(LoginRequiredMixin, View) :
-    def get(self, request, *args, **kwargs) :
-        #フォローするユーザーの特定
-        pk = self.kwargs['pk']
-        target_user = Account.objects.get(pk=pk)
-        #自分のフォロー情報を取得,存在しなければ作成
-        follow_info = Account.objects.get_or_create(user=self.request.user)
-        #フォローテーブルに既にユーザーが存在するか
-        if target_user in follow_info[0].following.all() :
-            obj = follow_info[0].following.remove(target_user)
+def follow(request, pk) :
+    params = {
+        'form' : FollowForm(),
+    }
+    #フォローするユーザーの特定
+    follow_user = get_object_or_404(Account, pk=pk)
+
+    if (request.method == "POST") :
+        owner = Account.objects.get(user=request.user)
+        follow_target = follow_user
+        follow = Follow(owner=owner, follow_target=follow_target)
+        follow_model = Follow.objects.all()
+        if follow in follow_model:
+            follow.delete()
         else :
-            obj = follow_info[0].following.add(target_user)
-        return obj
-
-class FollowMypage(FollowBase) :
-    def get(self, request, *args, **kwargs) :
-        super().get(request, *args, **kwargs)
-        pk = self.kwargs['pk']
+            follow.save()
         return redirect('mypage', pk)
+    
+    return render(request, 'sns/mypage.html', params)
 
+# class FollowBase(LoginRequiredMixin, View) :
+#     def get(self, request, *args, **kwargs) :
+#         #フォローするユーザーの特定
+#         pk = self.kwargs['pk']
+#         target_user = Account.objects.get(pk=pk)
+#         #自分のフォロー情報を取得,存在しなければ作成
+#         follow_info = Account.objects.get_or_create(user=self.request.user)
+#         #フォローテーブルに既にユーザーが存在するか
+#         if target_user in follow_info[0].following.all() :
+#             obj = follow_info[0].following.remove(target_user)
+#         else :
+#             obj = follow_info[0].following.add(target_user)
+#         return obj
 
+# class FollowMypage(FollowBase) :
+#     def get(self, request, *args, **kwargs) :
+#         super().get(request, *args, **kwargs)
+#         pk = self.kwargs['pk']
+#         return redirect('mypage', pk)
 
 # Top
 class Top(LoginRequiredMixin, ListView) :
@@ -68,10 +86,15 @@ class Top(LoginRequiredMixin, ListView) :
     template_name = 'sns/top.html'
 
     def get_queryset(self) :
-        #フォローリスト内にユーザーが含まれている場合のみクエリセット返す
-        follow_info = Account.objects.get_or_create(user=self.request.user)
-        following = follow_info[0].following.all()
-        return Post.objects.filter(user__in=following).order_by('-post_date')
+        account = Account.objects.get(user=self.request.user)
+        follow = Follow.objects.filter(owner = account)
+        posts = Post.objects.filter(
+            user__in = [f.follow_target for f in follow]
+        )
+        params = {
+            'data' : posts,
+        }
+        return posts
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)

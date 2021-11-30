@@ -60,7 +60,9 @@
     {% endif %}
   </div>
 
+  {% if user.is_authenticated %}
     <a class="nav-link" href="{% url 'create' %}"><i class="fas fa-edit fa-3x"></i></a>   <!-- 画面下にアイコンsticky -->
+  {% endif %}
     
     {% block content %}
     {% endblock %}
