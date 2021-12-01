@@ -10,9 +10,9 @@
   </div>
 
   {% for question in object.question_set.all reversed %}
-  <div class="card" style="width: 30rem; margin-bottom: 10px;">
+  <div class="card" style="width: 40rem; margin-bottom: 10px;">
       <div class="card-body">
-          <a href="{% url 'q_detail' question.pk %}" style="font-size: 1.5rem; color: black; font-weight: bold;">{{ question.title }}</a>
+          <a href="{% url 'q_detail' question.pk %}" style="font-size: 1.5rem; color: black; font-weight: bold;">{{ question.title| truncatechars:18  }}</a>
           <p class="float-end">{{ question.q_date }}</p>
       </div>
   </div>

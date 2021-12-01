@@ -161,7 +161,7 @@ class PostDelete(DeleteView) :
 
     def get_success_url(self, *args, **kwargs) :
         pk = self.get_object().user.pk
-        success_url = reverse_lazy('mypage', kwargs={'pk': pk})   #accountのpk渡す
+        success_url = reverse_lazy('mypage', kwargs={'pk': pk})
         return success_url
     
     def get_context_data(self, *args, **kwargs) :
@@ -269,4 +269,24 @@ class MyQuestion(DetailView) :
         context = super().get_context_data(*args, **kwargs)
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
+
+# QuestionGood
+class QgoodBase(LoginRequiredMixin, View) :
+    def get(self, request, *args, **kwargs) :
+        #投稿の特定
+        pk = self.kwargs['pk']
+        target_question = Question.objects.get(pk=pk)
+        account = Account.objects.get(user=self.request.user)
+
+        if account in target_question.q_good.all() :
+            obj = target_question.q_good.remove(account)
+        else :
+            obj = target_question.q_good.add(account)
+        return obj
+
+class Qgood(QgoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().get(request, *args, **kwargs)
+        pk = self.kwargs['pk']
+        return redirect('q_detail', pk)
 

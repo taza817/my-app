@@ -64,6 +64,7 @@ class Question(models.Model) :
     q_image = models.ImageField(upload_to='images', blank=True)
     text = models.TextField(max_length=1000)
     q_date = models.DateTimeField(default=timezone.now)   #dateだけでいい
+    q_good = models.ManyToManyField(Account, related_name='good_question', blank=True)
 
     def publish(self) :
         self.save()

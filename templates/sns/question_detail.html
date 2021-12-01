@@ -16,16 +16,30 @@
     <div class="card-header">
       <h2>{{ question.title }}</h2>
       <p>{{ question.q_date }}</p>
+
+      <div class="float-end">
+      {% if account_pk in question.q_good.all %}
+        <a href="{% url 'q_good' question.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(0, 132, 255);"></i></a> {{question.q_good.count}}
+      {% else %}
+        <a href="{% url 'q_good' question.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(167, 166, 166);"></i></a> {{question.q_good.count}}
+      {% endif %}
+      </div>
+
       {% if account_pk == question.user %}
         <a href="{% url 'q_update' question.pk %}" class="btn btn-outline-secondary btn-sm">編集</a>
         <a href="{% url 'q_delete' question.pk %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-trash-alt fa-lg"></i></a>
       {% endif %}
-
     </div>
+    <div class="card-body">
       <p>{{ question.text }}</p>
       {% if question.q_image %}
         <img src="{{ question.q_image.url }}" style="width: 100%; height: auto;">
       {% endif %}
+    </div>
+    <div class="card-footer">
+      <a href="" class="float-end"><i class="far fa-comment fa-lg"></i>コメント</a>
+    </div>
+
   </div>
 
 
