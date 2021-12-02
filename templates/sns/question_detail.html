@@ -3,6 +3,7 @@
 
 {% block content %}
 
+  <!-- Tab -->
   <div class="container" style="margin: 50px 0;">
     <div class="row">
         <a href="{% url 'q_top' %}" class="col col-6" style="border: 1px solid;">みんなの投稿</a>
@@ -12,34 +13,86 @@
     </div>
   </div>
   
-  <div class="card" style="width: 40%;">
-    <div class="card-header">
-      <h2>{{ question.title }}</h2>
-      <p>{{ question.q_date }}</p>
+  <!-- Question Detail -->
+  {% if question %}
+    <div class="card" style="width: 55%;">
+      <div class="card-header">
+        <h2>{{ question.title }}</h2>
+        <p>{{ question.q_date }}</p>
 
-      <div class="float-end">
-      {% if account_pk in question.q_good.all %}
-        <a href="{% url 'q_good' question.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(0, 132, 255);"></i></a> {{question.q_good.count}}
-      {% else %}
-        <a href="{% url 'q_good' question.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(167, 166, 166);"></i></a> {{question.q_good.count}}
-      {% endif %}
+        <div class="float-end">
+        {% if account_pk in question.q_good.all %}
+          <a href="{% url 'q_good' question.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(0, 132, 255);"></i></a> {{question.q_good.count}}
+        {% else %}
+          <a href="{% url 'q_good' question.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(167, 166, 166);"></i></a> {{question.q_good.count}}
+        {% endif %}
+        </div>
+
+        {% if account_pk == question.user %}
+          <a href="{% url 'q_update' question.pk %}" class="btn btn-outline-secondary btn-sm">編集</a>
+          <a href="{% url 'q_delete' question.pk %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-trash-alt fa-lg"></i></a>
+        {% endif %}
       </div>
+      <div class="card-body">
+        <p>{{ question.text }}</p>
+        {% if question.q_image %}
+          <img src="{{ question.q_image.url }}" style="width: 100%; height: auto;">
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
 
-      {% if account_pk == question.user %}
-        <a href="{% url 'q_update' question.pk %}" class="btn btn-outline-secondary btn-sm">編集</a>
-        <a href="{% url 'q_delete' question.pk %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-trash-alt fa-lg"></i></a>
-      {% endif %}
-    </div>
-    <div class="card-body">
-      <p>{{ question.text }}</p>
-      {% if question.q_image %}
-        <img src="{{ question.q_image.url }}" style="width: 100%; height: auto;">
-      {% endif %}
-    </div>
-    <div class="card-footer">
-      <a href="" class="float-end"><i class="far fa-comment fa-lg"></i>コメント</a>
-    </div>
+  <!-- Answer Form -->
+  <div style="width: 45%; padding: 20px 20px 45px 0; margin: 20px 0; background-color: rgb(252, 235, 216);">
+    <form class="ui form" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <ul style="list-style: none;">
+        <li>
+          {{ form.name }}
+          {{ form.name.errors }}
+        </li>
+        <li>
+          {{ form.text }}
+          {{ form.text.errors }}
+        </li>
+        <li>
+          {{ form.a_image }}
+          {{ form.a_image.errors }}
+        </li>
+      </ul>
+      <div class="float-end">
+        <input type="submit" class="save btn btn-primary btn-xs" style="font-size: 0.8rem;" value="コメントする">
+      </div>
+    </form>
+  </div>
 
+  <!-- Answer List -->
+  <div>
+    {% if answer_list %}
+      {% for answer in answer_list %}
+        <div class="card" style="width: 45%; margin-top: 20px;">
+          <div class="card-body">
+            <p><i class="fas fa-user"></i> {{ answer.name }}</p>
+            <p>{{ answer.a_date }}</p>
+            <p>{{ answer.text }}</p>
+            {% if answer.a_image %}
+              <img src="{{ answer.a_image.url }}" style="width: 50%; height: auto;">
+            {% endif %}
+            <div class="float-end">
+              <i class="fas fa-thumbs-up fa-sm" style="color: rgb(167, 166, 166);"></i> {{ answer.a_good.count }}
+            </div>
+          </div>
+          <div>
+            {% if account_pk == answer.user %}
+            <a href="{% url 'answer_update' answer.pk %}" class="btn btn-outline-secondary btn-sm">編集</a>
+            <a href="{% url 'answer_delete' answer.pk %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-trash-alt fa-lg"></i></a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+    <div class="ui warning message"><p>まだコメントはありません。</p></div>
+    {% endif %}
   </div>
 
 

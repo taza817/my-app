@@ -57,13 +57,13 @@ class Post(models.Model) :
         return self.user
 
 
-
+# Question
 class Question(models.Model) :
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     title = models.CharField(max_length=40, blank=False)
     q_image = models.ImageField(upload_to='images', blank=True)
     text = models.TextField(max_length=1000)
-    q_date = models.DateTimeField(default=timezone.now)   #dateだけでいい
+    q_date = models.DateTimeField(default=timezone.now)
     q_good = models.ManyToManyField(Account, related_name='good_question', blank=True)
 
     def publish(self) :
@@ -71,3 +71,19 @@ class Question(models.Model) :
     
     def __str__(self) :
         return self.title
+
+
+class Answer(models.Model) :
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    text = models.TextField(max_length=400, blank=False)
+    a_image =  models.ImageField(upload_to='images', blank=True)
+    a_date = models.DateTimeField(default=timezone.now)
+    #a_good
+
+    def publish(self) :
+        self.save()
+
+    def __str__(self) :
+        return self.text[:20]

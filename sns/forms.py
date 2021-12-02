@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Post, Tag, Question, Follow
+from .models import Post, Tag, Question, Follow, Answer
 
 #SignUp
 class SignUpForm(UserCreationForm) :
@@ -55,3 +55,26 @@ class QuestionForm(forms.ModelForm) :
     class Meta :
         model = Question
         fields = [ 'title', 'q_image', 'text' ]
+
+
+class AnswerForm(forms.ModelForm) :
+    class Meta :
+        model = Answer
+        fields = ['name', 'text', 'a_image']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder':'ニックネーム'}),
+            'text': forms.Textarea(attrs={'rows':4, 'cols':15}),
+            }
+
+    def __init__(self, *args, **kwargs) :
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values() :
+            field.widget.attrs['class'] = 'form-control'
+    
+    #保存処理
+    def save_answer(self, question_id, commit=True) :
+        answer = self.save(commit=False)
+        answer.question = Question.objects.get(pk=question_id)
+        if commit :
+            answer.save()
+        return answer

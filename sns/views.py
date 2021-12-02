@@ -1,11 +1,11 @@
 from django.http import request, response
 from django.views.generic.base import TemplateResponseMixin
-from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm
+from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Account, Question, Follow
+from .models import Post, Account, Question, Follow, Answer
 from django.contrib.auth.models import User
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -224,11 +224,23 @@ class QuestionCreate(CreateView) :
         return context
 
 
-class QuestionDetail(DetailView) :
-    model = Question
+class QuestionDetail(CreateView) :     #AnswerCreate
+    form_class = AnswerForm
+    template_name = 'sns/question_detail.html'
+
+    def form_valid(self, form) :
+        form.instance.user = Account.objects.get(user=self.request.user)
+        form.save_answer(self.kwargs.get('pk'))
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse_lazy('q_detail', kwargs={'pk': self.kwargs['pk']})
 
     def get_context_data(self, *args, **kwargs) :
+        pk = self.kwargs['pk']
         context = super().get_context_data(*args, **kwargs)
+        context['question'] = Question.objects.get(pk=pk)
+        context['answer_list'] = Answer.objects.filter(question_id=pk).order_by('a_date')   #イイネの多い順にソート
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
 
@@ -290,3 +302,33 @@ class Qgood(QgoodBase) :
         pk = self.kwargs['pk']
         return redirect('q_detail', pk)
 
+
+# Answer
+class AnswerUpdate(UpdateView):
+    model = Answer
+    template_name = 'sns/answer_update.html'
+    fields = ['text', 'a_image']
+
+    def get_success_url(self) :
+        question_pk = Answer.objects.get(pk=self.object.pk).question.pk
+        return reverse('q_detail', kwargs={'pk': question_pk})   #Questionのpk
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        question_pk = Answer.objects.get(pk=self.object.pk).question.pk
+        context['question'] = Question.objects.get(pk=question_pk)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
+
+class AnswerDelete(DeleteView) :
+    model = Answer
+
+    def get_success_url(self) :
+        question_pk = Answer.objects.get(pk=self.object.pk).question.pk
+        return reverse('q_detail', kwargs={'pk': question_pk})
+    
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context

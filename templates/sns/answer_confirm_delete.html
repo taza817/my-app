@@ -1,0 +1,15 @@
+{% extends 'sns/q_base.html' %}
+
+{% block content %}
+
+<form method="POST">
+  {% csrf_token %}
+  <div style="width: 40%;">
+    <h2>「{{ answer.text| truncatechars:15 }}」</h2>
+    <p>を削除しますか？</p>
+  </div>
+<input class="btn btn-outline-danger btn-sm" style="width: 70px;" type="submit" value="削除する">
+<a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
+</form>
+
+{% endblock %}

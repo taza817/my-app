@@ -25,6 +25,8 @@ urlpatterns = [
     path('soudan/<int:pk>/update/', views.QuestionUpdate.as_view(), name="q_update"),
     path('soudan/<int:pk>/delete/', views.QuestionDelete.as_view(), name="q_delete"),
     path('good_soudan/<int:pk>/', views.Qgood.as_view(), name="q_good"),
+    path('answer/<int:pk>/update/', views.AnswerUpdate.as_view(), name="answer_update"),
+    path('answer/<int:pk>/delete/', views.AnswerDelete.as_view(), name="answer_delete"),
 ]
 
 if settings.DEBUG:

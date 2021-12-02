@@ -1,0 +1,40 @@
+{% extends 'sns/q_base.html' %}
+{% load static %}
+
+{% block content %}
+  
+  {% if question %}
+    <div class="card" style="width: 55%;">
+      <div class="card-header">
+        <h2>{{ question.title }}</h2>
+        <p>{{ question.q_date }}</p>
+      </div>
+    </div>
+      <div class="card-body">
+        <p>{{ question.text }}</p>
+        {% if question.q_image %}
+          <img src="{{ question.q_image.url }}" style="width: 100%; height: auto;">
+        {% endif %}
+      </div>
+  {% endif %}
+
+  <div style="width: 45%; padding: 10px 10px 45px 0; margin: 20px 0;">
+    <form class="ui form" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <ul style="list-style: none;">
+        <li>
+          {{ form.text }}
+          {{ form.text.errors }}
+        </li>
+        <li>
+          {{ form.a_image }}
+          {{ form.a_image.errors }}
+        </li>
+      </ul>
+      <div class="float-end">
+        <input type="submit" class="save btn btn-primary btn-xs" style="font-size: 0.8rem;" value="保存">
+      </div>
+    </form>
+  </div>
+
+{% endblock %}
