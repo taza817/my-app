@@ -27,6 +27,7 @@ urlpatterns = [
     path('good_soudan/<int:pk>/', views.Qgood.as_view(), name="q_good"),
     path('answer/<int:pk>/update/', views.AnswerUpdate.as_view(), name="answer_update"),
     path('answer/<int:pk>/delete/', views.AnswerDelete.as_view(), name="answer_delete"),
+    path('good_answer/<int:pk>/', views.Agood.as_view(), name="a_good"),
 ]
 
 if settings.DEBUG:

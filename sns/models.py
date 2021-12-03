@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.fields.related import OneToOneField
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -80,7 +81,7 @@ class Answer(models.Model) :
     text = models.TextField(max_length=400, blank=False)
     a_image =  models.ImageField(upload_to='images', blank=True)
     a_date = models.DateTimeField(default=timezone.now)
-    #a_good
+    a_good = models.ManyToManyField(Account, related_name='good_answer', blank=True)
 
     def publish(self) :
         self.save()

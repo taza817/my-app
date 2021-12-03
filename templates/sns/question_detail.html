@@ -17,7 +17,7 @@
   {% if question %}
     <div class="card" style="width: 55%;">
       <div class="card-header">
-        <h2>{{ question.title }}</h2>
+        <h3>{{ question.title }}</h3>
         <p>{{ question.q_date }}</p>
 
         <div class="float-end">
@@ -36,7 +36,7 @@
       <div class="card-body">
         <p>{{ question.text }}</p>
         {% if question.q_image %}
-          <img src="{{ question.q_image.url }}" style="width: 100%; height: auto;">
+          <img src="{{ question.q_image.url }}" style="width: 60%; height: auto;">
         {% endif %}
       </div>
     </div>
@@ -79,7 +79,11 @@
               <img src="{{ answer.a_image.url }}" style="width: 50%; height: auto;">
             {% endif %}
             <div class="float-end">
-              <i class="fas fa-thumbs-up fa-sm" style="color: rgb(167, 166, 166);"></i> {{ answer.a_good.count }}
+              {% if account_pk in answer.a_good.all %}
+                <a href="{% url 'a_good' answer.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(0, 132, 255);"></i></a> {{answer.a_good.count}}
+              {% else %}
+                <a href="{% url 'a_good' answer.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(167, 166, 166);"></i></a> {{answer.a_good.count}}
+              {% endif %}
             </div>
           </div>
           <div>

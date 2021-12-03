@@ -240,7 +240,7 @@ class QuestionDetail(CreateView) :     #AnswerCreate
         pk = self.kwargs['pk']
         context = super().get_context_data(*args, **kwargs)
         context['question'] = Question.objects.get(pk=pk)
-        context['answer_list'] = Answer.objects.filter(question_id=pk).order_by('a_date')   #イイネの多い順にソート
+        context['answer_list'] = Answer.objects.filter(question_id=pk).order_by('-a_good')   #イイネの多い順にソート
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
 
@@ -332,3 +332,25 @@ class AnswerDelete(DeleteView) :
         context = super().get_context_data(*args, **kwargs)
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
+
+
+class AgoodBase(LoginRequiredMixin, View) :
+    def get(self, request, *args, **kwargs) :
+        #投稿の特定
+        pk = self.kwargs['pk']
+        print(pk)
+        target_answer = Answer.objects.get(pk=pk)
+        account = Account.objects.get(user=self.request.user)
+
+        if account in target_answer.a_good.all() :
+            obj = target_answer.a_good.remove(account)
+        else :
+            obj = target_answer.a_good.add(account)
+        return obj
+
+class Agood(AgoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().get(request, *args, **kwargs)
+        # pk = self.kwargs['pk']
+        question_pk = Answer.objects.get(pk=self.kwargs['pk']).question.pk
+        return redirect('q_detail', question_pk)                #その場にとどまるにはjs
