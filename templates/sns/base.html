@@ -17,10 +17,6 @@
             <span class="navbar-toggler-icon"></span>
           </button>
 
-          <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 250px;">
-          </form>
-
           <div class="collapse navbar-collapse justify-content-end" id="navbarText">
             <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
           {% if not user.is_authenticated %}
@@ -31,6 +27,9 @@
                 <a class="nav-link" href="{% url 'login' %}">ログイン</a>
               </li>
           {% else %}
+              <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 250px;">
+              </form>
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'q_top' %}"><i class="fas fa-comments fa-lg"></i> 相談室</a>
               </li>

@@ -125,7 +125,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGIN_URL = 'sns:login'
-LOGIN_REDIRECT_URL = '/'   #あとでタイムラインにする
+LOGIN_REDIRECT_URL = '/top/'   #あとでタイムラインにする
 
 LOGOUT_REDIRECT_URL = ''
 

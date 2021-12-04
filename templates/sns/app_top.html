@@ -1,0 +1,12 @@
+{% extends 'sns/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1>Welcome!</h1>
+<div class="top_image">
+  <a class="nav-link" href="{% url 'signup' %}">サインアップ</a>
+  <a class="nav-link" href="{% url 'login' %}">ログイン</a>
+</div>
+
+{% endblock %}

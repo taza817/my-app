@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+import sqlite3
 
 # Create your views here.
 
@@ -50,37 +51,23 @@ def follow(request, pk) :
     if (request.method == "POST") :
         owner = Account.objects.get(user=request.user)
         follow_target = follow_user
-        follow = Follow(owner=owner, follow_target=follow_target)
-        follow_model = Follow.objects.all()
-        if follow in follow_model:
-            follow.delete()
-        else :
+        try :
+            follow = Follow(owner=owner, follow_target=follow_target)
             follow.save()
+        except sqlite3.IntegrityError :
+            follow.delete()
         return redirect('mypage', pk)
     
     return render(request, 'sns/mypage.html', params)
 
-# class FollowBase(LoginRequiredMixin, View) :
-#     def get(self, request, *args, **kwargs) :
-#         #フォローするユーザーの特定
-#         pk = self.kwargs['pk']
-#         target_user = Account.objects.get(pk=pk)
-#         #自分のフォロー情報を取得,存在しなければ作成
-#         follow_info = Account.objects.get_or_create(user=self.request.user)
-#         #フォローテーブルに既にユーザーが存在するか
-#         if target_user in follow_info[0].following.all() :
-#             obj = follow_info[0].following.remove(target_user)
-#         else :
-#             obj = follow_info[0].following.add(target_user)
-#         return obj
-
-# class FollowMypage(FollowBase) :
-#     def get(self, request, *args, **kwargs) :
-#         super().get(request, *args, **kwargs)
-#         pk = self.kwargs['pk']
-#         return redirect('mypage', pk)
 
 # Top
+class AppTop(View) :
+    template_name = 'sns/app_top.html'
+    def get(self, request, *args, **kwargs):
+        return render(request, 'sns/app_top.html')
+
+
 class Top(LoginRequiredMixin, ListView) :
     model = Post
     template_name = 'sns/top.html'
@@ -109,8 +96,15 @@ class Mypage(DetailView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['connection'] = Account.objects.get_or_create(user=self.request.user)
         context['account_pk'] = Account.objects.get(user=self.request.user)
+        try :
+            context['follow_data'] = Follow.objects.get(
+                owner=Account.objects.get(user=self.request.user), 
+                follow_target=Account.objects.get(pk=self.kwargs['pk'])
+                )
+        except Follow.DoesNotExist :
+            pass
+        # context['follow_list'] = Follow.objects.all()
         return context
 
 

@@ -3,39 +3,30 @@
 
 {% block content %}
 
-    {% if not user.is_authenticated %}
-        <!-- ログアウト・未登録 -->
-        <h1>Welcome!</h1>
-        <a class="nav-link" href="{% url 'signup' %}">サインアップ</a>
-        <a class="nav-link" href="{% url 'login' %}">ログイン</a>
-    {% else %}
-        <!-- ログイン中 -->
-        {% for post in object_list reversed %}
-            <div　class="card" style="position: center;">
-                <div class="card-body" style="border: solid 1px; width: 40%; padding: 0;">
-                    <div class="card-header">
-                        <a href="{% url 'mypage' post.user.pk %}" >@{{ post.user }}</a>
-                    </div>
-                    {% if post.post_image %}
-                    <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
-                    {% endif %}
-                    <p class="card-text" style="font-size: 1.2rem;">{{ post.caption|linebreaksbr }}</p>
-                    <p class="card-text" style="font-size: 1rem;">{{ post.post_tag.name }}</p>
-
-                    <div class="card-footer">
-                        <p class="card-text">{{ post.post_date }}</p>
-                        <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm">詳細</a>
-
-                        {% if request.user in post.good.all %}
-                            <a href="{% url 'good_top' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart like-btn" style="color: red;"></i></a> {{post.good.count}}
-                        {% else %}
-                            <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart like-btn" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}}
-                        {% endif %}
-                    </div>
-                </div>
+{% for post in object_list reversed %}
+    <div　class="card" style="position: center;">
+        <div class="card-body" style="border: solid 1px; width: 40%; padding: 0;">
+            <div class="card-header">
+                <a href="{% url 'mypage' post.user.pk %}" >@{{ post.user }}</a>
             </div>
-        {% endfor %}
+            {% if post.post_image %}
+            <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
+            {% endif %}
+            <p class="card-text" style="font-size: 1.2rem;">{{ post.caption|linebreaksbr }}</p>
+            <p class="card-text" style="font-size: 1rem;">{{ post.post_tag.name }}</p>
 
-    {% endif %}
+            <div class="card-footer">
+                <p class="card-text">{{ post.post_date }}</p>
+                <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm">詳細</a>
+
+                {% if request.user in post.good.all %}
+                    <a href="{% url 'good_top' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart like-btn" style="color: red;"></i></a> {{post.good.count}}
+                {% else %}
+                    <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart like-btn" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endfor %}
 
 {% endblock %}

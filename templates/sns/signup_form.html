@@ -11,7 +11,7 @@
       <!-- カードボディー -->
       <div class="card-body">
         <form method="POST">
-          <ul>
+          <ul style="list-style: none;">
             <li>
               <label>メールアドレス</label>
               {{ form.email |add_class:"form-control" }}
@@ -21,6 +21,12 @@
               <label>パスワード</label>
               {{ form.password1 |add_class:"form-control" }}
               {{ form.passwprd1.errors }}
+              <ul style="color: rgb(146, 146, 146); font-size: 0.8rem;">
+                <li>他の個人情報と似ているパスワードにはできません。</li>
+                <li>最低8文字以上必要です。</li>
+                <li>よく使われるパスワードにはできません。</li>
+                <li>数字だけのパスワードにはできません。</li>
+              </ul>
             </li>
             <li>
               <label>パスワード（確認）</label>
@@ -31,6 +37,7 @@
               <label>ユーザーID</label>
               {{ form.username |add_class:"form-control" }}
               {{ form.username.errors }}
+              <p style="color: rgb(146, 146, 146); font-size: 0.8rem;">※半角アルファベット、半角数字、@/./+/-/_</p>
             </li>
             <li>
               <label>ユーザーネーム</label>
@@ -52,8 +59,7 @@
               {{ form.location |add_class:"form-control" }}
               {{ form.location.errors }}
             </li>
-          </ul>
-            <br>
+          </ul><br>
           <button type="submit" class="btn btn-primary" >登録</button>
           <input type="hidden" name="next" value="{{ next }}" />
           {% csrf_token %}

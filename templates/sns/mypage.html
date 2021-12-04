@@ -11,10 +11,18 @@
         <a href="" class="btn btn-outline-secondary btn-sm">プロフィール編集</a>
         <a href=""><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
     {% else %}
+    
+    {% if follow_data %}
         <form action="{% url 'follow_mypage' account.pk %}" method="post">
             {% csrf_token %}
-            <input type="submit" value="フォロー" class="btn-submit">
+            <input type="submit" value="フォロー解除" class="btn btn-primary">
         </form>
+    {% else %}
+        <form action="{% url 'follow_mypage' account.pk %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="フォロー" class="btn btn-outline-primary">
+        </form>
+    {% endif %}
 
         <!-- 
         {% if account in connection.0.following.all %}
