@@ -35,6 +35,17 @@
                 </div>
             </div>
         {% endfor %}
+        
+        <div class="tag_rank">
+            <p>トレンドタグ</p>
+            {% if tag_rank %}
+            <ol>
+                {% for tag in tag_rank %}
+                <li>{{ tag }}</li>
+                {% endfor %}
+            </ol>
+            {% endif %}
+        </div>
 
     {% endif %}
 

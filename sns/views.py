@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateResponseMixin
 from .forms import LoginForm ,SignUpForm, PostForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect
-from .models import Post, Account
+from .models import Post, Account, Tag
 from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -77,6 +77,7 @@ class Top(LoginRequiredMixin, ListView) :
         context = super().get_context_data(*args, **kwargs)
         context['following'] = Account.objects.get_or_create(user=self.request.user)
         context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['tag_rank'] = Tag.objects.all().order_by('tag_count')[0:5]
         return context
 
 
@@ -108,8 +109,26 @@ class PostCreate(LoginRequiredMixin, CreateView) :
     template_name = 'sns/post_form.html'
 
     def form_valid(self, form) :
-        form.instance.user = Account.objects.get(user=self.request.user)    #現在ログインしているユーザーを代入
-        return super().form_valid(form)
+        # super().form_valid(form)
+        post = Post(
+            user = Account.objects.get(user=self.request.user),     #現在ログインしているユーザーを代入
+            post_image=form.cleaned_data["post_image"], 
+            caption=form.cleaned_data["caption"]
+            )
+        post.save()
+
+        words = form.cleaned_data["caption"].split()
+        for word in words :
+            if word[0] == "#" :
+                if Tag.objects.filter(name=word[1:]).exists() :
+                    tag = Tag.objects.get(name=word[1:])
+                    tag.tag_count += 1
+                else :
+                    tag = Tag.objects.create(name=word[1:])
+                    tag.tag_count = 1
+                post.post_tag.add(tag)
+                
+        return redirect('top')
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
@@ -121,7 +140,7 @@ class PostCreate(LoginRequiredMixin, CreateView) :
 class PostUpdate(UpdateView) :
     template_name = 'sns/post_update_form.html'
     model = Post
-    fields = ['caption', 'post_tag']
+    fields = ['caption']
 
     def get_success_url(self) :
         return reverse('detail', kwargs={'pk': self.object.pk})
