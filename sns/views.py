@@ -51,14 +51,27 @@ def follow(request, pk) :
     if (request.method == "POST") :
         owner = Account.objects.get(user=request.user)
         follow_target = follow_user
-        try :
-            follow = Follow(owner=owner, follow_target=follow_target)
-            follow.save()
-        except sqlite3.IntegrityError :
-            follow.delete()
+        Follow.objects.get_or_create(owner=owner, follow_target=follow_target)
         return redirect('mypage', pk)
     
     return render(request, 'sns/mypage.html', params)
+
+
+def unfollow(request, pk) :
+    params = {
+        'form' : FollowForm(),
+    }
+    #アンフォローするユーザーの特定
+    follow_user = get_object_or_404(Account, pk=pk)
+
+    if (request.method == "POST") :
+        owner = Account.objects.get(user=request.user)
+        follow_target = follow_user
+        Follow.objects.get(owner=owner, follow_target=follow_target).delete()
+        return redirect('mypage', pk)
+    
+    return render(request, 'sns/mypage.html', params)
+
 
 
 # Top
@@ -104,7 +117,8 @@ class Mypage(DetailView) :
                 )
         except Follow.DoesNotExist :
             pass
-        # context['follow_list'] = Follow.objects.all()
+        context['follow_list'] = Follow.objects.filter(owner=Account.objects.get(pk=self.kwargs['pk']))
+        context['follower_list'] = Follow.objects.filter(follow_target=Account.objects.get(pk=self.kwargs['pk']))
         return context
 
 

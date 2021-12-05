@@ -7,30 +7,47 @@
     <p>フォロー {{ account.follow_num }}</p>
     <p>フォロワー {{ account.follower_num }}</p>
 
+<!-- ポップアップウィンドウで表示 -->
+    {% if follow_list %}
+    <div class="follow_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
+        <p>フォローしているユーザー</p>
+        <ul style="list-style: none;">
+            {% for follow in follow_list %}
+            <li><i class="fas fa-user" style="color: rgb(107, 107, 107);"></i> <a href="{% url 'mypage' follow.follow_target.pk %}">{{ follow.follow_target.user.first_name }}   @{{ follow.follow_target.user.username }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if follower_list %}
+    <div class="follow_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
+        <p>フォロワー</p>
+        <ul style="list-style: none;">
+            {% for follower in follower_list %}
+            <li><i class="fas fa-user" style="color: rgb(107, 107, 107);"></i> <a href="{% url 'mypage' follower.owner.pk %}">{{ follower.owner.user.first_name }}   @{{ follower.owner.user.username }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+
     {% if request.user == account.user %}
         <a href="" class="btn btn-outline-secondary btn-sm">プロフィール編集</a>
         <a href=""><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
     {% else %}
     
-    {% if follow_data %}
-        <form action="{% url 'follow_mypage' account.pk %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="フォロー解除" class="btn btn-primary">
-        </form>
-    {% else %}
-        <form action="{% url 'follow_mypage' account.pk %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="フォロー" class="btn btn-outline-primary">
-        </form>
-    {% endif %}
-
-        <!-- 
-        {% if account in connection.0.following.all %}
-            <a href="{% url 'follow_mypage' account.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-check fa-lg" style="color: rgb(0, 98, 255);"></i></a>
+        {% if follow_data %}
+            <form action="{% url 'unfollow' account.pk %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="フォロー解除" class="btn btn-success" style="width: 100px;">
+            </form>
         {% else %}
-            <a href="{% url 'follow_mypage' account.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-user-plus fa-lg" style="color: rgb(167, 166, 166);"></i></a>
-        {% endif %} 
-        -->
+            <form action="{% url 'follow' account.pk %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="フォロー" class="btn btn-outline-success" style="width: 100px;">
+            </form>
+        {% endif %}
+
     {% endif %}
 
 
