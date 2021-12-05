@@ -77,7 +77,7 @@ class Top(LoginRequiredMixin, ListView) :
         context = super().get_context_data(*args, **kwargs)
         context['following'] = Account.objects.get_or_create(user=self.request.user)
         context['account_pk'] = Account.objects.get(user=self.request.user)
-        context['tag_rank'] = Tag.objects.all().order_by('tag_count')[0:5]
+        context['tag_rank'] = Tag.objects.all().order_by('-tag_count')[0:5]
         return context
 
 
@@ -122,10 +122,10 @@ class PostCreate(LoginRequiredMixin, CreateView) :
             if word[0] == "#" :
                 if Tag.objects.filter(name=word[1:]).exists() :
                     tag = Tag.objects.get(name=word[1:])
-                    tag.tag_count += 1
                 else :
                     tag = Tag.objects.create(name=word[1:])
-                    tag.tag_count = 1
+                tag.tag_count += 1
+                tag.save()
                 post.post_tag.add(tag)
                 
         return redirect('top')
