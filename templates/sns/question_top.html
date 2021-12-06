@@ -10,17 +10,32 @@
         {% endif %}
         </div>
     </div>
-    
-    {% for question in object_list reversed %}
-        <div class="card" style="width: 40rem; margin-bottom: 10px;">
-            <div class="card-body">
-                <a href="{% url 'q_detail' question.pk %}" style="font-size: 1.5rem; color: black; font-weight: bold;">{{ question.title| truncatechars:18 }}</a>
+
+    <div style="margin: 30px 0;">
+        <form class="d-flex input-group" method="get">
+          <div class="form-outline">
+            <input name="query" value="{{ request.GET.query }}" id="search-input" class="form-control" id="form1" type="search" placeholder="Search" style="width: 250px;">
+          </div>
+          <button type="submit"  id="search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+
+    {% if object_list%}
+        {% for question in object_list %}
+            <div class="card" style="width: 40rem; margin-bottom: 10px;">
+                <div class="card-body">
+                    <div style="padding-bottom: 10px;">
+                        <a href="{% url 'q_detail' question.pk %}" style="font-size: 1.5rem; color: black; font-weight: bold;">{{ question.title| truncatechars:18 }}</a>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <p style="margin: 0; color: rgb(167, 166, 166);">{{ question.q_date }}</p>
+                        <p class="float-end" style="margin: 0;"><i class="fas fa-thumbs-up" style="color: rgb(167, 166, 166);"></i> {{question.q_good.count}}</p>
+                    </div>
+                </div>
             </div>
-            <div class="card-footer">
-                <p>{{ question.q_date }}</p>
-                <p class="float-end"><i class="fas fa-thumbs-up" style="color: rgb(167, 166, 166);"></i> {{question.q_good.count}}</p>
-            </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    {% else %}
+        <p>該当する投稿はありませんでした。</p>
+    {% endif %}
 
 {% endblock %}

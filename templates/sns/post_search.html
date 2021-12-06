@@ -1,0 +1,47 @@
+{% extends 'sns/base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="margin: 30px 0;">
+  <form class="d-flex input-group" method="get">
+    <div class="form-outline">
+      <input name="query" value="{{ request.GET.query }}" id="search-input" class="form-control" id="form1" type="search" placeholder="Search" style="width: 250px;">
+    </div>
+    <button type="submit"  id="search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
+  </form>
+</div>
+
+{% if object_list%}
+  <div class="time_line post_line">
+  {% for post in object_list reversed %}
+      <div class="card" style="border: solid 1px; border-radius: 0; width: 40%; padding: 0;">
+          <div class="card-body" style="padding: 0;">
+              <div class="card-header">
+                  <a href="{% url 'mypage' post.user.pk %}" >@{{ post.user }}</a>
+              </div>
+              {% if post.post_image %}
+              <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
+              {% endif %}
+              <p class="card-text" style="font-size: 1.2rem;">{{ post.caption|linebreaksbr }}</p>
+              <p class="card-text" style="font-size: 1rem;">{{ post.post_tag.name }}</p>
+
+              <div class="card-footer">
+                  <p class="card-text">{{ post.post_date }}</p>
+                  <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm">詳細</a>
+
+                  {% if request.user in post.good.all %}
+                      <a href="{% url 'good_top' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart like-btn" style="color: red;"></i></a> {{post.good.count}}
+                  {% else %}
+                      <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart like-btn" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}}
+                  {% endif %}
+              </div>
+          </div>
+      </div>
+  {% endfor %}
+  </div>
+{% else %}
+  <p>該当する投稿はありませんでした。</p>
+{% endif %}
+
+
+{% endblock %}

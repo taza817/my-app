@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-import sqlite3
+from django.db.models import Q
 
 # Create your views here.
 
@@ -75,10 +75,9 @@ def unfollow(request, pk) :
 
 
 # Top
-class AppTop(View) :
+class AppTop(ListView) :
+    model = Post
     template_name = 'sns/app_top.html'
-    def get(self, request, *args, **kwargs):
-        return render(request, 'sns/app_top.html')
 
 
 class Top(LoginRequiredMixin, ListView) :
@@ -95,6 +94,7 @@ class Top(LoginRequiredMixin, ListView) :
             'data' : posts,
         }
         return posts
+
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
@@ -153,7 +153,7 @@ class PostCreate(LoginRequiredMixin, CreateView) :
 class PostUpdate(UpdateView) :
     template_name = 'sns/post_update_form.html'
     model = Post
-    fields = ['caption', 'post_tag']
+    fields = ['caption']
 
     def get_success_url(self) :
         return reverse('detail', kwargs={'pk': self.object.pk})
@@ -177,6 +177,24 @@ class PostDelete(DeleteView) :
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
 
+
+# PostSearch
+class PostSearch(ListView) :
+    model = Post
+    template_name = 'sns/post_search.html'
+
+    def get_queryset(self) :
+        q_word = self.request.GET.get('query')
+        if q_word :
+            posts = Post.objects.filter(Q(caption__icontains=q_word))
+        else :
+            posts = Post.objects.order_by('?')[:10]   #デフォルトで表示する投稿 ランダムに10件
+        return posts
+    
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
 
 
 # Good
@@ -208,6 +226,14 @@ class GoodDetail(GoodBase) :
 class QuestionTop(ListView) :     #みんなの投稿
     model = Question
     template_name = 'sns/question_top.html'
+
+    def get_queryset(self) :
+        q_word = self.request.GET.get('query')
+        if q_word :
+            questions = Question.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word))
+        else :
+            questions = Question.objects.order_by('?')[:10]
+        return questions
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
@@ -289,6 +315,7 @@ class MyQuestion(DetailView) :
         context = super().get_context_data(*args, **kwargs)
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
+
 
 # QuestionGood
 class QgoodBase(LoginRequiredMixin, View) :
