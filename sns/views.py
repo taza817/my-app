@@ -1,13 +1,13 @@
 from django.http import request, response
 from django.views.generic.base import TemplateResponseMixin
-from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm
-from django.contrib.auth.views import LoginView, LogoutView
+from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Account, Question, Follow, Answer
 from django.contrib.auth.models import User
-from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
 
 # Create your views here.
@@ -30,6 +30,24 @@ class SignUp(CreateView) :
         )
         return ret_val
 
+# UserDelete
+class OnlyYouMixin(UserPassesTestMixin) :
+    raise_exception = True
+
+    def test_func(self) :
+        account = Account.objects.get(user=self.request.user)
+        return account.pk == self.kwargs['pk'] or account.user.is_superuser
+
+class UserDelete(OnlyYouMixin, DeleteView) :
+    model = User
+    template_name = 'sns/user_confirm_delete.html'
+    success_url = reverse_lazy('app_top')
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
 
 # Login
 class Login(LoginView) :
@@ -38,6 +56,53 @@ class Login(LoginView) :
 
 class Logout(LogoutView) :
     template_name = 'sns/logout.html'
+
+
+# Setting
+class AccountSetting(OnlyYouMixin, UpdateView) :
+    model = User
+    fields = ('email', 'username', 'first_name')
+    template_name = 'sns/account_setting.html'
+    
+    def get_success_url(self) :
+        pk = Account.objects.get(user=self.request.user).pk
+        return reverse('mypage', kwargs={'pk': pk})
+    
+    def get_object(self) :
+        return self.request.user
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
+class PasswordChange(PasswordChangeView) :
+    form_class = PasswordChangeForm
+    template_name = 'sns/password_change.html'
+
+    def get_success_url(self) :
+        pk = Account.objects.get(user=self.request.user).pk
+        return reverse('account_setting', kwargs={'pk':pk})
+
+
+# ProfileEdit
+class ProfileEdit(LoginRequiredMixin, UpdateView) :
+    model = Account
+    form_class = ProfileEditForm
+    template_name = 'sns/profile_update_form.html'
+
+    def get_object(self) :
+        account = Account.objects.get(user=self.request.user)
+        return account
+
+    def get_success_url(self) :
+        pk = Account.objects.get(user=self.request.user).pk
+        return reverse('mypage', kwargs={'pk': pk})
+    
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
 
 
 # Follow

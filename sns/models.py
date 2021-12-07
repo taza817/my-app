@@ -13,7 +13,7 @@ class Account(models.Model) :
     birth_date = models.DateField(null=True, blank=True)
     location = models.CharField(max_length=20, blank=True)
     intro = models.TextField(max_length=400, blank=True)
-    account_image = models.ImageField(upload_to="plofile_pics", blank=True)
+    account_image = models.ImageField(upload_to="images", blank=True, default='images/001-002.JPG')    #デフォルト画像必要
 
     def follow_num(self) :
         return len(Follow.objects.filter(owner=self))

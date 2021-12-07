@@ -1,0 +1,40 @@
+{% extends 'sns/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div style="width: 40%;">
+  <h3>プロフィール編集</h3>
+    <form method="POST">
+      <ul style="list-style: none;">
+        <li>
+          <label>プロフィール画像</label>
+          {{ form.account_image |add_class:"form-control" }}
+          {{ form.account_image.errors }}
+        </li>
+        <li>
+          <label>自己紹介</label>
+          {{ form.intro |add_class:"form-control" }}
+          {{ form.intro.errors }}
+        </li>
+        <li>
+          <label>居住地</label>
+          {{ form.location |add_class:"form-control" }}
+          {{ form.location.errors }}
+        </li>
+        <li>
+          <label>性別</label>
+          {{ form.gender |add_class:"form-control" }}
+          {{ form.gender.errors }}
+        </li>
+        <li>
+          <label>生年月日</label>
+          {{ form.birth_date |add_class:"form-control" }}
+          {{ form.birth_date.errors }}
+        </li>
+      </ul>
+      <button type="submit" class="btn btn-primary float-end" >登録</button>
+      <input type="hidden" name="next" value="{{ next }}" />
+      {% csrf_token %}
+    </form>
+  </div>
+{% endblock %}

@@ -2,12 +2,54 @@
 
 {% block content %}
 
-    <h2>{{ account.user.first_name }}</h2>
-    <p>@{{ account.user.username }}</p>
-    <p>フォロー {{ account.follow_num }}</p>
-    <p>フォロワー {{ account.follower_num }}</p>
+<div style="display: flex;">
+    <div style="width: 200px; ">
+        {% if account_image %}
+            <img src="{{ account_image.url }}" download="output" style="width: 100%; padding: 20px;">
+        {% endif %}
+    </div>
 
-<!-- ポップアップウィンドウで表示 -->
+    <div>
+        <div>
+            <h2>{{ account.user.first_name }}</h2>
+            <p>@{{ account.user.username }}</p>
+        </div>
+
+        <div>
+            {% if request.user == account.user %}
+                <a href="{% url 'profile_update' account.pk %}" class="btn btn-outline-secondary btn-sm">プロフィール編集</a>
+                <a href="{% url 'account_setting' account.pk %}"><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
+            {% else %}
+            
+                {% if follow_data %}
+                    <form action="{% url 'unfollow' account.pk %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="フォロー解除" class="btn btn-success" style="width: 100px;">
+                    </form>
+                {% else %}
+                    <form action="{% url 'follow' account.pk %}" method="post">
+                        {% csrf_token %}
+                        <input type="submit" value="フォロー" class="btn btn-outline-success" style="width: 100px;">
+                    </form>
+                {% endif %}
+
+            {% endif %}
+        </div>
+    </div>
+    
+    <div style="display: flex;">
+        <p>フォロー {{ account.follow_num }}</p>
+        <p style="padding-left: 15px;">フォロワー {{ account.follower_num }}</p>
+    </div>
+</div>
+
+<div style="margin: 30px 0;">
+    <p>{{ account.intro }}</p>
+    <p style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
+</div>
+
+
+    <!-- ポップアップウィンドウで表示 -->
     {% if follow_list %}
     <div class="follow_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
         <p>フォローしているユーザー</p>
@@ -28,26 +70,6 @@
             {% endfor %}
         </ul>
     </div>
-    {% endif %}
-
-
-    {% if request.user == account.user %}
-        <a href="" class="btn btn-outline-secondary btn-sm">プロフィール編集</a>
-        <a href=""><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
-    {% else %}
-    
-        {% if follow_data %}
-            <form action="{% url 'unfollow' account.pk %}" method="post">
-                {% csrf_token %}
-                <input type="submit" value="フォロー解除" class="btn btn-success" style="width: 100px;">
-            </form>
-        {% else %}
-            <form action="{% url 'follow' account.pk %}" method="post">
-                {% csrf_token %}
-                <input type="submit" value="フォロー" class="btn btn-outline-success" style="width: 100px;">
-            </form>
-        {% endif %}
-
     {% endif %}
 
 

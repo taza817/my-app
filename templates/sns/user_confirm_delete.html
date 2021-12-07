@@ -1,0 +1,15 @@
+{% extends 'sns/base.html' %}
+
+{% block content %}
+
+<form method="POST">
+  {% csrf_token %}
+  <p>アカウント <strong style="font-size: 150%;">{{ user.first_name }} (@{{ user.username }})</strong> を削除しますか？</p>
+  <input class="btn btn-outline-danger btn-sm" style="width: 70px;" type="submit" value="削除する">
+  <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
+</form>
+
+
+    
+
+{% endblock %}
