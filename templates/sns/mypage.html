@@ -2,14 +2,16 @@
 
 {% block content %}
 
-<div style="display: flex;">
-    <div style="width: 200px; ">
-        {% if account_image %}
-            <img src="{{ account_image.url }}" download="output" style="width: 100%; padding: 20px;">
+<div style="display: flex; padding-left: 2rem;">
+    <div style="width: 200px; height: 200px;">
+        {% if account.account_image %}
+            <img src="{{ account.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+        {% else %}
+            <i class="fas fa-user-circle" style="color: rgb(167, 166, 166);"></i>
         {% endif %}
     </div>
 
-    <div>
+    <div style="margin-top: auto; padding-left: 4rem;">
         <div>
             <h2>{{ account.user.first_name }}</h2>
             <p>@{{ account.user.username }}</p>
@@ -35,17 +37,23 @@
 
             {% endif %}
         </div>
+
+        <div style="display: flex; margin-top: 20px;">
+            <p>フォロー {{ account.follow_num }}</p>
+            <p style="padding-left: 15px;">フォロワー {{ account.follower_num }}</p>
+        </div>
     </div>
     
-    <div style="display: flex;">
-        <p>フォロー {{ account.follow_num }}</p>
-        <p style="padding-left: 15px;">フォロワー {{ account.follower_num }}</p>
-    </div>
+
 </div>
 
 <div style="margin: 30px 0;">
-    <p>{{ account.intro }}</p>
-    <p style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
+    {% if account.intro %}
+        <p>{{ account.intro | linebreaksbr }}</p>
+    {% endif %}
+    {% if account.location %}
+        <p style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
+    {% endif %}
 </div>
 
 

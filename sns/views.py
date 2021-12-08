@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Q
+from django.db.models import Q, Count
 
 # Create your views here.
 
@@ -339,7 +339,7 @@ class QuestionDetail(CreateView) :     #AnswerCreate
         pk = self.kwargs['pk']
         context = super().get_context_data(*args, **kwargs)
         context['question'] = Question.objects.get(pk=pk)
-        context['answer_list'] = Answer.objects.filter(question_id=pk).order_by('-a_good')   #イイネの多い順にソート
+        context['answer_list'] = Answer.objects.filter(question_id=pk).annotate(Count('a_good')).order_by('-a_good__count')   #イイネの多い順にソート
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
 
@@ -451,6 +451,5 @@ class AgoodBase(LoginRequiredMixin, View) :
 class Agood(AgoodBase) :
     def get(self, request, *args, **kwargs) :
         super().get(request, *args, **kwargs)
-        # pk = self.kwargs['pk']
         question_pk = Answer.objects.get(pk=self.kwargs['pk']).question.pk
         return redirect('q_detail', question_pk)                #その場にとどまるにはjs

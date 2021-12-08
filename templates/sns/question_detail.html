@@ -74,8 +74,8 @@
         <div class="card" style="width: 45%; margin-top: 20px;">
           <div class="card-body">
             <p><i class="fas fa-user"></i> {{ answer.name }}</p>
-            <p>{{ answer.a_date }}</p>
-            <p>{{ answer.text }}</p>
+            <p style="color: rgb(167, 166, 166); font-size: 0.8rem;">{{ answer.a_date }}</p>
+            <p>{{ answer.text | linebreaksbr }}</p>
             {% if answer.a_image %}
               <img src="{{ answer.a_image.url }}" style="width: 50%; height: auto;">
             {% endif %}

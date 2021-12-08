@@ -6,9 +6,10 @@ from .models import Post, Tag, Question, Follow, Answer, Account
 #SignUp
 class SignUpForm(UserCreationForm) :
     gender_choice = [('1','選択しない'),('2','男'),('3',"女"),('4','その他')]
-    gender = forms.ChoiceField(required=False, label='ジェンダー', choices=gender_choice, widget=forms.Select)
-    birth_date = forms.DateField(required=False, label='誕生日', widget=forms.DateInput(attrs={"type":"date"}))
-    location = forms.CharField(max_length=20, required=False, label='居住地')
+    gender = forms.ChoiceField(required=False, choices=gender_choice, widget=forms.Select)
+    birth_date = forms.DateField(required=False, widget=forms.DateInput(attrs={"type":"date"}))
+    location = forms.CharField(max_length=20, required=False)
+    intro = forms.CharField(required=False)
 
     class Meta :
         model = User
