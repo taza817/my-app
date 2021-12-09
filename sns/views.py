@@ -76,7 +76,7 @@ class AccountSetting(OnlyYouMixin, UpdateView) :
         context['account_pk'] = Account.objects.get(user=self.request.user)
         return context
 
-class PasswordChange(PasswordChangeView) :
+class PasswordChange(OnlyYouMixin, PasswordChangeView) :
     form_class = PasswordChangeForm
     template_name = 'sns/password_change.html'
 
@@ -255,6 +255,26 @@ class PostSearch(ListView) :
         else :
             posts = Post.objects.order_by('?')[:10]   #デフォルトで表示する投稿 ランダムに10件
         return posts
+    
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['account_pk'] = Account.objects.get(user=self.request.user)
+        return context
+
+
+# AccountSearch
+class AccountSearch(ListView) :
+    model = Account
+    template_name = 'sns/account_search.html'
+
+    def get_queryset(self) :
+        q_word = self.request.GET.get('query')
+        if q_word :
+            user = User.objects.filter(Q(username__icontains=q_word) | Q(first_name__icontains=q_word))
+            account = Account.objects.filter(user=user)
+        else :
+            account = Account.objects.all()   #おすすめユーザー表示
+        return account
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)

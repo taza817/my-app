@@ -1,5 +1,6 @@
 {% extends 'sns/base.html' %}
 {% load widget_tweaks %}
+{% load static %}
 
 {% block content %}
 <div class="container">
@@ -11,7 +12,7 @@
       <!-- カードボディー -->
       <div class="card-body">
         <form method="POST">
-          <ul style="list-style: none;">
+          <ul class="form_list" style="list-style: none;">
             <li>
               <label>メールアドレス</label>
               {{ form.email |add_class:"form-control" }}
@@ -21,7 +22,7 @@
               <label>パスワード</label>
               {{ form.password1 |add_class:"form-control" }}
               {{ form.passwprd1.errors }}
-              <ul style="color: rgb(146, 146, 146); font-size: 0.8rem;">
+              <ul class="help_text" style="color: rgb(146, 146, 146); font-size: 0.8rem;">
                 <li>他の個人情報と似ているパスワードにはできません。</li>
                 <li>最低8文字以上必要です。</li>
                 <li>よく使われるパスワードにはできません。</li>
@@ -37,7 +38,7 @@
               <label>ユーザーID</label>
               {{ form.username |add_class:"form-control" }}
               {{ form.username.errors }}
-              <p style="color: rgb(146, 146, 146); font-size: 0.8rem;">※半角アルファベット、半角数字、@/./+/-/_</p>
+              <p style="color: rgb(146, 146, 146); font-size: 0.8rem; margin: 0;">※半角アルファベット、半角数字、@/./+/-/_</p>
             </li>
             <li>
               <label>ユーザーネーム</label>

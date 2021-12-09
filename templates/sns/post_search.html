@@ -2,6 +2,10 @@
 {% load static %}
 
 {% block content %}
+
+<a href="{% url 'post_search' %}">投稿検索</a>
+<a href="{% url 'account_search' %}">ユーザー検索</a>
+
 <div style="margin: 30px 0;">
   <form class="d-flex input-group" method="get">
     <div class="form-outline">
@@ -13,7 +17,7 @@
 
 {% if object_list%}
   <div class="time_line post_line">
-  {% for post in object_list reversed %}
+  {% for post in object_list %}
       <div class="card" style="border-radius: 0; width: 40%; padding: 0;">
           <div class="card-body" style="padding: 0;">
             <div class="card-header" style="display: flex;">
