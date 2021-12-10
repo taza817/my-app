@@ -29,8 +29,10 @@
         </div>
 
         {% if account_pk == question.user %}
-          <a href="{% url 'q_update' question.pk %}" class="btn btn-outline-secondary btn-sm">編集</a>
-          <a href="{% url 'q_delete' question.pk %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-trash-alt fa-lg"></i></a>
+        <div class="my_creation">
+          <a href="{% url 'q_update' question.pk %}"><i class="fas fa-edit fa-lg"></i></a>
+          <a href="{% url 'q_delete' question.pk %}"><i class="fas fa-trash-alt fa-lg"></i></a>
+        </div>
         {% endif %}
       </div>
       <div class="card-body">
@@ -73,12 +75,24 @@
       {% for answer in answer_list %}
         <div class="card" style="width: 45%; margin-top: 20px;">
           <div class="card-body">
-            <p><i class="fas fa-user"></i> {{ answer.name }}</p>
-            <p style="color: rgb(167, 166, 166); font-size: 0.8rem;">{{ answer.a_date }}</p>
-            <p>{{ answer.text | linebreaksbr }}</p>
+            <div style="padding-bottom: 10px; display: flex; justify-content: space-between;">
+              <div>
+                <h5><i class="fas fa-user fa-sm"></i> {{ answer.name }}</h5>
+                <p style="color: rgb(167, 166, 166); font-size: 0.8rem;">{{ answer.a_date }}</p>
+              </div>
+              <div class="my_creation">
+                {% if account_pk == answer.user %}
+                <a href="{% url 'answer_update' answer.pk %}"><i class="fas fa-edit fa-lg"></i></a>
+                <a href="{% url 'answer_delete' answer.pk %}"><i class="fas fa-trash-alt fa-lg"></i></a>
+                {% endif %}
+              </div>
+            </div>
+            <p style="margin: 0;">{{ answer.text | linebreaksbr }}</p>
             {% if answer.a_image %}
-              <img src="{{ answer.a_image.url }}" style="width: 50%; height: auto;">
+              <img src="{{ answer.a_image.url }}" style="width: 50%; height: auto; padding-top: 20px;">
             {% endif %}
+          </div>
+          <div style="padding: 10px;">
             <div class="float-end">
               {% if account_pk in answer.a_good.all %}
                 <a href="{% url 'a_good' answer.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(0, 132, 255);"></i></a> {{answer.a_good.count}}
@@ -87,18 +101,15 @@
               {% endif %}
             </div>
           </div>
-          <div>
-            {% if account_pk == answer.user %}
-            <a href="{% url 'answer_update' answer.pk %}" class="btn btn-outline-secondary btn-sm">編集</a>
-            <a href="{% url 'answer_delete' answer.pk %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-trash-alt fa-lg"></i></a>
-            {% endif %}
-          </div>
         </div>
       {% endfor %}
     {% else %}
-    <div class="ui warning message"><p>まだコメントはありません。</p></div>
+      <div class="ui warning message"><p>まだコメントはありません。</p></div>
     {% endif %}
   </div>
-
+  
+  {% if user.is_authenticated %}
+    <a href="{% url 'q_create' %}" class="stick-icon"><i class="fas fa-comment-dots fa-4x"></i></a>
+  {% endif %}
 
 {% endblock %}

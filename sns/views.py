@@ -218,7 +218,7 @@ class PostCreate(LoginRequiredMixin, CreateView) :
 class PostUpdate(UpdateView) :
     template_name = 'sns/post_update_form.html'
     model = Post
-    fields = ['caption']
+    form_class = PostForm
 
     def get_success_url(self) :
         return reverse('detail', kwargs={'pk': self.object.pk})
@@ -271,9 +271,12 @@ class AccountSearch(ListView) :
         q_word = self.request.GET.get('query')
         if q_word :
             user = User.objects.filter(Q(username__icontains=q_word) | Q(first_name__icontains=q_word))
-            account = Account.objects.filter(user=user)
+            if user :
+                account = Account.objects.filter(user__in=user)
+            else :
+                account = Account.objects.filter(Q(intro__icontains=q_word) | Q(location__icontains=q_word))
         else :
-            account = Account.objects.all()   #おすすめユーザー表示
+            account = Account.objects.order_by('?')[:10]
         return account
     
     def get_context_data(self, *args, **kwargs) :

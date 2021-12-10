@@ -19,8 +19,9 @@
     </form>
   </div> -->
 
+  <div class="time_line">
     {% for question in object.question_set.all reversed %}
-    <div class="card" style="width: 40%; margin: 10px auto;">
+    <div class="card">
       <div class="card-body">
           <div style="padding-bottom: 10px;">
               <a href="{% url 'q_detail' question.pk %}" style="font-size: 1.5rem; color: black; font-weight: bold;">{{ question.title| truncatechars:18 }}</a>
@@ -33,5 +34,9 @@
     </div>
     {% endfor %}
   </div>
+
+  {% if user.is_authenticated %}
+    <a href="{% url 'q_create' %}" class="stick-icon"><i class="fas fa-comment-dots fa-4x q_color"></i></a>
+  {% endif %}
 
 {% endblock %}

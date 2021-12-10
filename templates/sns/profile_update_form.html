@@ -2,10 +2,10 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<div style="width: 40%;">
-  <h3>プロフィール編集</h3>
+<div  class="form-box" style="width: 40%;">
+  <h3 class="page-title">プロフィール編集</h3>
     <form method="POST" enctype="multipart/form-data">
-      <ul style="list-style: none;">
+      <ul class="form_list">
         <li>
           <label>プロフィール画像</label>
           {{ form.account_image |add_class:"form-control" }}
@@ -32,9 +32,8 @@
           {{ form.birth_date.errors }}
         </li>
       </ul>
-      <button type="submit" class="btn btn-primary float-end" >登録</button>
-      <input type="hidden" name="next" value="{{ next }}" />
+      <button type="submit" class="btn btn-primary float-end" style="margin-bottom: 50px;">登録</button>
       {% csrf_token %}
     </form>
-  </div>
+</div>
 {% endblock %}

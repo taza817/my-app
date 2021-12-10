@@ -5,7 +5,7 @@
 
 <div class="time_line post_line">
 {% for post in object_list reversed %}
-    <div class="card" style="border-radius: 0; width: 40%;">
+    <div class="card" style="border-radius: 0;">
         <div class="card-body" style="padding: 0;">
             <div class="card-header" style="display: flex;">
                 <div class="account_image" style="width: 2rem; height: 2rem;">
@@ -41,5 +41,8 @@
 {% endfor %}
 </div>
 
+{% if user.is_authenticated %}
+<a class="stick-icon" href="{% url 'create' %}"><i class="fas fa-edit fa-4x p_color"></i></a>
+{% endif %}
 
 {% endblock %}

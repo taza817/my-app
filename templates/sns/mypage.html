@@ -1,61 +1,61 @@
 {% extends 'sns/base.html' %}
 
 {% block content %}
-
-<div style="display: flex; padding-left: 2rem;">
-    <div style="width: 200px; height: 200px;">
-        {% if account.account_image %}
-            <img src="{{ account.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
-        {% else %}
-            <i class="fas fa-user-circle" style="color: rgb(167, 166, 166);"></i>
-        {% endif %}
-    </div>
-
-    <div style="margin-top: auto; padding-left: 4rem;">
-        <div>
-            <h2>{{ account.user.first_name }}</h2>
-            <p>@{{ account.user.username }}</p>
-        </div>
-
-        <div>
-            {% if request.user == account.user %}
-                <a href="{% url 'profile_update' account.pk %}" class="btn btn-outline-secondary btn-sm">プロフィール編集</a>
-                <a href="{% url 'account_setting' account.pk %}"><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
+<div class="mypage_top">
+    <div style="display: flex;">
+        <div style="width: 200px; height: 200px;">
+            {% if account.account_image %}
+                <img src="{{ account.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
             {% else %}
-            
-                {% if follow_data %}
-                    <form action="{% url 'unfollow' account.pk %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" value="フォロー解除" class="btn btn-success" style="width: 100px;">
-                    </form>
-                {% else %}
-                    <form action="{% url 'follow' account.pk %}" method="post">
-                        {% csrf_token %}
-                        <input type="submit" value="フォロー" class="btn btn-outline-success" style="width: 100px;">
-                    </form>
-                {% endif %}
-
+                <i class="fas fa-user-circle" style="color: rgb(167, 166, 166);"></i>
             {% endif %}
         </div>
 
-        <div style="display: flex; margin-top: 20px;">
-            <p>フォロー {{ account.follow_num }}</p>
-            <p style="padding-left: 15px;">フォロワー {{ account.follower_num }}</p>
+        <div style="margin-top: auto; padding-left: 4rem;">
+            <div>
+                <h2>{{ account.user.first_name }}</h2>
+                <p>@{{ account.user.username }}</p>
+            </div>
+
+            <div>
+                {% if request.user == account.user %}
+                <div style="display: flex;">
+                    <a href="{% url 'profile_update' account.pk %}" class="btn btn-outline-secondary">プロフィール編集</a>
+                    <a href="{% url 'account_setting' account.pk %}" style="margin: auto 10px;"><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
+                </div>
+                {% else %}
+                
+                    {% if follow_data %}
+                        <form action="{% url 'unfollow' account.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="フォロー解除" class="btn btn-success" style="width: 100px;">
+                        </form>
+                    {% else %}
+                        <form action="{% url 'follow' account.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="フォロー" class="btn btn-outline-success" style="width: 100px;">
+                        </form>
+                    {% endif %}
+
+                {% endif %}
+            </div>
+
+            <div style="display: flex; margin-top: 20px;">
+                <p>フォロー {{ account.follow_num }}</p>
+                <p style="padding-left: 15px;">フォロワー {{ account.follower_num }}</p>
+            </div>
         </div>
     </div>
-    
 
+    <div style="margin: 50px 0; width: 70%;">
+        {% if account.intro %}
+            <p>{{ account.intro | linebreaksbr }}</p>
+        {% endif %}
+        {% if account.location %}
+            <p style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
+        {% endif %}
+    </div>
 </div>
-
-<div style="margin: 30px 0;">
-    {% if account.intro %}
-        <p>{{ account.intro | linebreaksbr }}</p>
-    {% endif %}
-    {% if account.location %}
-        <p style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
-    {% endif %}
-</div>
-
 
     <!-- ポップアップウィンドウで表示 -->
     {% if follow_list %}
@@ -80,19 +80,20 @@
     </div>
     {% endif %}
 
-
+<div class="post_field">
     {% for post in object.post_set.all reversed %}
-        <div　class="card">
-            <div class="card-body" style="width: 30%; padding: 0;">
-                <a href="{% url 'detail' post.pk %}">
-                    {% if post.post_image %}
-                    <img src="{{ post.post_image.url }}" download="output" style="width: 100%; padding: 20px;">
-                    {% endif %}
-                </a>
-                </div>
-            </div>
+        <div style="width: 400px; height: 400px; margin: 20px;">
+            <a href="{% url 'detail' post.pk %}">
+                {% if post.post_image %}
+                <img src="{{ post.post_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover;">
+                {% endif %}
+            </a>
         </div>
     {% endfor %}
+</div>
 
+{% if user.is_authenticated %}
+<a class="stick-icon" href="{% url 'create' %}"><i class="fas fa-edit fa-4x p_color"></i></a>   <!-- 画面下にアイコンsticky -->
+{% endif %}
 
 {% endblock %}

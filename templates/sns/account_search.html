@@ -2,23 +2,26 @@
 {% load static %}
 
 {% block content %}
+<div class="search_contents">
+  <div class="search_tabs">
+    <a href="{% url 'post_search' %}" class="btn btn-outline-info">投稿検索</a>
+    <a href="{% url 'account_search' %}" class="btn btn-info">ユーザー検索</a>
+  </div>
 
-<a href="{% url 'post_search' %}">投稿検索</a>
-<a href="{% url 'account_search' %}">ユーザー検索</a>
-
-<div style="margin: 30px 0;">
-  <form class="d-flex input-group" method="get">
-    <div class="form-outline">
-      <input name="query" value="{{ request.GET.query }}" id="search-input" class="form-control" id="form1" type="search" placeholder="Search" style="width: 250px;">
-    </div>
-    <button type="submit"  id="search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
-  </form>
+  <div style="margin: 30px 20px;">
+    <form class="d-flex input-group" method="get">
+      <div class="form-outline">
+        <input name="query" value="{{ request.GET.query }}" id="search-input" class="form-control" id="form1" type="search" placeholder="Search" style="width: 250px;">
+      </div>
+      <button type="submit"  id="search-button" class="btn btn-info"><i class="fas fa-search" style="color: white;"></i></button>
+    </form>
+  </div>
 </div>
 
-{% if object_list%}
-  <div class="time_line post_line">
+<div class="account_line">
+  {% if object_list%}
     {% for account in object_list reversed %}
-      <div class="card" style="border-radius: 3px; width: 30%; margin-bottom: 15px;">
+      <div class="card" style="border-radius: 5px; margin-bottom: 15px;">
         <a href="{% url 'mypage' account.pk %}" style="text-decoration: none; color: black;">
           <div class="card-body" style="padding: 10px 15px; display: flex;">
               <div class="account_image" style="width: 3rem; height: 3rem;">
@@ -37,10 +40,10 @@
         </a>
       </div>
     {% endfor %}
-  </div>
-{% else %}
-  <p>該当する投稿はありませんでした。</p>
-{% endif %}
+  {% else %}
+    <p class="massage">該当するアカウントはありませんでした。</p>
+  {% endif %}
+</div>
 
 
 {% endblock %}
