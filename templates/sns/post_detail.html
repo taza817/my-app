@@ -27,7 +27,7 @@
         <p class="card-text" style="font-size: 1.5rem; margin: 20px 10px;">{{ post.caption }}</p>
 
         <div style="display: flex; justify-content: space-between; margin: 0 10px;">
-            <p class="card-text" style="color: rgb(167, 166, 166);">{{ post.post_date }}</p>
+            <p class="card-text" style="color: rgb(167, 166, 166);">{{ post.post_date | date:"Y年m月d日" }}</p>
             <div style="padding-right: 10px;">
             {% if request.user in post.good.all %}
                 <a href="{% url 'good_detail' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart fa-lg" style="color: red;"></i></a> {{post.good.count}}

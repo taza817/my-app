@@ -79,7 +79,7 @@ class AnswerForm(forms.ModelForm) :
         fields = ['name', 'text', 'a_image']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder':'ニックネーム'}),
-            'text': forms.Textarea(attrs={'rows':4, 'cols':15}),
+            'text': forms.Textarea(attrs={'rows':4}),
             }
 
     def __init__(self, *args, **kwargs) :

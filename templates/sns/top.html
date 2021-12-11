@@ -25,7 +25,7 @@
             <div style="padding: 0 10px;">
                 <p class="card-text" style="font-size: 1.2rem;">{{ post.caption|linebreaksbr }}</p>
                 <div style="display: flex; justify-content: space-between;">
-                    <p class="card-text" style="color: rgb(167, 166, 166); margin-top: auto;">{{ post.post_date }}</p>
+                    <p class="card-text" style="color: rgb(167, 166, 166); margin-top: auto;">{{ post.post_date | date:"Y年m月d日" }}</p>
                     <div class="float-end" style="padding-right: 10px;">
                         <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm">詳細</a>
                         {% if request.user in post.good.all %}

@@ -2,26 +2,32 @@
 {% load static %}
 
 {% block content %}
-  
+
+<div class="form-box">
   {% if question %}
-    <div class="card" style="width: 55%;">
+    <div class="card">
       <div class="card-header">
         <h2>{{ question.title }}</h2>
-        <p>{{ question.q_date }}</p>
+        <p>{{ question.q_date | date:"Y年m月d日" }}</p>
       </div>
-    </div>
       <div class="card-body">
         <p>{{ question.text }}</p>
         {% if question.q_image %}
-          <img src="{{ question.q_image.url }}" style="width: 100%; height: auto;">
+          <img src="{{ question.q_image.url }}" style="width: 70%; height: auto;">
         {% endif %}
       </div>
+    </div>
   {% endif %}
 
-  <div style="width: 45%; padding: 10px 10px 45px 0; margin: 20px 0;">
+  <div style=" background-color: rgb(230, 248, 255); padding: 20px 20px 45px 0; margin: 20px 0;">
     <form class="ui form" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
+      <p style="padding-left: 20px;">コメント編集</p>
       <ul style="list-style: none;">
+        <li>
+          {{ form.name }}
+          {{ form.name.errors }}
+        </li>
         <li>
           {{ form.text }}
           {{ form.text.errors }}
@@ -31,10 +37,8 @@
           {{ form.a_image.errors }}
         </li>
       </ul>
-      <div class="float-end">
-        <input type="submit" class="save btn btn-primary btn-xs" style="font-size: 0.8rem;" value="保存">
-      </div>
+      <input type="submit" class="btn btn-primary float-end" style="font-size: 0.8rem;" value="保存">
     </form>
   </div>
-
+</div>
 {% endblock %}

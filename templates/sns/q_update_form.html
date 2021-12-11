@@ -1,28 +1,30 @@
 {% extends 'sns/q_base.html' %}
 
 {% block content %}
-
-<form method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  <ul>
-    <li>
-      <label>タイトル（必須）</label>
-      {{ form.title }}
-      {{ form.title.errors }}
-    </li>
-    <li>
-      <label></label>
-      {{ form.q_image }}
-      {{ form.q_image.errors }}
-    </li>
-    <li>
-      <label></label>
-      {{ form.text }}
-      {{ form.text.errors }}
-    </li>
-  </ul>
-  <input type="submit" class="save btn btn-primary btn-sm" value="保存">
-  <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
-</form>
+<div  class="form-box">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <ul class="form_list">
+      <li>
+        <label>タイトル（必須）</label>
+        {{ form.title }}
+        {{ form.title.errors }}
+      </li>
+      <li>
+        <label></label>
+        {{ form.q_image }}
+        {{ form.q_image.errors }}
+      </li>
+      <li>
+        <label></label>
+        {{ form.text }}
+        {{ form.text.errors }}
+      </li>
+    </ul>
+    <div class="float-end">
+      <input type="submit" class="save btn btn-primary" value="保存">
+    </div>
+  </form>
+</div>
 
   {% endblock %}

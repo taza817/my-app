@@ -11,23 +11,31 @@
 
 <div class="time_line post_line">
 {% for post in object_list reversed %}
-    <div class="card" style="border-radius: 0; width: 40%;">
-        <div class="card-body" style="padding: 0;">
-            <div class="card-header">
-                <p>@{{ post.user }}</p>
+<div class="card" style="border-radius: 0;">
+    <div class="card-body" style="padding: 0;">
+        <div class="card-header" style="display: flex;">
+            <div class="account_image" style="width: 2rem; height: 2rem;">
+                {% if post.user.account_image %}
+                    <img src="{{ post.user.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                {% else %}
+                    <i class="fas fa-user-circle fa-2x" style="color: rgb(167, 166, 166);"></i>
+                {% endif %}
             </div>
-            {% if post.post_image %}
-            <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
-            {% endif %}
-            <p class="card-text" style="font-size: 1.2rem;">{{ post.caption|linebreaksbr }}</p>
-            <p class="card-text" style="font-size: 1rem;">{{ post.post_tag.name }}</p>
+            <a href="{% url 'mypage' post.user.pk %}" style="margin: auto 0; padding-left: 0.5rem;">@{{ post.user }}</a>
+        </div>
 
-            <div class="card-footer">
-                <p class="card-text">{{ post.post_date }}</p>
-                <i class="far fa-heart like-btn" style="color: rgb(95, 95, 95);"></i> {{post.good.count}}
+        {% if post.post_image %}
+        <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
+        {% endif %}
+
+        <div style="padding: 0 10px;">
+            <p class="card-text" style="font-size: 1.2rem;">{{ post.caption|linebreaksbr }}</p>
+            <div style="margin-bottom: 10px;">
+                <p class="card-text" style="color: rgb(167, 166, 166); margin-top: auto;">{{ post.post_date | date:"Y年m月d日" }}</p>
             </div>
         </div>
     </div>
+</div>
 {% endfor %}
 </div>
 

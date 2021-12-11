@@ -11,13 +11,24 @@
         </div>
     </div>
 
-    <div style=" width: 20%; margin: 30px auto;">
+    <div style=" width: 300px; margin: 30px auto;">
         <form class="d-flex input-group" method="get">
           <div class="form-outline">
             <input name="query" value="{{ request.GET.query }}" id="search-input" class="form-control" id="form1" type="search" placeholder="Search" style="width: 250px;">
           </div>
           <button type="submit"  id="search-button" class="btn" style="background-color: rgb(255, 161, 55)"><i class="fas fa-search" style="color: white;"></i></button>
         </form>
+    </div>
+
+    <div class="trend_tag question_tag">
+        <p>トレンドタグ</p>
+        {% if tag_rank %}
+        <ul>
+            {% for tag in tag_rank %}
+                <li>#{{ tag.name }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
     </div>
 
     <div class="time_line">
@@ -29,7 +40,7 @@
                         <a href="{% url 'q_detail' question.pk %}" style="font-size: 1.5rem; color: black; font-weight: bold;">{{ question.title| truncatechars:30 }}</a>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <p style="margin: 0; color: rgb(167, 166, 166);">{{ question.q_date }}</p>
+                        <p style="margin: 0; color: rgb(167, 166, 166);">{{ question.q_date | date:"Y年m月d日" }}</p>
                         <p class="float-end" style="margin: 0;"><i class="fas fa-thumbs-up" style="color: rgb(167, 166, 166);"></i> {{question.q_good.count}}</p>
                     </div>
                 </div>

@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateResponseMixin
 from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Account, Question, Follow, Answer
+from .models import Post, Account, Question, Follow, Answer, Q_Tag
 from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -152,12 +152,7 @@ class Top(LoginRequiredMixin, ListView) :
     def get_queryset(self) :
         account = Account.objects.get(user=self.request.user)
         follow = Follow.objects.filter(owner = account)
-        posts = Post.objects.filter(
-            user__in = [f.follow_target for f in follow]
-        )
-        params = {
-            'data' : posts,
-        }
+        posts = Post.objects.filter(Q(user__in = [f.follow_target for f in follow]) | Q(user=account))
         return posts
 
 
@@ -271,10 +266,7 @@ class AccountSearch(ListView) :
         q_word = self.request.GET.get('query')
         if q_word :
             user = User.objects.filter(Q(username__icontains=q_word) | Q(first_name__icontains=q_word))
-            if user :
-                account = Account.objects.filter(user__in=user)
-            else :
-                account = Account.objects.filter(Q(intro__icontains=q_word) | Q(location__icontains=q_word))
+            account = Account.objects.filter(Q(user__in=user) | Q(intro__icontains=q_word) | Q(location__icontains=q_word))
         else :
             account = Account.objects.order_by('?')[:10]
         return account
@@ -326,6 +318,7 @@ class QuestionTop(ListView) :     #みんなの投稿
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['tag_rank'] = Q_Tag.objects.all().order_by('-tag_count')[0:10]
         return context
 
 
@@ -334,12 +327,33 @@ class QuestionCreate(CreateView) :
     template_name = 'sns/question_form.html'
 
     def get_success_url(self) :
-        return reverse('q_detail', kwargs={'pk': self.object.pk})
+        account = Account.objects.get(user=self.request.user)
+        return reverse('my_question', account.pk)
 
     def form_valid(self, form) :
-        form.instance.user = Account.objects.get(user=self.request.user)    #現在ログインしているユーザーを代入
-        return super().form_valid(form)
-    
+        # super().form_valid(form)
+        question = Question(
+            user = Account.objects.get(user=self.request.user),    #現在ログインしているユーザーを代入
+            title = form.cleaned_data["title"],
+            q_image = form.cleaned_data["q_image"],
+            text = form.cleaned_data["text"]
+        )
+        question.save()
+
+        words = form.cleaned_data["text"].split()
+        for word in words :
+            if word[0] == "#" :
+                if Q_Tag.objects.filter(name=word[1:]).exists() :
+                    tag = Q_Tag.objects.get(name=word[1:])
+                else :
+                    tag = Q_Tag.objects.create(name=word[1:])
+                tag.tag_count += 1
+                tag.save()
+                question.q_tag.add(tag)
+
+        account = Account.objects.get(user=self.request.user)
+        return redirect('my_question', account.pk)
+
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['account_pk'] = Account.objects.get(user=self.request.user)
@@ -370,7 +384,7 @@ class QuestionDetail(CreateView) :     #AnswerCreate
 class QuestionUpdate(UpdateView) :
     template_name = 'sns/q_update_form.html'
     model = Question
-    fields = ['title', 'text', 'q_image']
+    form_class = QuestionForm
 
     def get_success_url(self) :
         return reverse('q_detail', kwargs={'pk': self.object.pk})
@@ -429,8 +443,8 @@ class Qgood(QgoodBase) :
 # Answer
 class AnswerUpdate(UpdateView):
     model = Answer
+    form_class = AnswerForm
     template_name = 'sns/answer_update.html'
-    fields = ['text', 'a_image']
 
     def get_success_url(self) :
         question_pk = Answer.objects.get(pk=self.object.pk).question.pk
