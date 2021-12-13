@@ -4,20 +4,30 @@
 {% block content %}
 <div class="search_contents">
   <div class="search_tabs">
-    <a href="{% url 'post_search' %}" class="btn btn-info">投稿検索</a>
-    <a href="{% url 'account_search' %}" class="btn btn-outline-info">ユーザー検索</a>
+    <a href="{% url 'post_search' %}" class="active">投稿検索</a>
+    <a href="{% url 'account_search' %}">ユーザー検索</a>
   </div>
-  <div style="margin: 30px 20px;">
+  <div style="margin: auto 20px;">
     <form class="d-flex input-group" method="get">
       <div class="form-outline">
         <input name="query" value="{{ request.GET.query }}" id="search-input" class="form-control" id="form1" type="search" placeholder="Search" style="width: 250px;">
       </div>
-      <button type="submit"  id="search-button" class="btn btn-info"><i class="fas fa-search" style="color: white;"></i></button>
+      <button type="submit"  id="search-button"  class="btn" style="background-color: rgb(42, 165, 63);"><i class="fas fa-search" style="color: white;"></i></button>
     </form>
   </div>
 </div>
 
 <!-- トレンドタグ表示 -->
+<div class="trend_tag post_tag">
+  <p>トレンドタグ</p>
+  {% if tag_rank %}
+  <ul>
+      {% for tag in tag_rank %}
+          <li>#{{ tag.name }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+</div>
 
 
 <div class="time_line post_line">

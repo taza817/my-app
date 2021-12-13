@@ -66,6 +66,7 @@ class QuestionForm(forms.ModelForm) :
     class Meta :
         model = Question
         fields = [ 'title', 'question_image', 'text' ]
+        widgets = {'text': forms.Textarea(attrs={'placeholder':'テキスト'})}
 
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)

@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F
 
 # Create your views here.
 
@@ -211,7 +211,6 @@ class PostCreate(LoginRequiredMixin, CreateView) :
             caption=form.cleaned_data["caption"]
             )
         post.save()
-
         words = form.cleaned_data["caption"].split()
         for word in words :
             if word[0] == "#" :
@@ -222,7 +221,6 @@ class PostCreate(LoginRequiredMixin, CreateView) :
                 tag.tag_count += 1
                 tag.save()
                 post.post_tag.add(tag)
-                
         return redirect('top')
     
     def get_context_data(self, *args, **kwargs) :
@@ -240,6 +238,22 @@ class PostUpdate(UpdateView) :
     def get_success_url(self) :
         return reverse('detail', kwargs={'pk': self.object.pk})
 
+# 後からタグ追加できるようにしたい
+    # def form_valid(self, form) :
+    #     post = self.object
+    #     words = form.cleaned_data["caption"].split()
+    #     for word in words :
+    #         if word[0] == "#" :
+    #             if Tag.objects.filter(name=word[1:]).exists() :
+    #                 tag = Tag.objects.get(name=word[1:])
+    #             else :
+    #                 tag = Tag.objects.create(name=word[1:])
+    #             tag.tag_count += 1
+    #             tag.save()
+    #             post.post_tag.add(tag) 
+    #     pk = self.kwargs['pk']
+    #     return redirect('detail', pk)
+
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
@@ -248,6 +262,16 @@ class PostUpdate(UpdateView) :
 
 class PostDelete(DeleteView) :
     model = Post
+
+    def delete(self, *args, **kwargs) :
+        post = self.get_object()
+        words = post.caption.split()
+        for word in words :
+            if word[0] == "#" :
+                tag = Tag.objects.get(name=word[1:])
+                print(tag)
+                tag.tag_count = tag.tag_count - 1
+        return super(PostDelete, self).delete(*args, **kwargs)
 
     def get_success_url(self, *args, **kwargs) :
         pk = self.get_object().user.pk
@@ -276,6 +300,7 @@ class PostSearch(ListView) :
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
+        context['tag_rank'] = Tag.objects.all().order_by('-tag_count')[0:10]
         return context
 
 
@@ -373,11 +398,10 @@ class QuestionCreate(CreateView) :
         question = Question(
             user = Account.objects.get(user=self.request.user),    #現在ログインしているユーザーを代入
             title = form.cleaned_data["title"],
-            q_image = form.cleaned_data["q_image"],
+            question_image = form.cleaned_data["question_image"],
             text = form.cleaned_data["text"]
         )
         question.save()
-
         words = form.cleaned_data["text"].split()
         for word in words :
             if word[0] == "#" :
@@ -388,7 +412,6 @@ class QuestionCreate(CreateView) :
                 tag.tag_count += 1
                 tag.save()
                 question.question_tag.add(tag)
-
         account = Account.objects.get(user=self.request.user)
         return redirect('my_question', account.pk)
 
@@ -408,13 +431,13 @@ class QuestionDetail(CreateView) :     #AnswerCreate
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse_lazy('q_detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('question_detail', kwargs={'pk': self.kwargs['pk']})
 
     def get_context_data(self, *args, **kwargs) :
         pk = self.kwargs['pk']
         context = super().get_context_data(*args, **kwargs)
         context['question'] = Question.objects.get(pk=pk)
-        context['answer_list'] = Answer.objects.filter(question_id=pk).annotate(Count('a_good')).order_by('-a_good__count')   #イイネの多い順にソート
+        context['answer_list'] = Answer.objects.filter(question_id=pk).annotate(Count('answer_good')).order_by('-answer_good__count')   #イイネの多い順にソート
         context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
@@ -425,7 +448,29 @@ class QuestionUpdate(UpdateView) :
     form_class = QuestionForm
 
     def get_success_url(self) :
-        return reverse('q_detail', kwargs={'pk': self.object.pk})
+        return reverse('question_detail', kwargs={'pk': self.object.pk})
+
+    # def form_valid(self, form) :
+    #     # super().form_valid(form)
+    #     question = Question(
+    #         user = Account.objects.get(user=self.request.user),    #現在ログインしているユーザーを代入
+    #         title = form.cleaned_data["title"],
+    #         question_image = form.cleaned_data["question_image"],
+    #         text = form.cleaned_data["text"]
+    #     )
+    #     question.save()
+    #     words = form.cleaned_data["text"].split()
+    #     for word in words :
+    #         if word[0] == "#" :
+    #             if QuestionTag.objects.filter(name=word[1:]).exists() :
+    #                 tag = QuestionTag.objects.get(name=word[1:])
+    #             else :
+    #                 tag = QuestionTag.objects.create(name=word[1:])
+    #             tag.tag_count += 1
+    #             tag.save()
+    #             question.question_tag.add(tag)
+    #     pk = self.kwargs['pk']
+    #     return redirect('question_detail', pk)
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
@@ -435,6 +480,17 @@ class QuestionUpdate(UpdateView) :
 
 class QuestionDelete(DeleteView) :
     model = Question
+
+    def delete(self, *args, **kwargs) :
+        question = self.get_object()
+        words = question.text.split()
+        for word in words :
+            if word[0] == "#" :
+                tag = QuestionTag.objects.get(name=word[1:])
+                print(tag)
+                tag.tag_count = tag.tag_count - 1
+                tag.save()
+        return super(QuestionDelete, self).delete(*args, **kwargs)
 
     def get_success_url(self, *args, **kwargs) :
         pk = self.get_object().user.pk
