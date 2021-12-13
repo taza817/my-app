@@ -63,7 +63,7 @@ class Post(models.Model) :
 
 
 # Question
-class Q_Tag(models.Model) :
+class QuestionTag(models.Model) :
     name = models.CharField(max_length=50)
     tag_count = models.IntegerField(default=0)
 
@@ -74,11 +74,11 @@ class Q_Tag(models.Model) :
 class Question(models.Model) :
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     title = models.CharField(max_length=40, blank=False)
-    q_image = models.ImageField(upload_to='images', blank=True)
+    question_image = models.ImageField(upload_to='images', blank=True)
     text = models.TextField(max_length=1000)
-    q_date = models.DateTimeField(default=timezone.now)
-    q_tag = models.ManyToManyField(Q_Tag, blank=True)
-    q_good = models.ManyToManyField(Account, related_name='good_question', blank=True)
+    question_date = models.DateTimeField(default=timezone.now)
+    question_tag = models.ManyToManyField(QuestionTag, blank=True)
+    question_good = models.ManyToManyField(Account, related_name='good_question', blank=True)
 
     def publish(self) :
         self.save()
@@ -92,9 +92,9 @@ class Answer(models.Model) :
     name = models.CharField(max_length=30)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.TextField(max_length=400, blank=False)
-    a_image =  models.ImageField(upload_to='images', blank=True)
-    a_date = models.DateTimeField(default=timezone.now)
-    a_good = models.ManyToManyField(Account, related_name='good_answer', blank=True)
+    answer_image =  models.ImageField(upload_to='images', blank=True)
+    answer_date = models.DateTimeField(default=timezone.now)
+    answer_good = models.ManyToManyField(Account, related_name='good_answer', blank=True)
 
     def publish(self) :
         self.save()

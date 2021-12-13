@@ -14,7 +14,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
         <div class="container-fluid">
 
-          <a class="navbar-brand" href="{% url 'top' %}" style="font-size: 2.5rem;"><i class="fas fa-baby-carriage fa-lg q_color"></i> AppName 相談室</a>
+          <a class="navbar-brand" href="{% url 'question_top' %}" style="font-size: 2.5rem;"><i class="fas fa-baby-carriage fa-lg q_color"></i> AppName 相談室</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -33,11 +33,11 @@
                 <a class="nav-link" href="{% url 'top' %}"><i class="fas fa-home fa-lg"></i>タイムライン</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'q_top' %}"><i class="fas fa-comments fa-lg"></i> 相談室</a>
+                <a class="nav-link" href="{% url 'question_top' %}"><i class="fas fa-comments fa-lg"></i> 相談室</a>
               </li>
-              {% if account_pk %}
+              {% if self_account %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'mypage' account_pk.pk %}"><i class="fas fa-user-circle fa-lg"></i>マイページ</a>
+                <a class="nav-link" href="{% url 'mypage' self_account.pk %}"><i class="fas fa-user-circle fa-lg"></i>マイページ</a>
               </li>
               {% endif %}
           {% endif %}

@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateResponseMixin
 from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Account, Question, Follow, Answer, Q_Tag
+from .models import Post, Account, Question, Follow, Answer, QuestionTag
 from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -36,7 +36,9 @@ class OnlyYouMixin(UserPassesTestMixin) :
 
     def test_func(self) :
         account = Account.objects.get(user=self.request.user)
-        return account.pk == self.kwargs['pk'] or account.user.is_superuser
+        is_this_page_user = account.user.pk == self.kwargs['pk']
+        is_this_page_account = account.pk == self.kwargs['pk']
+        return is_this_page_user or is_this_page_account or account.user.is_superuser
 
 class UserDelete(OnlyYouMixin, DeleteView) :
     model = User
@@ -45,7 +47,7 @@ class UserDelete(OnlyYouMixin, DeleteView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -73,7 +75,7 @@ class AccountSetting(OnlyYouMixin, UpdateView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 class PasswordChange(OnlyYouMixin, PasswordChangeView) :
@@ -86,7 +88,7 @@ class PasswordChange(OnlyYouMixin, PasswordChangeView) :
 
 
 # ProfileEdit
-class ProfileEdit(LoginRequiredMixin, UpdateView) :
+class ProfileEdit(LoginRequiredMixin, OnlyYouMixin, UpdateView) :
     model = Account
     form_class = ProfileEditForm
     template_name = 'sns/profile_update_form.html'
@@ -101,7 +103,7 @@ class ProfileEdit(LoginRequiredMixin, UpdateView) :
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -158,7 +160,7 @@ class Top(LoginRequiredMixin, ListView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -169,7 +171,7 @@ class Mypage(DetailView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         try :
             context['follow_data'] = Follow.objects.get(
                 owner=Account.objects.get(user=self.request.user), 
@@ -188,7 +190,7 @@ class PostDetail(DetailView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -205,7 +207,7 @@ class PostCreate(LoginRequiredMixin, CreateView) :
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -220,7 +222,7 @@ class PostUpdate(UpdateView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -234,7 +236,7 @@ class PostDelete(DeleteView) :
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -253,7 +255,7 @@ class PostSearch(ListView) :
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -273,33 +275,49 @@ class AccountSearch(ListView) :
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
 # Good
 class GoodBase(LoginRequiredMixin, View) :
-    def get(self, request, *args, **kwargs) :
+    def add(self, request, *args, **kwargs) :
         #記事の特定
         pk = self.kwargs['pk']
         related_post = Post.objects.get(pk=pk)
+        object = related_post.good.add(self.request.user)
+        return object
+    
+    def remove(self, request, *args, **kwargs) :
+        #記事の特定
+        pk = self.kwargs['pk']
+        related_post = Post.objects.get(pk=pk)
+        object = related_post.good.remove(self.request.user)
+        return object
 
-        if self.request.user in related_post.good.all() :
-            obj = related_post.good.remove(self.request.user)
-        else :
-            obj = related_post.good.add(self.request.user)
-        return obj
 
 class GoodTop(GoodBase) :
     def get(self, request, *args, **kwargs) :
-        super().get(request, *args, **kwargs)
+        super().add(request, *args, **kwargs)
         return redirect('top')                 #その場にとどまるにはjs
+
+class GoodTop_remove(GoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().remove(request, *args, **kwargs)
+        return redirect('top')
 
 class GoodDetail(GoodBase) :
     def get(self, request, *args, **kwargs) :
-        super().get(request, *args, **kwargs)
+        super().add(request, *args, **kwargs)
         pk = self.kwargs['pk']
         return redirect('detail', pk)
+
+class GoodDetail_remove(GoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().remove(request, *args, **kwargs)
+        pk = self.kwargs['pk']
+        return redirect('detail', pk)
+
 
 
 # Question
@@ -317,8 +335,8 @@ class QuestionTop(ListView) :     #みんなの投稿
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
-        context['tag_rank'] = Q_Tag.objects.all().order_by('-tag_count')[0:10]
+        context['self_account'] = Account.objects.get(user=self.request.user)
+        context['tag_rank'] = QuestionTag.objects.all().order_by('-tag_count')[0:10]
         return context
 
 
@@ -343,20 +361,20 @@ class QuestionCreate(CreateView) :
         words = form.cleaned_data["text"].split()
         for word in words :
             if word[0] == "#" :
-                if Q_Tag.objects.filter(name=word[1:]).exists() :
-                    tag = Q_Tag.objects.get(name=word[1:])
+                if QuestionTag.objects.filter(name=word[1:]).exists() :
+                    tag = QuestionTag.objects.get(name=word[1:])
                 else :
-                    tag = Q_Tag.objects.create(name=word[1:])
+                    tag = QuestionTag.objects.create(name=word[1:])
                 tag.tag_count += 1
                 tag.save()
-                question.q_tag.add(tag)
+                question.question_tag.add(tag)
 
         account = Account.objects.get(user=self.request.user)
         return redirect('my_question', account.pk)
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -377,12 +395,12 @@ class QuestionDetail(CreateView) :     #AnswerCreate
         context = super().get_context_data(*args, **kwargs)
         context['question'] = Question.objects.get(pk=pk)
         context['answer_list'] = Answer.objects.filter(question_id=pk).annotate(Count('a_good')).order_by('-a_good__count')   #イイネの多い順にソート
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
 class QuestionUpdate(UpdateView) :
-    template_name = 'sns/q_update_form.html'
+    template_name = 'sns/question_update_form.html'
     model = Question
     form_class = QuestionForm
 
@@ -391,7 +409,7 @@ class QuestionUpdate(UpdateView) :
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -405,39 +423,49 @@ class QuestionDelete(DeleteView) :
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
 class MyQuestion(DetailView) :
     model = Account
-    template_name = 'sns/q_mypage.html'
+    template_name = 'sns/question_mypage.html'
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
 # QuestionGood
-class QgoodBase(LoginRequiredMixin, View) :
-    def get(self, request, *args, **kwargs) :
+class QuestionGoodBase(LoginRequiredMixin, View) :
+    def add(self, request, *args, **kwargs) :
         #投稿の特定
         pk = self.kwargs['pk']
         target_question = Question.objects.get(pk=pk)
         account = Account.objects.get(user=self.request.user)
-
-        if account in target_question.q_good.all() :
-            obj = target_question.q_good.remove(account)
-        else :
-            obj = target_question.q_good.add(account)
-        return obj
-
-class Qgood(QgoodBase) :
-    def get(self, request, *args, **kwargs) :
-        super().get(request, *args, **kwargs)
+        object = target_question.question_good.add(account)
+        return object
+    
+    def remove(self, request, *args, **kwargs) :
+        #投稿の特定
         pk = self.kwargs['pk']
-        return redirect('q_detail', pk)
+        target_question = Question.objects.get(pk=pk)
+        account = Account.objects.get(user=self.request.user)
+        object = target_question.question_good.remove(account)
+        return object
+
+class QuestionGood(QuestionGoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().add(request, *args, **kwargs)
+        pk = self.kwargs['pk']
+        return redirect('question_detail', pk)
+
+class QuestionGood_remove(QuestionGoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().remove(request, *args, **kwargs)
+        pk = self.kwargs['pk']
+        return redirect('question_detail', pk)
 
 
 # Answer
@@ -448,13 +476,13 @@ class AnswerUpdate(UpdateView):
 
     def get_success_url(self) :
         question_pk = Answer.objects.get(pk=self.object.pk).question.pk
-        return reverse('q_detail', kwargs={'pk': question_pk})   #Questionのpk
+        return reverse('question_detail', kwargs={'pk': question_pk})   #Questionのpk
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         question_pk = Answer.objects.get(pk=self.object.pk).question.pk
         context['question'] = Question.objects.get(pk=question_pk)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -463,30 +491,39 @@ class AnswerDelete(DeleteView) :
 
     def get_success_url(self) :
         question_pk = Answer.objects.get(pk=self.object.pk).question.pk
-        return reverse('q_detail', kwargs={'pk': question_pk})
+        return reverse('question_detail', kwargs={'pk': question_pk})
     
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
-        context['account_pk'] = Account.objects.get(user=self.request.user)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
-class AgoodBase(LoginRequiredMixin, View) :
-    def get(self, request, *args, **kwargs) :
+class AnswerGoodBase(LoginRequiredMixin, View) :
+    def add(self, request, *args, **kwargs) :
         #投稿の特定
         pk = self.kwargs['pk']
-        print(pk)
         target_answer = Answer.objects.get(pk=pk)
         account = Account.objects.get(user=self.request.user)
+        object = target_answer.answer_good.add(account)
+        return object
 
-        if account in target_answer.a_good.all() :
-            obj = target_answer.a_good.remove(account)
-        else :
-            obj = target_answer.a_good.add(account)
-        return obj
+    def remove(self, request, *args, **kwargs) :
+        #投稿の特定
+        pk = self.kwargs['pk']
+        target_answer = Answer.objects.get(pk=pk)
+        account = Account.objects.get(user=self.request.user)
+        object = target_answer.answer_good.remove(account)
+        return object
 
-class Agood(AgoodBase) :
+class AnswerGood(AnswerGoodBase) :
     def get(self, request, *args, **kwargs) :
-        super().get(request, *args, **kwargs)
+        super().add(request, *args, **kwargs)
         question_pk = Answer.objects.get(pk=self.kwargs['pk']).question.pk
-        return redirect('q_detail', question_pk)                #その場にとどまるにはjs
+        return redirect('question_detail', question_pk)                #その場にとどまるにはjs
+
+class AnswerGood_remove(AnswerGoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().remove(request, *args, **kwargs)
+        question_pk = Answer.objects.get(pk=self.kwargs['pk']).question.pk
+        return redirect('question_detail', question_pk)                #その場にとどまるにはjs

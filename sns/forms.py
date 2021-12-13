@@ -70,13 +70,13 @@ class QuestionForm(forms.ModelForm) :
 
     class Meta :
         model = Question
-        fields = [ 'title', 'q_image', 'text' ]
+        fields = [ 'title', 'question_image', 'text' ]
 
 
 class AnswerForm(forms.ModelForm) :
     class Meta :
         model = Answer
-        fields = ['name', 'text', 'a_image']
+        fields = ['name', 'text', 'answer_image']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder':'ニックネーム'}),
             'text': forms.Textarea(attrs={'rows':4}),

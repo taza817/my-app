@@ -7,7 +7,7 @@
             {% if account.account_image %}
                 <img src="{{ account.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
             {% else %}
-                <i class="fas fa-user-circle" style="color: rgb(167, 166, 166);"></i>
+                <i class="fas fa-user-circle fa-10x" style="color: rgb(167, 166, 166); padding: 20px"></i>
             {% endif %}
         </div>
 
@@ -58,8 +58,10 @@
 </div>
 
     <!-- ポップアップウィンドウで表示 -->
+    <div id="popup-bg"></div>     <!-- 背景 -->
+
     {% if follow_list %}
-    <div class="follow_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
+    <div id="popup-window" class="follow_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
         <p>フォローしているユーザー</p>
         <ul style="list-style: none;">
             {% for follow in follow_list %}
@@ -70,7 +72,7 @@
     {% endif %}
 
     {% if follower_list %}
-    <div class="follow_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
+    <div id="popup-win" class="follower_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
         <p>フォロワー</p>
         <ul style="list-style: none;">
             {% for follower in follower_list %}
