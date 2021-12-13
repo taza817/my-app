@@ -1,0 +1,17 @@
+{% extends 'sns/question_base.html' %}
+
+{% block content %}
+
+<div class="card" style="width: 40%; margin: 50px auto; padding: 20px;">
+  <form method="POST">
+    {% csrf_token %}
+      <h2>「{{ question.title }}」</h2>
+      <p>を削除しますか？</p>
+    <div class="float-end">
+    <input class="btn btn-outline-danger btn-sm" style="width: 70px;" type="submit" value="削除する">
+    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

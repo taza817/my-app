@@ -2,11 +2,21 @@
 
 {% block content %}
 
-    <div>
+    <div class="form-box">
         <form method="POST" class="post_form" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" class="save btn btn-primary" value="投稿">
+            <ul class="form_list">
+                <li>
+                    {{ form.post_image }}
+                    {{ form.post_image.errors }}
+                </li>
+                <li>
+                    <label>キャプション</label>
+                    {{ form.caption }}
+                    {{ form.caption.errors }}
+                </li>
+            </ul>
+            <input type="submit" class="save btn btn-primary float-end" value="投稿">
         </form>
     </div>
 

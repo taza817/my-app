@@ -1,16 +1,15 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.models import User
-from .models import Post, Tag
+from .models import Post, Tag, Question, Follow, Answer, Account
 
 #SignUp
 class SignUpForm(UserCreationForm) :
     gender_choice = [('1','選択しない'),('2','男'),('3',"女"),('4','その他')]
-    gender = forms.ChoiceField(required=False, label='ジェンダー', choices=gender_choice, widget=forms.Select)
-    birth_date = forms.DateField(required=False, label='誕生日', widget=forms.DateInput(attrs={"type":"date"}))
-    location = forms.CharField(max_length=20, required=False, label='居住地')
-    intro = forms.CharField(max_length=400, required=False, label='自己紹介', widget=forms.Textarea)
-    # account_image = forms.ImageField(upload_to="plofile_pics", blank=True)
+    gender = forms.ChoiceField(required=False, choices=gender_choice, widget=forms.Select)
+    birth_date = forms.DateField(required=False, widget=forms.DateInput(attrs={"type":"date"}))
+    location = forms.CharField(max_length=20, required=False)
+    intro = forms.CharField(required=False)
 
     class Meta :
         model = User
@@ -24,6 +23,31 @@ class LoginForm(AuthenticationForm) :
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['class'] = 'form-control'
 
+# Setting
+class PasswordChangeForm(PasswordChangeForm) :
+    def __init__(self, *args, **kwargs) :
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values() :
+            field.widget.attrs['class'] = 'form-control'
+
+# ProfileEdit
+class ProfileEditForm(forms.ModelForm) :
+    class Meta :
+        model = Account
+        fields = ('account_image', 'intro', 'location', 'birth_date', 'gender')
+        gender_choice = [('1','選択しない'),('2','男'),('3',"女"),('4','その他')]
+        widgets = {
+            'gender': forms.Select(choices=gender_choice),
+            'birth_date' : forms.DateInput(attrs={"type":"date"}),
+            }
+
+
+# Follow
+class FollowForm(forms.Form) :
+    class Meta :
+        model = Follow
+        fields = ('woner', 'follow_target')
+
 
 # Post
 class PostForm(forms.ModelForm) :
@@ -34,4 +58,39 @@ class PostForm(forms.ModelForm) :
 
     class Meta :
         model = Post
-        fields = [ 'post_image', 'caption']
+        fields = ['post_image', 'caption']
+
+
+# Question
+class QuestionForm(forms.ModelForm) :
+    class Meta :
+        model = Question
+        fields = [ 'title', 'question_image', 'text' ]
+
+    def __init__(self, *args, **kwargs) :
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values() :
+            field.widget.attrs['class'] = 'form-control'
+
+
+class AnswerForm(forms.ModelForm) :
+    class Meta :
+        model = Answer
+        fields = ['name', 'text', 'answer_image']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder':'ニックネーム'}),
+            'text': forms.Textarea(attrs={'rows':4}),
+            }
+
+    def __init__(self, *args, **kwargs) :
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values() :
+            field.widget.attrs['class'] = 'form-control'
+    
+    #保存処理
+    def save_answer(self, question_id, commit=True) :
+        answer = self.save(commit=False)
+        answer.question = Question.objects.get(pk=question_id)
+        if commit :
+            answer.save()
+        return answer

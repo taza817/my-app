@@ -1,0 +1,113 @@
+{% extends 'sns/question_base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <!-- Tab -->
+  <div class="q_tab">
+    <a href="{% url 'question_top' %}">みんなの投稿</a>
+    {% if self_account %}
+    <a href="{% url 'my_question' self_account.pk %}" style="padding: 10px 55px">自分の投稿</a>
+    {% endif %}
+  </div>
+  
+  <!-- Question Detail -->
+  {% if question %}
+    <div class="card" style="width: 1000px; margin: 40px auto 0 auto;">
+      <div class="card-header">
+        <h3>{{ question.title }}</h3>
+        <p style="color: rgb(167, 166, 166);">{{ question.question_date | date:"Y年m月d日" }}</p>
+
+        <div class="float-end">
+        {% if self_account in question.question_good.all %}
+          <a href="{% url 'question_good_remove' question.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(0, 132, 255);"></i></a> {{question.question_good.count}}
+        {% else %}
+          <a href="{% url 'question_good' question.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(167, 166, 166);"></i></a> {{question.question_good.count}}
+        {% endif %}
+        </div>
+
+        {% if question.user == self_account %}
+        <div class="my_creation">
+          <a href="{% url 'question_update' question.pk %}"><i class="fas fa-edit fa-lg"></i></a>
+          <a href="{% url 'question_delete' question.pk %}"><i class="fas fa-trash-alt fa-lg"></i></a>
+        </div>
+        {% endif %}
+      </div>
+      <div class="card-body">
+        <p>{{ question.text | linebreaksbr }}</p>
+        {% if question.question_image %}
+          <img src="{{ question.quetion_image.url }}" style="width: 60%; height: auto;">
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Answer Form -->
+  <div style="width: 800px; padding: 20px 20px 45px 0; margin: 20px auto; background-color: rgb(230, 248, 255);">
+    <p style="padding-left: 20px;">コメント</p>
+    <form class="ui form" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <ul style="list-style: none;">
+        <li>
+          {{ form.name }}
+          {{ form.name.errors }}
+        </li>
+        <li>
+          {{ form.text }}
+          {{ form.text.errors }}
+        </li>
+        <li>
+          {{ form.a_image }}
+          {{ form.a_image.errors }}
+        </li>
+      </ul>
+      <div class="float-end">
+        <input type="submit" class="save btn btn-primary btn-xs" style="font-size: 0.8rem;" value="コメントする">
+      </div>
+    </form>
+  </div>
+
+  <!-- Answer List -->
+  <div style="width: 800px; margin: 0 auto;">
+    {% if answer_list %}
+      {% for answer in answer_list %}
+        <div class="card" style="margin-bottom: 10px;">
+          <div class="card-body">
+            <div style="padding-bottom: 10px; display: flex; justify-content: space-between;">
+              <div>
+                <h5><i class="fas fa-user fa-sm"></i> {{ answer.name }}</h5>
+                <p style="color: rgb(167, 166, 166); font-size: 0.8rem;">{{ answer.answer_date | date:"Y年m月d日" }}</p>
+              </div>
+              <div class="my_creation">
+                {% if answer.user == self_account %}
+                <a href="{% url 'answer_update' answer.pk %}"><i class="fas fa-edit fa-lg"></i></a>
+                <a href="{% url 'answer_delete' answer.pk %}"><i class="fas fa-trash-alt fa-lg"></i></a>
+                {% endif %}
+              </div>
+            </div>
+            <p style="margin: 0;">{{ answer.text | linebreaksbr }}</p>
+            {% if answer.a_image %}
+              <img src="{{ answer.answer_image.url }}" style="width: 50%; height: auto; padding-top: 20px;">
+            {% endif %}
+          </div>
+          <div style="padding: 10px;">
+            <div class="float-end">
+              {% if self_account in answer.answer_good.all %}
+                <a href="{% url 'answer_good_remove' answer.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(0, 132, 255);"></i></a> {{answer.answer_good.count}}
+              {% else %}
+                <a href="{% url 'answer_good' answer.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(167, 166, 166);"></i></a> {{answer.answer_good.count}}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="ui warning message"><p>まだコメントはありません。</p></div>
+    {% endif %}
+  </div>
+  
+  {% if user.is_authenticated %}
+    <a href="{% url 'question_create' %}" class="stick-icon"><i class="fas fa-comment-dots fa-4x q_color"></i></a>
+  {% endif %}
+
+{% endblock %}

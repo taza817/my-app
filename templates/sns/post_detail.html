@@ -1,32 +1,47 @@
 {% extends 'sns/base.html' %}
 
 {% block content %}
-<div class="card">
-    <div class="card-body" style="width: 50%; border: solid 1px; padding: 0;">
-        <div class="card-header">
-            <a href="{% url 'mypage' post.user.pk %}">@{{ post.user }}</a>
+<div class="card" style="width: 50%; border-radius: 0; margin: 30px auto;">
+    <div class="card-body" style="padding: 0;">
+        <div class="card-header" style="display: flex; justify-content: space-between;">
+            <div style="display: flex;">
+                <div style="width: 2rem; height: 2rem;">
+                    {% if post.user.account_image %}
+                        <img src="{{ post.user.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                    {% else %}
+                        <i class="fas fa-user-circle fa-2x" style="color: rgb(167, 166, 166);"></i>
+                    {% endif %}
+                </div>
+                <a href="{% url 'mypage' post.user.pk %}"  style="padding-left: 0.8rem; margin: auto 0;">@{{ post.user }}</a> 
+            </div>
+            <div style="margin: auto 0;">
+                {% if post.user == self_account %}
+                <a href="{% url 'update' post.pk %}"><i class="fas fa-edit fa-lg" style="color: rgb(167, 166, 166);"></i></a>
+                <a href="{% url 'delete' post.pk %}" style="padding-left: 5px;"><i class="fas fa-trash-alt fa-lg" style="color: rgb(167, 166, 166);"></i></a>
+                {% endif %}
+            </div>
         </div>
         {% if post.post_image %}
         <img src="{{ post.post_image.url }}" style="width: 100%; height: auto;">
         {% endif %}
+
         <p class="card-text" style="font-size: 1.5rem; padding: 20px 0;">{{ post.caption|linebreaksbr }}</p>
 
-        <div class="card-footer">
-            <p class="card-text">{{ post.post_date }}</p>
-
-            {% if account_pk == post.user %}
-            <a href="{% url 'update' post.pk %}" class="btn btn-outline-secondary btn-sm">編集</a>
-            <a href="{% url 'delete' post.pk %}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-trash-alt fa-lg"></i></a>
-            {% endif %}
-
-
+        <div style="display: flex; justify-content: space-between; margin: 0 10px;">
+            <p class="card-text" style="color: rgb(167, 166, 166);">{{ post.post_date | date:"Y年m月d日" }}</p>
+            <div style="padding-right: 10px;">
             {% if request.user in post.good.all %}
-                <a href="{% url 'good_detail' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart" style="color: red;"></i></a> {{post.good.count}}
+                <a href="{% url 'good_detail_remove' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart fa-lg" style="color: red;"></i></a> {{post.good.count}}
             {% else %}
-                <a href="{% url 'good_detail' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart" style="color: rgb(167, 166, 166);"></i></a> {{post.good.count}}
+                <a href="{% url 'good_detail' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart fa-lg" style="color: rgb(167, 166, 166);"></i></a> {{post.good.count}}
             {% endif %}
+            </div>
         </div>
     </div>
 </div>
+
+{% if user.is_authenticated %}
+<a class="stick-icon" href="{% url 'create' %}"><i class="fas fa-edit fa-4x p_color"></i></a>   <!-- 画面下にアイコンsticky -->
+{% endif %}
 
 {% endblock %}
