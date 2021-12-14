@@ -40,9 +40,9 @@
                 {% endif %}
             </div>
 
-            <div style="display: flex; margin-top: 20px;">
-                <p>フォロー {{ account.follow_num }}</p>
-                <p style="padding-left: 15px;">フォロワー {{ account.follower_num }}</p>
+            <div style="display: flex; margin-top: 20px; font-size: 1.3rem;">
+                <p class="modal-btn js-modal-open-follow">フォロー {{ account.follow_num }}</p>
+                <p class="modal-btn js-modal-open-follower" style="padding-left: 25px;">フォロワー {{ account.follower_num }}</p>
             </div>
         </div>
     </div>
@@ -58,29 +58,61 @@
 </div>
 
     <!-- ポップアップウィンドウで表示 -->
-    <div id="popup-bg"></div>     <!-- 背景 -->
-
-    {% if follow_list %}
-    <div id="popup-window" class="follow_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
-        <p>フォローしているユーザー</p>
-        <ul style="list-style: none;">
-            {% for follow in follow_list %}
-            <li><i class="fas fa-user" style="color: rgb(107, 107, 107);"></i> <a href="{% url 'mypage' follow.follow_target.pk %}">{{ follow.follow_target.user.first_name }}   @{{ follow.follow_target.user.username }}</a></li>
-            {% endfor %}
-        </ul>
+<div class="js-modal js-modal-follow">
+    <div class="modal-bg js-modal-close-follow"></div>     <!-- 背景 -->
+    <div class="modal-wrap follow_list">
+        <div class="modal-contents">
+            <p class="modal-title">フォロー中</p>
+            {% if follow_list %}
+            <ul>
+                {% for follow in follow_list %}
+                <li>
+                    <a href="{% url 'mypage' follow.follow_target.pk %}">
+                        <div class="account_image" style="width: 2rem; height: 2rem;">
+                            {% if follow.follow_target.account_image %}
+                                <img src="{{ follow.follow_target.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                            {% else %}
+                                <i class="fas fa-user-circle fa-2x" style="color: rgb(167, 166, 166);"></i>
+                            {% endif %}
+                        </div>
+                        <p>{{ follow.follow_target.user.first_name }}</p>
+                        <p>@{{ follow.follow_target.user.username }}</p>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
     </div>
-    {% endif %}
+</div>
 
-    {% if follower_list %}
-    <div id="popup-win" class="follower_list" style="border: 1px solid; width: 200px;">  <!-- 仮スタイル -->
-        <p>フォロワー</p>
-        <ul style="list-style: none;">
-            {% for follower in follower_list %}
-            <li><i class="fas fa-user" style="color: rgb(107, 107, 107);"></i> <a href="{% url 'mypage' follower.owner.pk %}">{{ follower.owner.user.first_name }}   @{{ follower.owner.user.username }}</a></li>
-            {% endfor %}
-        </ul>
+<div class="js-modal js-modal-follower">
+    <div class="modal-bg js-modal-close-follower"></div>     <!-- 背景 -->
+    <div class="modal-wrap follower_list">
+        <div class="modal-contents">
+            <p class="modal-title">フォロワー</p>
+            {% if follower_list %}
+            <ul>
+                {% for follower in follower_list %}
+                <li>
+                    <a href="{% url 'mypage' follower.owner.pk %}">
+                        <div class="account_image" style="width: 2rem; height: 2rem;">
+                            {% if follower.owner.account_image %}
+                                <img src="{{ follower.owner.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                            {% else %}
+                                <i class="fas fa-user-circle fa-2x" style="color: rgb(167, 166, 166);"></i>
+                            {% endif %}
+                        </div>
+                        <p>{{ follower.owner.user.first_name }}</p>
+                        <p>@{{ follower.owner.user.username }}</p>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
     </div>
-    {% endif %}
+</div>
 
 <div class="post_field">
     {% for post in object.post_set.all reversed %}
