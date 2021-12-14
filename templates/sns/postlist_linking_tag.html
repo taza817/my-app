@@ -5,7 +5,7 @@
 {% block content %}
 <div class="search_contents">
   <div class="search_tabs">
-    <a href="{% url 'post_search' %}" class="active">投稿検索</a>
+    <a href="{% url 'post_search' %}">投稿検索</a>
     <a href="{% url 'account_search' %}">ユーザー検索</a>
   </div>
   <div style="margin: auto 20px;">
@@ -18,18 +18,11 @@
   </div>
 </div>
 
-<!-- トレンドタグ表示 -->
-<div class="trend_tag post_tag">
-  <p>トレンドタグ</p>
-  {% if tag_rank %}
-  <ul>
-      {% for tag in tag_rank %}
-          <li><a href="{% url 'postlist_linking_tag' %}?tag_word=#{{ tag.name }}" class="linking_tag">#{{ tag.name }}</a></li>
-      {% endfor %}
-  </ul>
+<div>
+  {% if tag_word %}
+  <h3>{{ tag_word }}</h3>
   {% endif %}
 </div>
-
 
 <div class="time_line post_line">
 {% if object_list%}

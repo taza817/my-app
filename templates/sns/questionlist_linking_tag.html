@@ -6,12 +6,12 @@
   <div class="q_tab">
     <a href="{% url 'question_top' %}">みんなの投稿</a>
     {% if self_account %}
-    <a href="{% url 'my_question' self_account.pk %}" style="padding: 10px 55px" class="active">自分の投稿</a>
+    <a href="{% url 'my_question' self_account.pk %}" style="padding: 10px 55px">自分の投稿</a>
     {% endif %}
   </div>
 
   <div class="time_line">
-    {% for question in object.question_set.all reversed %}
+    {% for question in object_list reversed %}
     <div class="card" style="width: 100%; margin-bottom: 10px;">
       <a href="{% url 'question_detail' question.pk %}" style="text-decoration: none;">
           <div class="card-body">

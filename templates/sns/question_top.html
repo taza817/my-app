@@ -25,7 +25,7 @@
         <ul>
             {% for tag in tag_rank %}
               {% if tag.tag_count != 0 %}
-                <li>#{{ tag.name }}</li>
+                <li><a href="{% url 'questionlist_linking_tag' %}?tag_word=#{{ tag.name }}" class="linking_tag">#{{ tag.name }}</a></li>
               {% endif %}
             {% endfor %}
         </ul>
@@ -43,7 +43,7 @@
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <p style="margin: 0; color: rgb(167, 166, 166);">{{ question.question_date | date:"Y年m月d日" }}</p>
-                            <p class="float-end" style="margin: 0;"><i class="fas fa-thumbs-up" style="color: rgb(167, 166, 166);"></i> {{question.question_good.count}}</p>
+                            <p class="float-end" style="margin: 0; color: black;"><i class="fas fa-thumbs-up" style="color: rgb(167, 166, 166);"></i> {{question.question_good.count}}</p>
                         </div>
                     </div>
                  </a>

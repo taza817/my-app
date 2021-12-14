@@ -1,3 +1,4 @@
+from typing import List
 from django.http import request, response
 from django.views.generic.base import TemplateResponseMixin
 from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm
@@ -304,6 +305,21 @@ class PostSearch(ListView) :
         return context
 
 
+class PostList_linking_tag(ListView) :
+    model = Post
+    template_name = 'sns/postlist_linking_tag.html'
+
+    def get_queryset(self) :
+        tag_word = self.request.GET['tag_word']
+        posts = Post.objects.filter(Q(caption__icontains=tag_word))
+        return posts
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['self_account'] = Account.objects.get(user=self.request.user)
+        return context
+
+
 # AccountSearch
 class AccountSearch(ListView) :
     model = Account
@@ -382,6 +398,20 @@ class QuestionTop(ListView) :     #みんなの投稿
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
         context['tag_rank'] = QuestionTag.objects.all().order_by('-tag_count')[0:10]
+        return context
+
+class QuestionList_linking_tag(ListView) :
+    model = Question
+    template_name = 'sns/questionlist_linking_tag.html'
+
+    def get_queryset(self) :
+        tag_word = self.request.GET['tag_word']
+        questions = Question.objects.filter(Q(text__icontains=tag_word))
+        return questions
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
