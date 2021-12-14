@@ -136,3 +136,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 IMAGE_URL = '/images/'
 IMAGE_ROOT = os.path.join(BASE_DIR, 'images')
+
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'yanka8m15@gmail.com'
+# EMAIL_HOST_PASSWORD = 'imomusi0101'
+# EMAIL_USE_TLS = True
