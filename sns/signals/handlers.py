@@ -4,7 +4,22 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
-from sns.models import Answer
+from sns.models import Account, Answer
+
+@receiver(post_save, sender=Account)
+def account_create_confirmation(sender, instance, created, **kwargs) :
+    """サインアップ後登録情報をメールで送信する"""
+    if created :
+        subject = "サインアップ完了"
+        context = {
+          'account' : instance,
+        }
+        massage = render_to_string("sns/mails/account_create_confirmation.txt", context)
+        from_email = settings.DEFAULT_FROM_EMAIL     #送信者
+        recipient_list = [instance.user.email]   #宛先
+        send_mail(subject, massage, from_email, recipient_list)
+
+
 
 @receiver(post_save, sender=Answer)
 def answer_create_notification(sender, instance, created, **kwargs) :
@@ -14,13 +29,14 @@ def answer_create_notification(sender, instance, created, **kwargs) :
 
     if created :
         subject = "質問にコメントがつきました"
-        massage = "あなたが投稿した質問にコメントがつきました。"
-        # context = {
-        #   'account' : account,
-        #   'question' : question,
-        #   'answer' : instance.text,
-        # }
-        # massage = render_to_string('/mails/answer_create_notification.txt', context)
+        context = {
+          'account' : account,
+          'question' : question,
+          'answer' : instance,
+        }
+        massage = render_to_string("sns/mails/answer_create_notification.txt", context)
         from_email = settings.DEFAULT_FROM_EMAIL     #送信者
         recipient_list = [account.user.email]   #宛先
         send_mail(subject, massage, from_email, recipient_list)
+
+
