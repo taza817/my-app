@@ -51,9 +51,9 @@
                     <div class="float-end" style="padding-right: 10px;">
                       <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm">詳細</a>
                       {% if request.user in post.good.all %}
-                          <a href="{% url 'good_top' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart like-btn" style="color: red;"></i></a> {{post.good.count}}
+                          <a href="{% url 'good_post_linkingtag_remove' post.pk %}" class="like-btn add-color" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart like-btn fa-lg" style="color: red;"></i></a> {{post.good.count}}
                       {% else %}
-                          <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart like-btn" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}}
+                          <a href="{% url 'good_post_linkingtag' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart like-btn fa-lg" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}}
                       {% endif %}
                     </div>
                 </div>

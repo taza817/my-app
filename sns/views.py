@@ -295,7 +295,7 @@ class PostSearch(ListView) :
         if q_word :
             posts = Post.objects.filter(Q(caption__icontains=q_word))
         else :
-            posts = Post.objects.order_by('?')[:10]   #デフォルトで表示する投稿 ランダムに10件
+            posts = Post.objects.order_by('-post_date')[:10]   #デフォルトで表示する投稿
         return posts
     
     def get_context_data(self, *args, **kwargs) :
@@ -331,7 +331,7 @@ class AccountSearch(ListView) :
             user = User.objects.filter(Q(username__icontains=q_word) | Q(first_name__icontains=q_word))
             account = Account.objects.filter(Q(user__in=user) | Q(intro__icontains=q_word) | Q(location__icontains=q_word))
         else :
-            account = Account.objects.order_by('?')[:10]
+            account = Account.objects.order_by('?')[:10]     #デフォルト表示
         return account
     
     def get_context_data(self, *args, **kwargs) :
@@ -360,7 +360,7 @@ class GoodBase(LoginRequiredMixin, View) :
 class GoodTop(GoodBase) :
     def get(self, request, *args, **kwargs) :
         super().add(request, *args, **kwargs)
-        return redirect('top')                 #その場にとどまるにはjs
+        return redirect('top')
 
 class GoodTop_remove(GoodBase) :
     def get(self, request, *args, **kwargs) :
@@ -379,6 +379,25 @@ class GoodDetail_remove(GoodBase) :
         pk = self.kwargs['pk']
         return redirect('detail', pk)
 
+class GoodPostSearch(GoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().add(request, *args, **kwargs)
+        return redirect('post_search')
+
+class GoodPostSearch_remove(GoodBase) :
+    def get(self, request, *args, **kwargs) :
+            super().remove(request, *args, **kwargs)
+            return redirect('post_search')
+
+class GoodPost_linkingtag(GoodBase) :
+    def get(self, request, *args, **kwargs) :
+        super().add(request, *args, **kwargs)
+        return redirect('postlist_linking_tag')
+
+class GoodPost_linkingtag_remove(GoodBase) :
+    def get(self, request, *args, **kwargs) :
+            super().remove(request, *args, **kwargs)
+            return redirect('postlist_linking_tag')
 
 
 # Question
@@ -391,7 +410,7 @@ class QuestionTop(ListView) :     #みんなの投稿
         if q_word :
             questions = Question.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word))
         else :
-            questions = Question.objects.order_by('?')[:10]
+            questions = Question.objects.order_by('-quesiton_date')[:10]
         return questions
 
     def get_context_data(self, *args, **kwargs) :
@@ -400,12 +419,24 @@ class QuestionTop(ListView) :     #みんなの投稿
         context['tag_rank'] = QuestionTag.objects.all().order_by('-tag_count')[0:10]
         return context
 
+
+# def questionlist_linking_tag(request, tag_word) :
+#     tag_word = tag_word
+#     questions = Question.objects.filter(Q(text__icontains=tag_word))
+#     account = Account.objects.get(user=request.user)
+#     context = {
+#         'object_list' : questions, 
+#         'self_account' : account
+#     }
+#     return render(request, 'sns/questionlist_linking_tag.html', context)
+
 class QuestionList_linking_tag(ListView) :
     model = Question
     template_name = 'sns/questionlist_linking_tag.html'
 
     def get_queryset(self) :
-        tag_word = self.request.GET['tag_word']
+        tag_word = self.request.GET.get('tag_word')
+        print(self.request.GET.get('tag_word'))
         questions = Question.objects.filter(Q(text__icontains=tag_word))
         return questions
 
