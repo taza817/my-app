@@ -410,7 +410,7 @@ class QuestionTop(ListView) :     #みんなの投稿
         if q_word :
             questions = Question.objects.filter(Q(title__icontains=q_word) | Q(text__icontains=q_word))
         else :
-            questions = Question.objects.order_by('-quesiton_date')[:10]
+            questions = Question.objects.order_by('-question_date')[:10]
         return questions
 
     def get_context_data(self, *args, **kwargs) :

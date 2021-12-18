@@ -51,14 +51,16 @@ class FollowForm(forms.Form) :
 
 # Post
 class PostForm(forms.ModelForm) :
+    class Meta :
+        model = Post
+        fields = ['post_image', 'caption']
+        widgets = {'caption': forms.Textarea(attrs={'placeholder':'キャプション', 'onKeyUp':'ShowLength(value);'})}
+
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)
         for field in self.fields.values() :
             field.widget.attrs['class'] = 'form-control'
 
-    class Meta :
-        model = Post
-        fields = ['post_image', 'caption']
 
 
 # Question
@@ -66,7 +68,10 @@ class QuestionForm(forms.ModelForm) :
     class Meta :
         model = Question
         fields = [ 'title', 'question_image', 'text' ]
-        widgets = {'text': forms.Textarea(attrs={'placeholder':'テキスト'})}
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder':'タイトル（必須）'}),
+            'text': forms.Textarea(attrs={'placeholder':'テキスト', 'onKeyUp':'ShowLength(value);'})
+            }
 
     def __init__(self, *args, **kwargs) :
         super().__init__(*args, **kwargs)

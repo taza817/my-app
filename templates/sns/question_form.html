@@ -1,11 +1,12 @@
 {% extends 'sns/question_base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
 
 <div class="q_tab">
   <a href="{% url 'question_top' %}">みんなの投稿</a>
   {% if self_account %}
-  <a href="{% url 'my_question' self_account.pk %}" style="padding: 10px 55px" class="active">自分の投稿</a>
+  <a href="{% url 'my_question' self_account.pk %}" style="padding: 10px 55px">自分の投稿</a>
   {% endif %}
 </div>
 
@@ -13,7 +14,6 @@
         <form method="POST" class="question_form" enctype="multipart/form-data">
             <ul style="list-style: none;">
               <li>
-                <label>タイトル（必須）</label>
                 {{ form.title }}
                 {{ form.title.errors }}
               </li>
@@ -26,8 +26,9 @@
                 <label></label>
                 {{ form.text }}
                 {{ form.text.errors }}
+                <p class="input_count float-end"><span id="inputlength">0</span>文字 / 1000文字</p>
               </li>
-            </ul>
+            </ul><br>
             {% csrf_token %}
             <input type="submit" class="save btn btn-primary float-end" value="投稿">
         </form>

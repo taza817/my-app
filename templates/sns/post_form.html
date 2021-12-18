@@ -1,4 +1,5 @@
 {% extends 'sns/base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
 
@@ -11,11 +12,11 @@
                     {{ form.post_image.errors }}
                 </li>
                 <li>
-                    <label>キャプション</label>
                     {{ form.caption }}
                     {{ form.caption.errors }}
+                    <p class="input_count float-end"><span id="inputlength">0</span>文字 / 400文字</p>
                 </li>
-            </ul>
+            </ul><br>
             <input type="submit" class="save btn btn-primary float-end" value="投稿">
         </form>
     </div>

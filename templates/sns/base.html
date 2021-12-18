@@ -13,10 +13,10 @@
   <script src="{% static 'sns/base.js' %}"></script>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="z-index: 5;">
+    <nav class="navbar navbar-expand-lg bg-light sticky-top" style="z-index: 5;">
         <div class="container-fluid" style="padding: 0 20px;">
 
-          <a class="navbar-brand" href="{% url 'top' %}" style="font-size: 2.5rem;"><i class="fas fa-baby-carriage fa-lg p_color"></i> AppName</a>
+          <a class="navbar-brand post" href="{% url 'top' %}"><i class="fas fa-baby-carriage fa-lg p_color"></i> AppName</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -34,11 +34,11 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'top' %}"><i class="fas fa-home fa-lg"></i>タイムライン</a>
               </li>
-              <li>
+              <li class="nav-item">
                 <a class="nav-link" href="{% url 'post_search' %}"><i class="fas fa-search fa-lg"></i>検索</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'question_top' %}"><i class="fas fa-comments fa-lg"></i> 相談室</a>
+                <a class="nav-link question" href="{% url 'question_top' %}"><i class="fas fa-comments fa-lg"></i> 相談室</a>
               </li>
               {% if self_account %}
               <li class="nav-item">
