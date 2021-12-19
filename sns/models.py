@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.fields.related import OneToOneField
 from django.utils import timezone
 from django.contrib.auth.models import User
+import datetime
 
 
 # Create your models here.
@@ -23,6 +24,21 @@ class Account(models.Model) :
 
     def __str__(self) :
         return self.user.username
+
+class Child(models.Model) :
+    parent = models.ForeignKey(Account, on_delete=models.CASCADE, blank=True)
+    name = models.CharField(max_length=20, blank=False)
+    gender = models.CharField(max_length=20, blank=True)
+    birth_date = models.DateField(null=True, blank=False)
+
+    def calc_age(self) :
+        today = int(datetime.date.today().strftime("%Y%m%d"))
+        birthday = int(self.birth_date.strftime("%Y%m%d"))
+        age = (today - birthday) // 10000
+        return age
+
+    def __str__(self) :
+        return self.name
 
 
 # Follow

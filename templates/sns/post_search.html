@@ -24,7 +24,7 @@
   {% if tag_rank %}
   <ul>
       {% for tag in tag_rank %}
-          <li><a href="{% url 'postlist_linking_tag' %}?tag_word=#{{ tag.name }}" class="linking_tag">#{{ tag.name }}</a></li>
+          <li><p>#{{ tag.name |convert_linking_post_tag_rank }}</p></li>
       {% endfor %}
   </ul>
   {% endif %}

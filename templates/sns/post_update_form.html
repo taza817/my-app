@@ -6,13 +6,16 @@
         {% if post.post_image %}
         <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
         {% endif %}
-        <form method="POST">
+        <form method="POST" style="display: flex; flex-flow: column;">
             {% csrf_token %}
             <div>
                 {{ form.caption }}
                 {{ form.caption.errors }}
+                <p class="input_count float-end"><span id="inputlength">0</span>文字 / 400文字</p><br>
             </div>
-            <input type="submit" class="btn btn-primary float-end" style="margin-top: 20px;" value="保存">
+            <div>
+                <input type="submit" class="btn btn-primary float-end" style="z-index: 10;" value="保存">
+            </div>
         </form>
     </div>
 

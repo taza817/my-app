@@ -1,0 +1,43 @@
+{% extends 'sns/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<h3 style="width: 180px; margin: 40px auto;">お子さまの情報</h3>
+
+<div class="form-box">
+    <form method="POST" enctype="multipart/form-data">
+      {% if child_list %}
+      <div  class="child_list">
+        {% for child in child_list %}
+          <div class="child">
+            <p><i class="fas fa-child fa-lg p_color"></i>{{ child.name }}</p>
+            <p><i class="fas fa-birthday-cake"></i>{{ child.birth_date| date:"Y年m月d日" }}</p>
+            <p>{{ child.calc_age }}歳</p>
+            <p><a href="">削除</a></p>
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+        <ul class="add_child">
+          <li>
+            <label>名前</label>
+            {{ form.name |add_class:"form-control" }}
+            {{ form.name.errors }}
+          </li>
+          <li>
+            <label>性別</label>
+            {{ form.gender |add_class:"form-control" }}
+            {{ form.gender.errors }}
+          </li>
+          <li>
+            <label>生年月日</label>
+            {{ form.birth_date |add_class:"form-control" }}
+            {{ form.birth_date.errors }}
+          </li>
+        </ul>
+      <button type="submit" class="btn btn-primary float-end" style="margin-bottom: 50px;">登録</button>
+      {% csrf_token %}
+    </form>
+</div>
+{% endblock %}

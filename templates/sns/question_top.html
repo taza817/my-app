@@ -1,5 +1,6 @@
 {% extends 'sns/question_base.html' %}
 {% load static %}
+{% load myfilters %}
 
 {% block content %}
 
@@ -15,7 +16,7 @@
           <div class="form-outline">
             <input name="query" value="{{ request.GET.query }}" id="search-input" class="form-control" id="form1" type="search" placeholder="Search" style="width: 250px;">
           </div>
-          <button type="submit"  id="search-button" class="btn" style="background-color: rgb(255, 161, 55)"><i class="fas fa-search" style="color: white;"></i></button>
+          <button type="submit" id="search-button" class="btn" style="background-color: rgb(255, 161, 55)"><i class="fas fa-search" style="color: white;"></i></button>
         </form>
     </div>
 
@@ -25,7 +26,7 @@
         <ul>
             {% for tag in tag_rank %}
               {% if tag.tag_count != 0 %}
-                <li><a href="{% url 'questionlist_linking_tag' %}?tag_word=#{{ tag.name }}" class="linking_tag">#{{ tag.name }}</a></li>
+                <li><p>#{{ tag.name |convert_linking_question_tag_rank}}</p></li>
               {% endif %}
             {% endfor %}
         </ul>

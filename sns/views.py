@@ -1,10 +1,10 @@
 from typing import List
 from django.http import request, response
 from django.views.generic.base import TemplateResponseMixin
-from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm
+from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm, ChildInfomationForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, Tag, Account, Question, Follow, Answer, QuestionTag
+from .models import Child, Post, Tag, Account, Question, Follow, Answer, QuestionTag
 from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
@@ -105,6 +105,40 @@ class ProfileEdit(LoginRequiredMixin, OnlyYouMixin, UpdateView) :
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
+        return context
+
+
+# Add Child infomations
+class AddChildInfomation(LoginRequiredMixin, OnlyYouMixin, CreateView) :
+    model = Child
+    form_class = ChildInfomationForm
+    template_name = 'sns/child_infomation_form.html'
+
+    def form_valid(self, form) :
+        account = Account.objects.get(user=self.request.user)
+        child = Child(
+            parent = account,
+            name = form.cleaned_data.get('name'),
+            gender = form.cleaned_data.get('gender'),
+            birth_date = form.cleaned_data.get('birth_date')
+        )
+        child.save()
+        return redirect('profile_update', account.pk)
+
+    def get_object(self) :
+        account = Account.objects.get(user=self.request.user)
+        child_list = Child.objects.filter(parent=account)
+        return child_list
+    
+    def get_success_url(self) :
+        pk = Account.objects.get(user=self.request.user).pk
+        return reverse('profile_update', kwargs={'pk': pk})
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['self_account'] = Account.objects.get(user=self.request.user)
+        account = Account.objects.get(user=self.request.user)
+        context['child_list'] = Child.objects.filter(parent=account)
         return context
 
 
@@ -310,13 +344,15 @@ class PostList_linking_tag(ListView) :
     template_name = 'sns/postlist_linking_tag.html'
 
     def get_queryset(self) :
-        tag_word = self.request.GET['tag_word']
-        posts = Post.objects.filter(Q(caption__icontains=tag_word))
+        tag_id = self.kwargs['pk']
+        posts = Post.objects.filter(post_tag=tag_id)
         return posts
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
+        tag_id = self.kwargs['pk']
+        context['tag_word'] = Tag.objects.get(id=tag_id)
         return context
 
 
@@ -420,29 +456,20 @@ class QuestionTop(ListView) :     #みんなの投稿
         return context
 
 
-# def questionlist_linking_tag(request, tag_word) :
-#     tag_word = tag_word
-#     questions = Question.objects.filter(Q(text__icontains=tag_word))
-#     account = Account.objects.get(user=request.user)
-#     context = {
-#         'object_list' : questions, 
-#         'self_account' : account
-#     }
-#     return render(request, 'sns/questionlist_linking_tag.html', context)
-
 class QuestionList_linking_tag(ListView) :
     model = Question
     template_name = 'sns/questionlist_linking_tag.html'
 
     def get_queryset(self) :
-        tag_word = self.request.GET.get('tag_word')
-        print(self.request.GET.get('tag_word'))
-        questions = Question.objects.filter(Q(text__icontains=tag_word))
+        tag_id = self.kwargs['pk']
+        questions = Question.objects.filter(question_tag=tag_id)
         return questions
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
+        tag_id = self.kwargs['pk']
+        context['tag_word'] = QuestionTag.objects.get(id=tag_id)
         return context
 
 

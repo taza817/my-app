@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.models import User
-from .models import Post, Tag, Question, Follow, Answer, Account
+from .models import Post, Tag, Question, Follow, Answer, Account, Child
 
 #SignUp
 class SignUpForm(UserCreationForm) :
@@ -35,6 +35,18 @@ class ProfileEditForm(forms.ModelForm) :
     class Meta :
         model = Account
         fields = ('account_image', 'intro', 'location', 'birth_date', 'gender')
+        gender_choice = [('1','選択しない'),('2','男'),('3',"女"),('4','その他')]
+        widgets = {
+            'gender': forms.Select(choices=gender_choice),
+            'birth_date' : forms.DateInput(attrs={"type":"date"}),
+            }
+
+
+# Add Child infomations
+class ChildInfomationForm(forms.ModelForm) :
+    class Meta :
+        model = Child
+        fields = ('name', 'gender', 'birth_date')
         gender_choice = [('1','選択しない'),('2','男'),('3',"女"),('4','その他')]
         widgets = {
             'gender': forms.Select(choices=gender_choice),

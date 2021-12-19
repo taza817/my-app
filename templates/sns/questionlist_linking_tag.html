@@ -11,6 +11,12 @@
   </div>
 
   <div class="time_line">
+    <div class="tag_word">
+      {% if tag_word %}
+      <h3>#{{ tag_word }}</h3>
+      <p>のついた投稿</p>
+      {% endif %}
+    </div>
     {% for question in object_list reversed %}
     <div class="card" style="width: 100%; margin-bottom: 10px;">
       <a href="{% url 'question_detail' question.pk %}" style="text-decoration: none;">
