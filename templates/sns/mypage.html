@@ -48,12 +48,31 @@
     </div>
 
     <div style="margin: 50px 0; width: 70%;">
-        {% if account.intro %}
-            <p>{{ account.intro | linebreaksbr }}</p>
-        {% endif %}
-        {% if account.location %}
-            <p style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
-        {% endif %}
+        <div style="display: flex;">
+            {% if child_list %}
+                {% for child in child_list %}
+                  <div style="display: flex; padding-right: 15px;">
+                    {% if child.gender == '2' %}
+                      <i class="fas fa-child fa-lg" style="color: rgb(0, 110, 255);"></i>
+                    {% elif child.gender == '3' %}
+                      <i class="fas fa-child fa-lg" style="color: rgb(253, 72, 172);"></i>
+                    {% else %}
+                      <i class="fas fa-child fa-2x p_color"></i>
+                    {% endif %}
+                    <p style="padding-right: 5px;">{{ child.name }}</p>
+                    <p>{{ child.calc_age }}歳</p>
+                  </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            {% if account.intro %}
+                <p>{{ account.intro | linebreaksbr }}</p>
+            {% endif %}
+            {% if account.location %}
+                <p style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
+            {% endif %}
+        </div>
     </div>
 </div>
 

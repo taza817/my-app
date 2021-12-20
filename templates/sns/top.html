@@ -24,7 +24,7 @@
             {% endif %}
 
             <div style="padding: 0 20px;">
-                <p class="card-text" style="font-size: 1.2rem;">{{ post.caption |linebreaksbr |convert_linking_post_tag}}</p>
+                <p class="card-text" style="font-size: 1.2rem;">{{ post.caption |linebreaksbr }}</p> <!-- |convert_linking_post_tag -->
                 <div style="display: flex; justify-content: space-between;">
                     <p class="card-text" style="color: rgb(167, 166, 166); margin-top: auto;">{{ post.post_date | date:"Y年m月d日" }}</p>
                     <div class="float-end" style="padding-right: 10px;">

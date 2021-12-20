@@ -26,7 +26,7 @@
         <ul>
             {% for tag in tag_rank %}
               {% if tag.tag_count != 0 %}
-                <li><p>#{{ tag.name |convert_linking_question_tag_rank}}</p></li>
+                <li><p>#{{ tag.name |convert_linking_question_tag_rank}}{{ tag.tag_count }}</p></li>
               {% endif %}
             {% endfor %}
         </ul>

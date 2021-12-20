@@ -11,6 +11,7 @@ urlpatterns = [
     path('mypage/<int:pk>/', views.Mypage.as_view(), name="mypage"),
     path('mypage/<int:pk>/edit/', views.ProfileEdit.as_view(), name="profile_update"),
     path('mypage/<int:pk>/edit/child_info/', views.AddChildInfomation.as_view(), name="add_child_infomation"),
+    path('mypage/child_info/<int:pk>/delete/', views.DeleteChildInfomation.as_view(), name="delete_child_infomation"),
     path('mypage/<int:pk>/setting/', views.AccountSetting.as_view(), name="account_setting"),
     path('mypage/<int:pk>/setting/password_change/', views.PasswordChange.as_view(), name="password_change"),
     path('mypage/<int:pk>/setting/user_delete/', views.UserDelete.as_view(), name="user_delete"),

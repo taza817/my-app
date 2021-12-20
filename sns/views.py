@@ -1,6 +1,7 @@
 from typing import List
 from django.http import request, response
 from django.views.generic.base import TemplateResponseMixin
+from django.views.generic.edit import DeletionMixin
 from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm, ChildInfomationForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
@@ -108,7 +109,7 @@ class ProfileEdit(LoginRequiredMixin, OnlyYouMixin, UpdateView) :
         return context
 
 
-# Add Child infomations
+#Child infomations
 class AddChildInfomation(LoginRequiredMixin, OnlyYouMixin, CreateView) :
     model = Child
     form_class = ChildInfomationForm
@@ -123,12 +124,7 @@ class AddChildInfomation(LoginRequiredMixin, OnlyYouMixin, CreateView) :
             birth_date = form.cleaned_data.get('birth_date')
         )
         child.save()
-        return redirect('profile_update', account.pk)
-
-    def get_object(self) :
-        account = Account.objects.get(user=self.request.user)
-        child_list = Child.objects.filter(parent=account)
-        return child_list
+        return redirect('add_child_infomation', account.pk)
     
     def get_success_url(self) :
         pk = Account.objects.get(user=self.request.user).pk
@@ -139,6 +135,21 @@ class AddChildInfomation(LoginRequiredMixin, OnlyYouMixin, CreateView) :
         context['self_account'] = Account.objects.get(user=self.request.user)
         account = Account.objects.get(user=self.request.user)
         context['child_list'] = Child.objects.filter(parent=account)
+        return context
+
+
+class DeleteChildInfomation(DeleteView) :
+    model = Child
+    template_name = 'sns/child_infomation_confirm_delete.html'
+
+    def get_success_url(self, *args, **kwargs) :
+        pk = Account.objects.get(user=self.request.user).pk
+        success_url = reverse_lazy('add_child_infomation', kwargs={'pk': pk})
+        return success_url
+
+    def get_context_data(self, *args, **kwargs) :
+        context = super().get_context_data(*args, **kwargs)
+        context['self_account'] = Account.objects.get(user=self.request.user)
         return context
 
 
@@ -218,6 +229,7 @@ class Mypage(DetailView) :
             pass
         context['follow_list'] = Follow.objects.filter(owner=Account.objects.get(pk=self.kwargs['pk']))
         context['follower_list'] = Follow.objects.filter(follow_target=Account.objects.get(pk=self.kwargs['pk']))
+        context['child_list'] = Child.objects.filter(parent=Account.objects.get(pk=self.kwargs['pk']))
         return context
 
 
@@ -273,7 +285,6 @@ class PostUpdate(UpdateView) :
     def get_success_url(self) :
         return reverse('detail', kwargs={'pk': self.object.pk})
 
-# 後からタグ追加できるようにしたい
     # def form_valid(self, form) :
     #     post = self.object
     #     words = form.cleaned_data["caption"].split()
@@ -285,7 +296,8 @@ class PostUpdate(UpdateView) :
     #                 tag = Tag.objects.create(name=word[1:])
     #             tag.tag_count += 1
     #             tag.save()
-    #             post.post_tag.add(tag) 
+    #             post.post_tag.add(tag)
+    #     post.save()
     #     pk = self.kwargs['pk']
     #     return redirect('detail', pk)
 
@@ -363,11 +375,16 @@ class AccountSearch(ListView) :
 
     def get_queryset(self) :
         q_word = self.request.GET.get('query')
+        account = Account.objects.get(user=self.request.user)
+        # my_child_age = account.child_age_string()
+        # account.child_age = my_child_age
+        # account.save()
         if q_word :
             user = User.objects.filter(Q(username__icontains=q_word) | Q(first_name__icontains=q_word))
             account = Account.objects.filter(Q(user__in=user) | Q(intro__icontains=q_word) | Q(location__icontains=q_word))
         else :
-            account = Account.objects.order_by('?')[:10]     #デフォルト表示
+            account = Account.objects.all()
+            # account = Account.objects.filter(child_age=my_child_age)
         return account
     
     def get_context_data(self, *args, **kwargs) :
@@ -539,14 +556,7 @@ class QuestionUpdate(UpdateView) :
         return reverse('question_detail', kwargs={'pk': self.object.pk})
 
     # def form_valid(self, form) :
-    #     # super().form_valid(form)
-    #     question = Question(
-    #         user = Account.objects.get(user=self.request.user),    #現在ログインしているユーザーを代入
-    #         title = form.cleaned_data["title"],
-    #         question_image = form.cleaned_data["question_image"],
-    #         text = form.cleaned_data["text"]
-    #     )
-    #     question.save()
+    #     question = self.object
     #     words = form.cleaned_data["text"].split()
     #     for word in words :
     #         if word[0] == "#" :
@@ -557,6 +567,7 @@ class QuestionUpdate(UpdateView) :
     #             tag.tag_count += 1
     #             tag.save()
     #             question.question_tag.add(tag)
+    #     question.save()
     #     pk = self.kwargs['pk']
     #     return redirect('question_detail', pk)
 
