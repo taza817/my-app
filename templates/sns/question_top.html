@@ -26,7 +26,7 @@
         <ul>
             {% for tag in tag_rank %}
               {% if tag.tag_count != 0 %}
-                <li><p>#{{ tag.name |convert_linking_question_tag_rank}}{{ tag.tag_count }}</p></li>
+                <li><p>#{{ tag.name |convert_linking_question_tag_rank}}</p></li>
               {% endif %}
             {% endfor %}
         </ul>
@@ -51,7 +51,7 @@
             </div>
         {% endfor %}
     {% else %}
-        <p class="massage">該当する投稿はありませんでした。</p>
+        <p class="massage" style="width: 220px;">該当する投稿はありませんでした。</p>
     {% endif %}
     </div>
 

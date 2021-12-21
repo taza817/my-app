@@ -10,7 +10,8 @@ from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Q, Count, F
+from django.db.models import Q, Count
+import re
 
 # Create your views here.
 
@@ -285,21 +286,22 @@ class PostUpdate(UpdateView) :
     def get_success_url(self) :
         return reverse('detail', kwargs={'pk': self.object.pk})
 
-    # def form_valid(self, form) :
-    #     post = self.object
-    #     words = form.cleaned_data["caption"].split()
-    #     for word in words :
-    #         if word[0] == "#" :
-    #             if Tag.objects.filter(name=word[1:]).exists() :
-    #                 tag = Tag.objects.get(name=word[1:])
-    #             else :
-    #                 tag = Tag.objects.create(name=word[1:])
-    #             tag.tag_count += 1
-    #             tag.save()
-    #             post.post_tag.add(tag)
-    #     post.save()
-    #     pk = self.kwargs['pk']
-    #     return redirect('detail', pk)
+    def form_valid(self, form) :
+        post = self.object
+        post.post_tag.clear()
+        words = form.cleaned_data["caption"].split()
+        for word in words :
+            if word[0] == "#" :
+                if Tag.objects.filter(name=word[1:]).exists() :
+                    tag = Tag.objects.get(name=word[1:])
+                else :
+                    tag = Tag.objects.create(name=word[1:])
+                tag.tag_count += 1
+                tag.save()
+                post.post_tag.add(tag)
+        post.save()
+        pk = self.kwargs['pk']
+        return redirect('detail', pk)
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
@@ -311,13 +313,14 @@ class PostDelete(DeleteView) :
     model = Post
 
     def delete(self, *args, **kwargs) :
-        post = self.get_object()
+        self.object = self.get_object()
+        post = self.object
         words = post.caption.split()
         for word in words :
             if word[0] == "#" :
                 tag = Tag.objects.get(name=word[1:])
-                print(tag)
                 tag.tag_count = tag.tag_count - 1
+                tag.save()
         return super(PostDelete, self).delete(*args, **kwargs)
 
     def get_success_url(self, *args, **kwargs) :
@@ -376,15 +379,25 @@ class AccountSearch(ListView) :
     def get_queryset(self) :
         q_word = self.request.GET.get('query')
         account = Account.objects.get(user=self.request.user)
-        # my_child_age = account.child_age_string()
-        # account.child_age = my_child_age
-        # account.save()
+        my_children = Child.objects.filter(parent=account)
+        my_child_birth_year = []
+        for my_child in my_children :     #自分の子供の生まれ年リストを作成
+            birth_date = str(my_child.birth_date)
+            birth_year = birth_date[:4]
+            my_child_birth_year.append(birth_year)
+
         if q_word :
+            ''' キーワード検索 '''
             user = User.objects.filter(Q(username__icontains=q_word) | Q(first_name__icontains=q_word))
             account = Account.objects.filter(Q(user__in=user) | Q(intro__icontains=q_word) | Q(location__icontains=q_word))
         else :
-            account = Account.objects.all()
-            # account = Account.objects.filter(child_age=my_child_age)
+            ''' おすすめユーザー '''
+            children = Child.objects.filter(birth_date__year__in=my_child_birth_year)   #自分の子供と同じ年に生まれた子供
+            account_list = []
+            for child in children :
+                account_list.append(child.parent)
+            account_set = set(account_list)   #重複を削除
+            account = account_set   #リスト化
         return account
     
     def get_context_data(self, *args, **kwargs) :
@@ -442,15 +455,33 @@ class GoodPostSearch_remove(GoodBase) :
             super().remove(request, *args, **kwargs)
             return redirect('post_search')
 
-class GoodPost_linkingtag(GoodBase) :
-    def get(self, request, *args, **kwargs) :
-        super().add(request, *args, **kwargs)
-        return redirect('postlist_linking_tag')
 
-class GoodPost_linkingtag_remove(GoodBase) :
-    def get(self, request, *args, **kwargs) :
-            super().remove(request, *args, **kwargs)
-            return redirect('postlist_linking_tag')
+# class GoodBase_linking_tag(LoginRequiredMixin, View) :
+#     def add(self, request, *args, **kwargs) :
+#         #記事の特定
+#         pk = self.kwargs['pk']
+#         related_post = Post.objects.get(pk=pk)
+#         object = related_post.good.add(self.request.user)
+#         return object
+    
+#     def remove(self, request, *args, **kwargs) :
+#         #記事の特定
+#         pk = self.kwargs['pk']
+#         related_post = Post.objects.get(pk=pk)
+#         object = related_post.good.remove(self.request.user)
+#         return object
+
+# class GoodPost_linkingtag(GoodBase_linking_tag) :
+#     def get(self, request, *args, **kwargs) :
+#         super().add(request, *args, **kwargs)
+#         pk = self.kwargs['pk']
+#         return redirect('postlist_linking_tag', pk)
+
+# class GoodPost_linkingtag_remove(GoodBase_linking_tag) :
+#     def get(self, request, *args, **kwargs) :
+#         super().remove(request, *args, **kwargs)
+#         pk = self.kwargs['pk']
+#         return redirect('postlist_linking_tag', pk)
 
 
 # Question
@@ -555,21 +586,22 @@ class QuestionUpdate(UpdateView) :
     def get_success_url(self) :
         return reverse('question_detail', kwargs={'pk': self.object.pk})
 
-    # def form_valid(self, form) :
-    #     question = self.object
-    #     words = form.cleaned_data["text"].split()
-    #     for word in words :
-    #         if word[0] == "#" :
-    #             if QuestionTag.objects.filter(name=word[1:]).exists() :
-    #                 tag = QuestionTag.objects.get(name=word[1:])
-    #             else :
-    #                 tag = QuestionTag.objects.create(name=word[1:])
-    #             tag.tag_count += 1
-    #             tag.save()
-    #             question.question_tag.add(tag)
-    #     question.save()
-    #     pk = self.kwargs['pk']
-    #     return redirect('question_detail', pk)
+    def form_valid(self, form) :
+        question = self.object
+        question.question_tag.clear()
+        words = form.cleaned_data["text"].split()
+        for word in words :
+            if word[0] == "#" :
+                if QuestionTag.objects.filter(name=word[1:]).exists() :
+                    tag = QuestionTag.objects.get(name=word[1:])
+                else :
+                    tag = QuestionTag.objects.create(name=word[1:])
+                tag.tag_count += 1
+                tag.save()
+                question.question_tag.add(tag)
+        question.save()
+        pk = self.kwargs['pk']
+        return redirect('question_detail', pk)
 
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
@@ -586,7 +618,6 @@ class QuestionDelete(DeleteView) :
         for word in words :
             if word[0] == "#" :
                 tag = QuestionTag.objects.get(name=word[1:])
-                print(tag)
                 tag.tag_count = tag.tag_count - 1
                 tag.save()
         return super(QuestionDelete, self).delete(*args, **kwargs)
