@@ -12,7 +12,7 @@
                 {% if post.post_image %}
                 <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
                 {% endif %}
-                <p class="card-text">{{ post.caption }}</p>
+                <p class="card-text" style="padding: 0 10px;">{{ post.caption }}</p>
                 
                 <div class="card-text float-end" style="padding-right: 10px;">
                     <p style="color: rgb(125, 125, 126);">{{ post.post_date | date:"Y年m月d日" }}</p>

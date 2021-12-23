@@ -26,11 +26,14 @@
                   </li>
                 </ul>
                   <br>
-                <button type="submit" class="btn btn-primary" >ログイン</button>
+                <button type="submit" class="btn btn-primary float-end">ログイン</button>
                 <input type="hidden" name="next" value="{{ next }}" />
                 {% csrf_token %}
               </form>
             </div>
+          </div>
+          <div style="padding-left: 480px; margin-bottom: 100px;">
+            <a href="{% url 'signup' %}">新しくアカウントを作成する</a>
           </div>
         </div>
       </div>
