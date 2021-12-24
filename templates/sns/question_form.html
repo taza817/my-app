@@ -28,6 +28,9 @@
                 {{ form.text.errors }}
                 <p class="input_count float-end"><span id="inputlength">0</span>文字 / 1000文字</p>
               </li>
+              <li style="padding-top: 20px;">
+                <p class="form-comment">ハッシュタグをつけることができます。<br>"#"の前後にスペース・改行を入れてください。</p>
+              </li>
             </ul><br>
             {% csrf_token %}
             <input type="submit" class="save btn btn-primary float-end" value="投稿">

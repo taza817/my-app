@@ -26,7 +26,7 @@
         <img src="{{ post.post_image.url }}" style="width: 100%; height: auto;">
         {% endif %}
 
-        <p class="card-text" style="font-size: 1.5rem; padding: 20px; margin: 0;">{{ post.caption|linebreaksbr }}</p>   <!-- |convert_linking_post_tag -->
+        <p class="card-text" style="font-size: 1.5rem; padding: 20px; margin: 0;">{{ post.caption |convert_linking_post_tag |linebreaksbr }}</p>   <!-- |convert_linking_post_tag -->
 
         <div style="display: flex; justify-content: space-between; margin: 0 20px;">
             <p class="card-text" style="color: rgb(167, 166, 166);">{{ post.post_date | date:"Y年m月d日" }}</p>

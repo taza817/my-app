@@ -36,7 +36,7 @@
         {% endif %}
       </div>
       <div class="card-body">
-        <p>{{ question.text | linebreaksbr |convert_linking_question_tag }}</p>
+        <p>{{ question.text |convert_linking_question_tag | linebreaksbr }}</p>
         {% if question.question_image %}
           <img src="{{ question.quetion_image.url }}" style="width: 60%; height: auto;">
         {% endif %}

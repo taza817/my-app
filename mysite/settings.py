@@ -139,6 +139,6 @@ IMAGE_ROOT = os.path.join(BASE_DIR, 'images')
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'yanka8m15@gmail.com'
-EMAIL_HOST_PASSWORD = 'jennsrepnsbnxulz'
+EMAIL_HOST_USER = 'relieve.app585@gmail.com'
+EMAIL_HOST_PASSWORD = 'qputlfdrfxwawwsb'
 EMAIL_USE_TLS = True

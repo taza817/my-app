@@ -8,7 +8,8 @@ register = template.Library()
 
 @register.filter
 def convert_linking_post_tag(text) :
-  tag_words = re.findall(r'(#[^\s]+)', text)
+  # tag_words = re.findall(r'(#[^\s]+)', text)
+  tag_words = re.findall(r'(#[^.*(?=<br>)]+)|(#[^\s]+)', text)
   a_tag = "<a class='{tag_class}' href='{path}'>{tag}</a>"
   for tag_word in tag_words :
     tag_without_sharp = tag_word.replace('#', '')
