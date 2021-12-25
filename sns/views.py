@@ -347,7 +347,7 @@ class PostSearch(ListView) :
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
-        context['tag_rank'] = Tag.objects.all().order_by('-tag_count')[0:10]
+        context['tag_rank'] = Tag.objects.all().order_by('-tag_count')[0:6]
         return context
 
 
@@ -469,7 +469,7 @@ class QuestionTop(ListView) :     #みんなの投稿
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
-        context['tag_rank'] = QuestionTag.objects.all().order_by('-tag_count')[0:10]
+        context['tag_rank'] = QuestionTag.objects.all().order_by('-tag_count')[0:6]
         return context
 
 

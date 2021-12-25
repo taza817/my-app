@@ -3,7 +3,7 @@
 {% block content %}
 <div class="mypage_top">
     <div style="display: flex;">
-        <div style="width: 200px; height: 200px;">
+        <div class="profile-image">
             {% if account.account_image %}
                 <img src="{{ account.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
             {% else %}
@@ -11,7 +11,7 @@
             {% endif %}
         </div>
 
-        <div style="margin-top: auto; padding-left: 4rem;">
+        <div class="profile-contents">
             <div>
                 <h2>{{ account.user.first_name }}</h2>
                 <p>@{{ account.user.username }}</p>
@@ -40,15 +40,15 @@
                 {% endif %}
             </div>
 
-            <div style="display: flex; margin-top: 20px; font-size: 1.3rem;">
+            <div class="follow-num">
                 <p class="modal-btn js-modal-open-follow">フォロー {{ account.follow_num }}</p>
                 <p class="modal-btn js-modal-open-follower" style="padding-left: 25px;">フォロワー {{ account.follower_num }}</p>
             </div>
         </div>
     </div>
 
-    <div style="margin: 50px 0; width: 70%;">
-        <div style="display: flex;">
+    <div class="intro-contents">
+        <div class="children" style="display: flex; flex-wrap: wrap;">
             {% if child_list %}
                 {% for child in child_list %}
                   <div style="display: flex; padding-right: 15px;">
@@ -57,7 +57,7 @@
                     {% elif child.gender == '3' %}
                       <i class="fas fa-child fa-lg" style="color: rgb(253, 72, 172);"></i>
                     {% else %}
-                      <i class="fas fa-child fa-2x p_color"></i>
+                      <i class="fas fa-child fa-lg p_color"></i>
                     {% endif %}
                     <p style="padding-right: 5px;">{{ child.name }}</p>
                     <p>{{ child.calc_age }}歳</p>
@@ -67,10 +67,10 @@
         </div>
         <div>
             {% if account.intro %}
-                <p>{{ account.intro | linebreaksbr }}</p>
+                <p class="intro">{{ account.intro | linebreaksbr }}</p>
             {% endif %}
             {% if account.location %}
-                <p style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
+                <p class="location" style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
             {% endif %}
         </div>
     </div>
@@ -135,7 +135,7 @@
 
 <div class="post_field">
     {% for post in object.post_set.all reversed %}
-        <div style="width: 400px; height: 400px; margin: 20px;">
+        <div class="image-block">
             <a href="{% url 'detail' post.pk %}">
                 {% if post.post_image %}
                 <img src="{{ post.post_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover;">
