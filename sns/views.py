@@ -1,7 +1,3 @@
-from typing import List
-from django.http import request, response
-from django.views.generic.base import TemplateResponseMixin
-from django.views.generic.edit import DeletionMixin
 from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm, ChildInfomationForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
@@ -10,7 +6,7 @@ from django.contrib.auth.models import User
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Q, Count, F
+from django.db.models import Q, Count
 
 # Create your views here.
 
@@ -413,12 +409,12 @@ class GoodBase(LoginRequiredMixin, View) :
 class GoodTop(GoodBase) :
     def get(self, request, *args, **kwargs) :
         super().add(request, *args, **kwargs)
-        return redirect('top')
+        return redirect(reverse('top') + '#{pk}'.format(pk=self.kwargs['pk']))
 
 class GoodTop_remove(GoodBase) :
     def get(self, request, *args, **kwargs) :
         super().remove(request, *args, **kwargs)
-        return redirect('top')
+        return redirect(reverse('top') + '#{pk}'.format(pk=self.kwargs['pk']))
 
 class GoodDetail(GoodBase) :
     def get(self, request, *args, **kwargs) :
@@ -435,23 +431,12 @@ class GoodDetail_remove(GoodBase) :
 class GoodPostSearch(GoodBase) :
     def get(self, request, *args, **kwargs) :
         super().add(request, *args, **kwargs)
-        return redirect('post_search')
+        return redirect(reverse('post_search') + '#{pk}'.format(pk=self.kwargs['pk']))
 
 class GoodPostSearch_remove(GoodBase) :
     def get(self, request, *args, **kwargs) :
             super().remove(request, *args, **kwargs)
-            return redirect('post_search')
-
-class GoodPost_linkingtag(GoodBase) :
-    def get(self, request, *args, **kwargs) :
-        super().add(request, *args, **kwargs)
-        return redirect('postlist_linking_tag')
-
-class GoodPost_linkingtag_remove(GoodBase) :
-    def get(self, request, *args, **kwargs) :
-            super().remove(request, *args, **kwargs)
-            return redirect('postlist_linking_tag')
-
+            return redirect(reverse('post_search') + '#{pk}'.format(pk=self.kwargs['pk']))
 
 # Question
 class QuestionTop(ListView) :     #みんなの投稿

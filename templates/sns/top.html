@@ -6,7 +6,7 @@
 
 <div class="time_line post_line">
 {% for post in object_list reversed %}
-    <div class="postcard" style="border-radius: 0;">
+    <div class="postcard" style="border-radius: 0;" id="{{ post.pk }}">
         <div class="postcard-body" style="padding: 0;">
             <div class="postcard-header" style="display: flex;">
                 <div class="account_image" style="width: 2rem; height: 2rem;">
