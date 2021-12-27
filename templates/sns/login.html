@@ -1,4 +1,7 @@
 {% extends 'sns/base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
 {% block content %}
     {% if form.errors %}
       <p>ユーザーID, パスワードが一致しません。</p>
@@ -30,6 +33,9 @@
                 {% csrf_token %}
               </form>
             </div>
+          </div>
+          <div class="float-end">
+            <a href="{% url 'signup' %}">新しくアカウントを作成する</a>
           </div>
         </div>
       </div>

@@ -33,7 +33,7 @@
         {% endif %}
     </div>
 
-    <div class="time_line">
+    <div class="time_line question_line">
     {% if object_list%}
         {% for question in object_list %}
             <div class="card" style="width: 100%; margin-bottom: 10px;">
@@ -44,7 +44,7 @@
                         </div>
                         <div style="display: flex; justify-content: space-between;">
                             <p style="margin: 0; color: rgb(167, 166, 166);">{{ question.question_date | date:"Y年m月d日" }}</p>
-                            <p class="float-end" style="margin: 0; color: black;"><i class="fas fa-thumbs-up" style="color: rgb(167, 166, 166);"></i> {{question.question_good.count}}</p>
+                            <p class="float-end" style="margin: 0; color: black;"><i class="fas fa-thumbs-up fa-lg" style="color: rgb(167, 166, 166);"></i> {{question.question_good.count}}</p>
                         </div>
                     </div>
                  </a>

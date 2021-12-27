@@ -97,7 +97,7 @@ class AnswerForm(forms.ModelForm) :
         fields = ['name', 'text', 'answer_image']
         widgets = {
             'name': forms.TextInput(attrs={'placeholder':'ニックネーム'}),
-            'text': forms.Textarea(attrs={'rows':4}),
+            'text': forms.Textarea(attrs={'rows':4, 'placeholder':'テキスト', 'onKeyUp':'ShowLength(value);'}),
             }
 
     def __init__(self, *args, **kwargs) :

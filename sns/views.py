@@ -1,7 +1,3 @@
-from typing import List
-from django.http import request, response
-from django.views.generic.base import TemplateResponseMixin
-from django.views.generic.edit import DeletionMixin
 from .forms import LoginForm ,SignUpForm, PostForm, QuestionForm, FollowForm, AnswerForm, PasswordChangeForm, ProfileEditForm, ChildInfomationForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.shortcuts import render, redirect, get_object_or_404
@@ -12,6 +8,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q, Count
 import re
+
 
 # Create your views here.
 
@@ -350,7 +347,7 @@ class PostSearch(ListView) :
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
-        context['tag_rank'] = Tag.objects.all().order_by('-tag_count')[0:10]
+        context['tag_rank'] = Tag.objects.all().order_by('-tag_count')[0:6]
         return context
 
 
@@ -426,12 +423,12 @@ class GoodBase(LoginRequiredMixin, View) :
 class GoodTop(GoodBase) :
     def get(self, request, *args, **kwargs) :
         super().add(request, *args, **kwargs)
-        return redirect('top')
+        return redirect(reverse('top') + '#{pk}'.format(pk=self.kwargs['pk']))
 
 class GoodTop_remove(GoodBase) :
     def get(self, request, *args, **kwargs) :
         super().remove(request, *args, **kwargs)
-        return redirect('top')
+        return redirect(reverse('top') + '#{pk}'.format(pk=self.kwargs['pk']))
 
 class GoodDetail(GoodBase) :
     def get(self, request, *args, **kwargs) :
@@ -448,41 +445,12 @@ class GoodDetail_remove(GoodBase) :
 class GoodPostSearch(GoodBase) :
     def get(self, request, *args, **kwargs) :
         super().add(request, *args, **kwargs)
-        return redirect('post_search')
+        return redirect(reverse('post_search') + '#{pk}'.format(pk=self.kwargs['pk']))
 
 class GoodPostSearch_remove(GoodBase) :
     def get(self, request, *args, **kwargs) :
-            super().remove(request, *args, **kwargs)
-            return redirect('post_search')
-
-
-# class GoodBase_linking_tag(LoginRequiredMixin, View) :
-#     def add(self, request, *args, **kwargs) :
-#         #記事の特定
-#         pk = self.kwargs['pk']
-#         related_post = Post.objects.get(pk=pk)
-#         object = related_post.good.add(self.request.user)
-#         return object
-    
-#     def remove(self, request, *args, **kwargs) :
-#         #記事の特定
-#         pk = self.kwargs['pk']
-#         related_post = Post.objects.get(pk=pk)
-#         object = related_post.good.remove(self.request.user)
-#         return object
-
-# class GoodPost_linkingtag(GoodBase_linking_tag) :
-#     def get(self, request, *args, **kwargs) :
-#         super().add(request, *args, **kwargs)
-#         pk = self.kwargs['pk']
-#         return redirect('postlist_linking_tag', pk)
-
-# class GoodPost_linkingtag_remove(GoodBase_linking_tag) :
-#     def get(self, request, *args, **kwargs) :
-#         super().remove(request, *args, **kwargs)
-#         pk = self.kwargs['pk']
-#         return redirect('postlist_linking_tag', pk)
-
+        super().remove(request, *args, **kwargs)
+        return redirect(reverse('post_search') + '#{pk}'.format(pk=self.kwargs['pk']))
 
 # Question
 class QuestionTop(ListView) :     #みんなの投稿
@@ -500,7 +468,7 @@ class QuestionTop(ListView) :     #みんなの投稿
     def get_context_data(self, *args, **kwargs) :
         context = super().get_context_data(*args, **kwargs)
         context['self_account'] = Account.objects.get(user=self.request.user)
-        context['tag_rank'] = QuestionTag.objects.all().order_by('-tag_count')[0:10]
+        context['tag_rank'] = QuestionTag.objects.all().order_by('-tag_count')[0:6]
         return context
 
 

@@ -36,9 +36,9 @@
 <div class="time_line post_line">
 {% if object_list%}
   {% for post in object_list %}
-      <div class="card" style="border-radius: 0; padding: 0;">
-          <div class="card-body" style="padding: 0;">
-            <div class="card-header" style="display: flex;">
+      <div class="postcard" style="border-radius: 0; padding: 0;">
+          <div class="postcard-body" style="padding: 0;">
+            <div class="postcard-header" style="display: flex;">
               <div class="account_image" style="width: 2rem; height: 2rem;">
                   {% if post.user.account_image %}
                       <img src="{{ post.user.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
