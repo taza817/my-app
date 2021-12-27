@@ -1,0 +1,50 @@
+{% extends 'sns/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="search_contents">
+  <div class="search_tabs">
+    <a href="{% url 'post_search' %}">投稿検索</a>
+    <a href="{% url 'account_search' %}" class="active">ユーザー検索</a>
+  </div>
+
+  <div style="margin: auto 20px;">
+    <form class="d-flex input-group" method="get">
+      <div class="form-outline">
+        <input name="query" value="{{ request.GET.query }}" id="search-input" class="form-control" id="form1" type="text" placeholder="Search" style="width: 250px;">
+      </div>
+      <button type="submit"  id="search-button" class="btn" style="background-color: rgb(42, 165, 63);"><i class="fas fa-search" style="color: white;"></i></button>
+    </form>
+  </div>
+</div>
+
+<div class="account_line">
+    <p style="text-align: center; color: rgb(167, 166, 166); padding: 10px 0 ;">ユーザーID ・ ユーザーネーム ・ 居住地 ・ キーワード で検索できます。</p>
+  {% if object_list%}
+    {% for account in object_list %}
+      <div class="card" style="border-radius: 5px; margin-bottom: 15px;">
+        <a href="{% url 'mypage' account.pk %}" style="text-decoration: none; color: black;">
+          <div class="card-body" style="padding: 10px 15px; display: flex;">
+              <div class="account_image" style="width: 3rem; height: 3rem;">
+                  {% if account.account_image %}
+                      <img src="{{ account.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                  {% else %}
+                      <i class="fas fa-user-circle fa-3x" style="color: rgb(167, 166, 166);"></i>
+                  {% endif %}
+              </div>
+              <h5 style="margin: auto 0; padding-left: 0.7rem;">{{ account.user.first_name }}</h5>
+              <p style="margin: auto 0; padding-left: 0.7rem;">@{{ account.user.username }}</p>
+          </div>
+          {% if account.intro %}
+            <p style="font-size: 0.9rem; margin: auto 0; padding: 0.5rem 1.5rem; color: rgb(167, 166, 166);">{{ account.intro | truncatechars:30 }}</p>
+          {% endif %}
+        </a>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="massage">該当するアカウントはありませんでした。</p>
+  {% endif %}
+</div>
+
+
+{% endblock %}

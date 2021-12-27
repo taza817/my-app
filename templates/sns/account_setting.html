@@ -1,0 +1,39 @@
+{% extends 'sns/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="form-box" style="width: 40%;">
+  <h3 class="page-title">アカウント設定</h3>
+    <form method="POST">
+      <ul class="form_list setting" style="list-style: none;">
+        <li>
+          <label>メールアドレス</label>
+          {{ form.email |add_class:"form-control" }}
+          {{ form.email.errors }}
+        </li>
+        <li>
+          <a href="{% url 'password_change' self_account.pk %}" class="btn btn-secondary">パスワード変更</a>
+        </li>
+        <li>
+          <label>ユーザーID</label>
+          {{ form.username |add_class:"form-control" }}
+          {{ form.username.errors }}
+        </li>
+        <li>
+          <label>ユーザーネーム</label>
+          {{ form.first_name |add_class:"form-control" }}
+          {{ form.first_name.errors }}
+        </li>
+        <li>
+          <a href="{% url 'logout' %}" class="btn btn-warning">ログアウト</a>
+        </li>
+        <li>
+          <a href="{% url 'user_delete' self_account.user.pk %}" class="btn btn-danger">アカウント削除</a>
+        </li>
+      </ul><br>
+      <button type="submit" class="btn btn-primary float-end" >登録</button>
+      <input type="hidden" name="next" value="{{ next }}" />
+      {% csrf_token %}
+    </form>
+  </div>
+{% endblock %}

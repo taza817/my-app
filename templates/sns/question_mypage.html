@@ -1,0 +1,35 @@
+{% extends 'sns/question_base.html' %}
+{% load myfilters %}
+
+{% block content %}
+
+  <div class="q_tab">
+    <a href="{% url 'question_top' %}">みんなの投稿</a>
+    {% if self_account %}
+    <a href="{% url 'my_question' self_account.pk %}" style="padding: 10px 55px" class="active">自分の投稿</a>
+    {% endif %}
+  </div>
+
+  <div class="time_line">
+    {% for question in object.question_set.all reversed %}
+    <div class="card" style="width: 100%; margin-bottom: 10px;">
+      <a href="{% url 'question_detail' question.pk %}" style="text-decoration: none;">
+          <div class="card-body">
+              <div style="padding-bottom: 10px;">
+                  <p style="font-size: 1.5rem; color: black; font-weight: bold;">{{ question.title| truncatechars:30 }}</p>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                  <p style="margin: 0; color: rgb(167, 166, 166);">{{ question.question_date | date:"Y年m月d日" }}</p>
+                  <p class="float-end" style="margin: 0; color: black"><i class="fas fa-thumbs-up" style="color: rgb(167, 166, 166);"></i> {{question.question_good.count}}</p>
+              </div>
+          </div>
+       </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if user.is_authenticated %}
+    <a href="{% url 'question_create' %}" class="stick-icon"><i class="fas fa-comment-dots fa-4x q_color"></i></a>
+  {% endif %}
+
+{% endblock %}

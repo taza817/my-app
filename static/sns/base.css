@@ -1,0 +1,603 @@
+html {
+  width: 100%;
+  height: auto;
+}
+
+body {
+  width: 100%;
+  height: auto;
+}
+
+/* post card */
+.postcard {
+  width: 100%;
+  height: auto;
+}
+
+.postcard-header {
+  background-color: rgb(235, 235, 235);
+  padding: 8px;
+}
+
+/* app top */
+.app_top {
+  padding: 0 10px;
+  display: flex;
+}
+
+.app_title {
+  width: 48%;
+  height: 950px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+
+.app_top .top_post_line {
+  width: 40rem;
+  margin: 0 auto;
+}
+
+.top_image {
+  width: 100%;
+  height: 100%;
+  background-image: url("../image/FH000012.JPG");
+  background-position: center;
+  background-size: cover;
+  object-fit: bottom left;
+  position: relative;
+}
+
+.top_image .title_contents {
+  width: 600px;
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.top_image .title_contents a {
+  font-size: 1.5rem;
+  color: white;
+  padding: 30px;
+}
+
+.top_image .title_contents a:hover {
+  text-shadow: 1px 1px 15px rgb(94, 143, 250);
+}
+
+.top_image .title_contents p {
+  color: rgb(51, 51, 51);
+  text-shadow: 1px 1px 10px white;
+}
+
+.top_image .title_contents .link {
+  display: flex;
+  width: 400px;
+  margin: 0 auto;
+}
+
+.top_image .title_contents .link a {
+  text-decoration: none;
+  width: 200px;
+  font-weight: 500;
+}
+
+a.navbar-brand {
+  margin: auto 0;
+  padding: 0;
+  height: 60px;
+  font-size: 2.5rem;
+  display: flex;
+}
+
+a.navbar-brand i {
+  margin: auto 0;
+  padding-right: 10px;
+}
+
+a.navbar-brand p {
+  color: rgb(40, 48, 42);
+  font-family: Nico Moji; 
+  font-size: 2.5rem; 
+  padding: 0;
+}
+
+.nav-item {
+  padding-left: 10px;
+}
+
+.navbar a {
+  color: rgb(141, 141, 141);
+}
+
+.nav-item a.current {
+  color: rgb(42, 165, 63);
+  font-weight: bold;
+}
+
+.nav-item a.current.question {
+  color: rgb(255, 161, 55);
+}
+
+.form-box {
+  width: 700px;
+  margin: 50px auto;
+}
+
+.my_creation a i {
+  color: rgb(167, 166, 166);
+}
+
+.stick-icon {
+  position: sticky;
+  left: 85%;
+  bottom: 10%;
+}
+
+.p_color {
+  color: rgb(42, 165, 63);
+}
+
+.p_bcolor {
+  background-color: rgb(42, 165, 63);
+}
+
+.q_color {
+  color: rgb(255, 161, 55);
+}
+
+/* form */
+ul.form_list {
+  list-style: none;
+}
+
+ul.form_list li {
+  padding-bottom: 10px;
+}
+
+ul.help_text {
+  padding-left: 5px;
+  list-style: none;
+}
+
+ul.help_text li {
+  padding: 0;
+}
+
+.child_list {
+  width: 400px; 
+  margin: 20px 40px;
+}
+
+.child_list .child {
+  display: flex;
+  padding-bottom: 30px;
+}
+
+.child_list .child p {
+  font-size: 1.2rem;
+  padding-right: 15px;
+  margin: 0;
+}
+
+.child_list .child i {
+  height: 10px;
+  padding-right: 5px;
+}
+
+.add_child {
+  margin: 40px 0;
+  display: flex;
+  list-style: none;
+}
+
+.add_child li {
+  width: 200px;
+  padding: 0 10px;
+}
+
+/* search */
+.search_contents {
+  display: flex;
+  width: 571px;
+  margin: 30px auto;
+}
+
+.search_tabs {
+  margin: auto 0;
+}
+
+.search_tabs a {
+  text-decoration: none;
+  margin: 0 10px;
+  padding: 8px 10px;
+  border: 1px solid rgb(42, 165, 63);
+  border-radius: 8px;
+  color: rgb(42, 165, 63);
+  font-weight: bold;
+}
+
+.search_tabs a.active {
+  color: white;
+  background-color: rgb(42, 165, 63);
+}
+
+.massage {
+  width: 280px;
+  color: rgb(167, 166, 166);
+  margin: 50px auto;
+}
+
+.account_line {
+  width: 40rem;
+  margin: 30px auto;
+}
+
+.trend_tag {
+ width: 40rem;
+ margin: 40px auto;
+ padding: 10px 0;
+ border-radius: 15px;
+}
+
+.trend_tag.question_tag {
+  background-color: rgba(255, 161, 55, 0.3);
+}
+
+.trend_tag.post_tag {
+  background-color: rgba(77, 167, 92, 0.3);
+}
+
+.trend_tag p {
+  font-size: 120%;
+  width: 100px;
+  margin: 0 auto;
+}
+
+.trend_tag ul {
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.trend_tag ul li {
+  padding: 5px 20px;
+}
+
+.tag_word {
+  padding: 40px 0;
+  display: flex;
+}
+
+.tag_word h3 {
+  color: rgb(0, 110, 255);
+}
+
+.tag_word p {
+  color: rgb(167, 166, 166);
+  padding-left: 20px;
+  margin: auto 0;
+}
+
+/* srtting */
+ul.form_list li a {
+  margin: 10px 0;
+}
+
+.page-title {
+  padding: 20px 0;
+}
+
+/* top */
+.time_line {
+  max-width: 40rem;
+  margin: 0 auto;
+}
+
+.post_line {
+  border: 1px solid rgb(211, 209, 209);
+}
+
+
+/* mypage */
+.profile-image {
+  width: 200px;
+  height: 200px;
+}
+
+.post_field {
+  width: 1350px;
+  margin: 50px auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.post_field .image-block {
+  width: 400px;
+  height: 400px;
+  margin: 20px;
+}
+
+.mypage_top {
+  padding-top: 50px;
+  margin-left: 10%;
+}
+
+.mypage_top .profile-contents {
+  margin-top: auto;
+  padding-left: 4rem;
+}
+
+.mypage_top .profile-contents .follow-num {
+  display: flex;
+  margin-top: 20px;
+  font-size: 1.3rem;
+}
+
+.intro-contents {
+  margin: 50px 0;
+  max-width: 600px;
+}
+
+
+
+/* question */
+.q_tab {
+  margin: 0 auto;
+  padding: 20px 0;
+  width: 490px;
+}
+
+.q_tab a {
+  text-decoration: none;
+  margin: 0 20px;
+  padding: 10px 50px;
+  border: 1px solid rgb(255, 161, 55);
+  border-radius: 2px;
+  color: rgb(255, 161, 55);
+  font-weight: bold;
+}
+
+.q_tab a.active {
+  background-color: rgb(255, 161, 55);
+  color: white;
+}
+
+.linking_tag {
+  text-decoration: none;
+  color: rgb(0, 110, 255);
+}
+
+/* modal */
+.js-modal {
+  z-index: 10;
+  display: none;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modal-bg {
+  position: fixed;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+  background:rgba(0,0,0,0.3);
+  cursor: pointer;
+}
+
+.modal-wrap {
+  z-index: 15;
+  position: fixed;
+  width: 400px;
+  height: 500px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  overflow-y: scroll;
+}
+
+.modal-btn {
+  cursor: pointer;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  padding: 20px;
+  text-align: center;
+}
+
+.modal-contents ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.modal-contents ul li {
+  width: 300px;
+  margin: 10px auto;
+  border: 1px solid rgb(167, 166, 166);
+  border-radius: 3px;
+  padding: 10px 20px;
+}
+
+.modal-contents ul li a {
+  display: flex;
+  text-decoration: none;
+}
+
+.modal-contents ul li p {
+  margin: auto 0;
+  padding-left: 10px;
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: black;
+}
+
+.input_count {
+  color: rgb(167, 166, 166);
+}
+
+@media screen and (min-width: 700px) {
+
+.bottom-nav {
+  display: none;
+}
+
+.stick-icon-res {
+  display: none;
+}
+
+}
+
+
+@media screen and (max-width: 479px) {
+/*ウィンドウ幅が最大479pxまでの場合に適用*/
+
+.app_top {
+  padding: 0;
+}
+
+.top_post_line {
+  display: none;
+}
+
+.app_title {
+  width: 100%;
+}
+
+.app_title .title_contents p {
+  display: none;
+}
+
+.navbar {
+  width: 100%;
+  height: 10%;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar-brand {
+  margin: 0 auto;
+}
+
+.pl-4.small {
+  display: none;
+}
+
+#navbarText{
+  display: none;
+}
+
+.bottom-nav {
+  height: 8vh;
+  width: 100%;
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  background-color: #fff;
+  border-top: 1px solid rgb(180, 180, 180);
+}
+
+.bottom-nav ul {
+  width: 100%;
+  margin: 0;
+  padding: 20px 50px;
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+}
+
+.bottom-nav ul li {
+  text-align: center;
+  padding: none;
+}
+
+.bottom-nav ul li a {
+  padding: none;
+}
+
+.bottom-nav ul li a {
+  color: rgb(138, 138, 138);
+}
+
+.bottom-nav ul .nav-item a.current {
+  color: rgb(42, 165, 63);
+  font-weight: bold;
+}
+
+.bottom-nav ul .nav-item a.current.question {
+  color: rgb(255, 161, 55);
+}
+
+.time_line {
+  margin: 0;
+  width: auto;
+}
+
+.stick-icon {
+  display: none;
+  opacity: 0;
+}
+
+.stick-icon-res {
+  position: sticky;
+  top: 0;
+  left: 100%;
+  z-index: 20;
+  padding-right: 5px;
+}
+
+.mypage_top {
+  margin: 0;
+  padding: 20px 20px 0 20px;
+}
+
+.mypage_top .profile-contents {
+  padding-left: 10px;
+}
+
+.mypage_top .intro-contents .children {
+  float: none;
+}
+
+.mypage_top .profile-contents .follow-num p {
+  font-size: 1rem;
+}
+
+.mypage_top .profile-image {
+  width: 150px;
+  height: 150px;
+  padding: 10px;
+}
+
+.intro-contents {
+  margin: 10px;
+}
+
+.intro-contents .intro {
+  font-size: 0.9rem;
+}
+
+.intro-contents .location {
+  font-size: 0.8rem;
+}
+
+.post_field {
+  margin: 0;
+  width: 100%;
+}
+
+.post_field .image-block {
+  width: 150px;
+  height: 150px;
+  margin: 5px;
+}
+
+}

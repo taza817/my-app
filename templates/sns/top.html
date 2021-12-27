@@ -1,0 +1,51 @@
+{% extends 'sns/base.html' %}
+{% load static %}
+{% load myfilters %}
+
+{% block content %}
+<div class="time_line">
+    <div class="post_line">
+    {% for post in object_list reversed %}
+        <div class="postcard" style="border-radius: 0;">
+            <div class="postcard-body" style="padding: 0;">
+                <div class="postcard-header" style="display: flex;">
+                    <div class="account_image" style="width: 2rem; height: 2rem;">
+                        {% if post.user.account_image %}
+                            <img src="{{ post.user.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                        {% else %}
+                            <i class="fas fa-user-circle fa-2x" style="color: rgb(167, 166, 166);"></i>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'mypage' post.user.pk %}" style="margin: auto 0; padding-left: 0.5rem; text-decoration: none;">@{{ post.user }}</a>
+                </div>
+
+                {% if post.post_image %}
+                <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
+                {% endif %}
+
+                <div style="padding: 0 20px;">
+                    <p class="card-text" style="font-size: 1.2rem;">{{ post.caption |linebreaksbr |convert_linking_post_tag }}</p> <!-- |convert_linking_post_tag -->
+                    <div style="display: flex; justify-content: space-between;">
+                        <p class="card-text" style="color: rgb(167, 166, 166); margin-top: auto;">{{ post.post_date | date:"Y年m月d日" }}</p>
+                        <div class="float-end" style="padding-right: 10px;">
+                            <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm">詳細</a>
+                            {% if request.user in post.good.all %}
+                                <a href="{% url 'good_top_remove' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart fa-lg" style="color: red;"></i></a>{{post.good.count}}
+                            {% else %}
+                                <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart fa-lg" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+
+{% if user.is_authenticated %}
+<a class="stick-icon" href="{% url 'create' %}"><i class="fas fa-edit fa-4x p_color"></i></a>
+{% endif %}
+
+{% endblock %}

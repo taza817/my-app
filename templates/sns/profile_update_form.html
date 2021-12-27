@@ -1,0 +1,42 @@
+{% extends 'sns/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div  class="form-box">
+  <h3 class="page-title">プロフィール編集</h3>
+    <form method="POST" enctype="multipart/form-data">
+      <ul class="form_list">
+        <li>
+          <label>プロフィール画像</label>
+          {{ form.account_image |add_class:"form-control" }}
+          {{ form.account_image.errors }}
+        </li>
+        <li>
+          <label>自己紹介</label>
+          {{ form.intro |add_class:"form-control" }}
+          {{ form.intro.errors }}
+        </li>
+        <li>
+          <label>居住地</label>
+          {{ form.location |add_class:"form-control" }}
+          {{ form.location.errors }}
+        </li>
+        <li>
+          <label>性別</label>
+          {{ form.gender |add_class:"form-control" }}
+          {{ form.gender.errors }}
+        </li>
+        <li>
+          <label>生年月日</label>
+          {{ form.birth_date |add_class:"form-control" }}
+          {{ form.birth_date.errors }}
+        </li>
+        <li>
+          <a href="{% url 'add_child_infomation' self_account.pk %}" class="btn btn-secondary">お子さまの情報を登録する</a>
+        </li>
+      </ul>
+      <button type="submit" class="btn btn-primary float-end" style="margin-bottom: 50px;">登録</button>
+      {% csrf_token %}
+    </form>
+</div>
+{% endblock %}

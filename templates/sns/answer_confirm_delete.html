@@ -1,0 +1,18 @@
+{% extends 'sns/question_base.html' %}
+
+{% block content %}
+<div style="width: 600px; height: 140px; margin: 40px auto; padding: 20px; border: 1px solid rgb(201, 201, 201); border-radius: 3px;">
+  <form method="POST">
+    {% csrf_token %}
+    <div style="display: flex;">
+      <h2>「{{ answer.text| truncatechars:15 }}」</h2>
+      <p style="margin: auto 0;">を削除しますか？</p>
+    </div>
+    <div class="float-end" style="padding: 20px 0;">
+      <input class="btn btn-outline-danger btn-sm" style="width: 70px;" type="submit" value="削除する">
+      <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

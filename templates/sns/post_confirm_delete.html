@@ -1,0 +1,31 @@
+{% extends 'sns/base.html' %}
+
+{% block content %}
+<div class="form-box" style="width: 500px;">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body" style="padding: 0;">
+                <div class="card-header">
+                    <a href="{% url 'mypage' post.user.pk %}">@{{ post.user }}</a>
+                </div>
+                {% if post.post_image %}
+                <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
+                {% endif %}
+                <p class="card-text" style="padding: 0 10px;">{{ post.caption }}</p>
+                
+                <div class="card-text float-end" style="padding-right: 10px;">
+                    <p style="color: rgb(125, 125, 126);">{{ post.post_date | date:"Y年m月d日" }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="float-end" style="margin-top: 20px;">
+            <input class="btn btn-outline-danger btn-sm" style="width: 70px; margin-right: 5px;" type="submit" value="削除する">
+            <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
+        </div>
+    </form>
+</div>
+
+    
+
+{% endblock %}

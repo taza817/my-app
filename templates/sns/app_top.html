@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <link href="{% static 'sns/base.css' %}" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'sns/base.js' %}"></script>
+</head>
+<body>
+
+<div class="app_top">
+    <div class="app_title">
+        <div class="top_image">
+            <div class="title_contents">
+                <h1 style="padding-bottom: 30px;">Welcome!</h1>
+                <p>
+                    りりーぶは子育て世代限定のSNSアプリです。<br>
+                    お子さまの成長を記録したり、育児に関する情報を発信したりすることができます。<br>
+                    子育て現場のリアルな悩みを共有し、みんなで考える場があります。<br>
+                    ほにゃららほにゃらら。
+                </p>
+                <div class="link">
+                    <a href="{% url 'signup' %}">サインアップ</a>
+                    <a href="{% url 'login' %}">ログイン</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="top_post_line">
+    {% for post in object_list reversed %}
+    <div class="card" style="border-radius: 0;">
+        <div class="card-body" style="padding: 0;">
+            <div class="card-header" style="display: flex;">
+                <div class="account_image" style="width: 2rem; height: 2rem;">
+                    {% if post.user.account_image %}
+                        <img src="{{ post.user.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                    {% else %}
+                        <i class="fas fa-user-circle fa-2x" style="color: rgb(167, 166, 166);"></i>
+                    {% endif %}
+                </div>
+                <a href="{% url 'mypage' post.user.pk %}" style="margin: auto 0; padding-left: 0.5rem;">@{{ post.user }}</a>
+            </div>
+
+            {% if post.post_image %}
+            <img src="{{ post.post_image.url }}" style="width: 100%; height: auto; padding-bottom: 20px;">
+            {% endif %}
+
+            <div style="padding: 0 10px;">
+                <p class="card-text" style="font-size: 1.2rem;">{{ post.caption|linebreaksbr }}</p>
+                <div style="margin-bottom: 10px;">
+                    <p class="card-text" style="color: rgb(167, 166, 166); margin-top: auto;">{{ post.post_date | date:"Y年m月d日" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+
+</body>
+</html>

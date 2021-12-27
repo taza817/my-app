@@ -1,0 +1,40 @@
+{% extends 'sns/question_base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="q_tab">
+  <a href="{% url 'question_top' %}">みんなの投稿</a>
+  {% if self_account %}
+  <a href="{% url 'my_question' self_account.pk %}" style="padding: 10px 55px">自分の投稿</a>
+  {% endif %}
+</div>
+
+    <div class="form-box">
+        <form method="POST" class="question_form" enctype="multipart/form-data">
+            <ul style="list-style: none;">
+              <li>
+                {{ form.title }}
+                {{ form.title.errors }}
+              </li>
+              <li>
+                <label></label>
+                {{ form.question_image }}
+                {{ form.question_image.errors }}
+              </li>
+              <li>
+                <label></label>
+                {{ form.text }}
+                {{ form.text.errors }}
+                <p class="input_count float-end"><span id="inputlength">0</span>文字 / 1000文字</p>
+              </li>
+              <li style="padding-top: 20px;">
+                <p class="form-comment">ハッシュタグをつけることができます。<br>"#"の前後にスペース・改行を入れてください。</p>
+              </li>
+            </ul><br>
+            {% csrf_token %}
+            <input type="submit" class="save btn btn-primary float-end" value="投稿">
+        </form>
+    </div>
+
+{% endblock %}

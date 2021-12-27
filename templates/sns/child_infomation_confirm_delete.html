@@ -1,0 +1,17 @@
+{% extends 'sns/base.html' %}
+
+{% block content %}
+
+<form method="POST" style="margin: 40px auto; width: 40%;">
+  {% csrf_token %}
+  <div style="display: flex;">
+    <h2>「{{ child.name }}」</h2>
+    <p style="margin: auto 0;">の情報を削除しますか？</p>
+  </div>
+  <div class="float-end">
+    <input class="btn btn-outline-danger btn-sm" style="width: 70px;" type="submit" value="削除する">
+    <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-outline-secondary btn-sm">キャンセル</a>
+  </div>
+</form>
+
+{% endblock %}

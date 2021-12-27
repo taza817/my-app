@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sns.apps.SnsConfig',
+    'widget_tweaks',
 ]
 
 AUTH_USER_MODEL = 'sns.Account'
@@ -139,11 +140,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = [STATIC_DIR]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    ]
 
-#MEDIA_DIR
-MEDIA_ROOT = MEDIA_DIR
-MEDIA_URL = "/media/"
+LOGIN_URL = 'sns:login'
+LOGIN_REDIRECT_URL = '/top/'   #あとでタイムラインにする
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/top/'   #ログイン完了後の遷移先
+LOGOUT_REDIRECT_URL = ''
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+IMAGE_URL = '/images/'
+IMAGE_ROOT = os.path.join(BASE_DIR, 'images')
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'relieve.app585@gmail.com'
+EMAIL_HOST_PASSWORD = 'qputlfdrfxwawwsb'
+EMAIL_USE_TLS = True
+

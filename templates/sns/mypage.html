@@ -1,0 +1,152 @@
+{% extends 'sns/base.html' %}
+
+{% block content %}
+<div class="mypage_top">
+    <div style="display: flex;">
+        <div class="profile-image">
+            {% if account.account_image %}
+                <img src="{{ account.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+            {% else %}
+                <i class="fas fa-user-circle fa-10x" style="color: rgb(167, 166, 166); padding: 20px"></i>
+            {% endif %}
+        </div>
+
+        <div class="profile-contents">
+            <div>
+                <h2>{{ account.user.first_name }}</h2>
+                <p>@{{ account.user.username }}</p>
+            </div>
+
+            <div>
+                {% if request.user == account.user %}
+                <div style="display: flex;">
+                    <a href="{% url 'profile_update' account.pk %}" class="btn btn-outline-secondary">プロフィール編集</a>
+                    <a href="{% url 'account_setting' account.pk %}" style="margin: auto 10px;"><i class="fas fa-cog fa-lg" style="color: rgb(125, 125, 126);"></i></a>
+                </div>
+                {% else %}
+                
+                    {% if follow_data %}
+                        <form action="{% url 'unfollow' account.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="フォロー解除" class="btn btn-success" style="width: 100px;">
+                        </form>
+                    {% else %}
+                        <form action="{% url 'follow' account.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" value="フォロー" class="btn btn-outline-success" style="width: 100px;">
+                        </form>
+                    {% endif %}
+
+                {% endif %}
+            </div>
+
+            <div class="follow-num">
+                <p class="modal-btn js-modal-open-follow">フォロー {{ account.follow_num }}</p>
+                <p class="modal-btn js-modal-open-follower" style="padding-left: 25px;">フォロワー {{ account.follower_num }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="intro-contents">
+        <div class="children" style="display: flex; flex-wrap: wrap;">
+            {% if child_list %}
+                {% for child in child_list %}
+                  <div style="display: flex; padding-right: 15px;">
+                    {% if child.gender == '2' %}
+                      <i class="fas fa-child fa-lg" style="color: rgb(0, 110, 255);"></i>
+                    {% elif child.gender == '3' %}
+                      <i class="fas fa-child fa-lg" style="color: rgb(253, 72, 172);"></i>
+                    {% else %}
+                      <i class="fas fa-child fa-lg p_color"></i>
+                    {% endif %}
+                    <p style="padding-right: 5px;">{{ child.name }}</p>
+                    <p>{{ child.calc_age }}歳</p>
+                  </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            {% if account.intro %}
+                <p class="intro">{{ account.intro | linebreaksbr }}</p>
+            {% endif %}
+            {% if account.location %}
+                <p class="location" style="color: rgb(107, 107, 107);"><i class="fas fa-map-marker-alt"></i> {{ account.location }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+    <!-- ポップアップウィンドウで表示 -->
+<div class="js-modal js-modal-follow">
+    <div class="modal-bg js-modal-close-follow"></div>     <!-- 背景 -->
+    <div class="modal-wrap follow_list">
+        <div class="modal-contents">
+            <p class="modal-title">フォロー中</p>
+            {% if follow_list %}
+            <ul>
+                {% for follow in follow_list %}
+                <li>
+                    <a href="{% url 'mypage' follow.follow_target.pk %}">
+                        <div class="account_image" style="width: 2rem; height: 2rem;">
+                            {% if follow.follow_target.account_image %}
+                                <img src="{{ follow.follow_target.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                            {% else %}
+                                <i class="fas fa-user-circle fa-2x" style="color: rgb(167, 166, 166);"></i>
+                            {% endif %}
+                        </div>
+                        <p>{{ follow.follow_target.user.first_name }}</p>
+                        <p>@{{ follow.follow_target.user.username }}</p>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="js-modal js-modal-follower">
+    <div class="modal-bg js-modal-close-follower"></div>     <!-- 背景 -->
+    <div class="modal-wrap follower_list">
+        <div class="modal-contents">
+            <p class="modal-title">フォロワー</p>
+            {% if follower_list %}
+            <ul>
+                {% for follower in follower_list %}
+                <li>
+                    <a href="{% url 'mypage' follower.owner.pk %}">
+                        <div class="account_image" style="width: 2rem; height: 2rem;">
+                            {% if follower.owner.account_image %}
+                                <img src="{{ follower.owner.account_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover; border-radius: 50%;">
+                            {% else %}
+                                <i class="fas fa-user-circle fa-2x" style="color: rgb(167, 166, 166);"></i>
+                            {% endif %}
+                        </div>
+                        <p>{{ follower.owner.user.first_name }}</p>
+                        <p>@{{ follower.owner.user.username }}</p>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="post_field">
+    {% for post in object.post_set.all reversed %}
+        <div class="image-block">
+            <a href="{% url 'detail' post.pk %}">
+                {% if post.post_image %}
+                <img src="{{ post.post_image.url }}" download="output" style="height: 100%; width: 100%; object-fit: cover;">
+                {% endif %}
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+{% if user.is_authenticated %}
+<a class="stick-icon" href="{% url 'create' %}"><i class="fas fa-edit fa-4x p_color"></i></a>   <!-- 画面下にアイコンsticky -->
+{% endif %}
+
+{% endblock %}

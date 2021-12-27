@@ -1,0 +1,27 @@
+{% extends 'sns/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+    <div class="form-box">
+        <form method="POST" class="post_form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <ul class="form_list">
+                <li>
+                    {{ form.post_image }}
+                    {{ form.post_image.errors }}
+                </li>
+                <li>
+                    {{ form.caption }}
+                    {{ form.caption.errors }}
+                    <p class="input_count float-end"><span id="inputlength">0</span>文字 / 400文字</p>
+                </li>
+                <li style="padding-top: 20px;">
+                    <p class="form-comment">ハッシュタグをつけることができます。<br>"#"の前後にスペース・改行を入れてください。</p>
+                </li>
+            </ul><br>
+            <input type="submit" class="save btn btn-primary float-end" value="投稿">
+        </form>
+    </div>
+
+{% endblock %}
