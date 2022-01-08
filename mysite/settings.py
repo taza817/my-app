@@ -14,12 +14,6 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# template
-TEMPLATE_DIR = os.path.join(BASE_DIR, "template")
-# static
-STATIC_DIR = os.path.join(BASE_DIR, "static")
-# image
-MEDIA_DIR = os.path.join(BASE_DIR, "media")
 
 
 # Quick-start development settings - unsuitable for production
@@ -47,8 +41,6 @@ INSTALLED_APPS = [
     'widget_tweaks',
 ]
 
-AUTH_USER_MODEL = 'sns.Account'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -64,7 +56,9 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR,],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,7 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-        'OPTIONS':{"min_length":6},
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -146,7 +139,7 @@ STATICFILES_DIRS = [
     ]
 
 LOGIN_URL = 'sns:login'
-LOGIN_REDIRECT_URL = '/top/'   #あとでタイムラインにする
+LOGIN_REDIRECT_URL = '/top/'
 
 LOGOUT_REDIRECT_URL = ''
 

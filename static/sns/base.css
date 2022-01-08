@@ -42,7 +42,7 @@ body {
 .top_image {
   width: 100%;
   height: 100%;
-  background-image: url("../image/FH000012.JPG");
+  background-image: url("../image/FH35.jpg");
   background-position: center;
   background-size: cover;
   object-fit: bottom left;
@@ -52,9 +52,13 @@ body {
 .top_image .title_contents {
   width: 600px;
   position: absolute;
-  top: 45%;
+  top: 25%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.top_image .title_contents h1 {
+  text-shadow: 1px 1px 15px white;
 }
 
 .top_image .title_contents a {

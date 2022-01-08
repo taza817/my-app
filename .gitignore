@@ -5,4 +5,5 @@ __pycache__
 myvenv
 images
 db.sqlite3
+db.sqlite3.back
 .DS_Store

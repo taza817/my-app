@@ -1,6 +1,6 @@
 from django.conf import settings
-from django.db import models
 from django.db.models.fields.related import OneToOneField
+from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 import datetime
