@@ -27,12 +27,18 @@
                     <p class="card-text" style="font-size: 1.2rem;">{{ post.caption |linebreaksbr |convert_linking_post_tag }}</p> <!-- |convert_linking_post_tag -->
                     <div style="display: flex; justify-content: space-between;">
                         <p class="card-text" style="color: rgb(167, 166, 166); margin-top: auto;">{{ post.post_date | date:"Y年m月d日" }}</p>
-                        <div class="float-end" style="padding-right: 10px;">
-                            <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm">詳細</a>
+                        <div class="float-end" style="padding-right: 10px; display: flex;">
+                            <a href="{% url 'detail' post.pk %}" class="btn btn-outline-secondary btn-sm" style="height: 30px;">詳細</a>
                             {% if request.user in post.good.all %}
-                                <a href="{% url 'good_top_remove' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart fa-lg" style="color: red;"></i></a>{{post.good.count}}
+                                <form action="" method="POST" class="like-btn">
+                                    <button type="submit"><i class="fas fa-heart fa-lg" style="color: red;"></i></button>{{post.good.count}}
+                                </form>
+                                <!-- <a href="{% url 'good_top_remove' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="fas fa-heart fa-lg" style="color: red;"></i></a>{{post.good.count}} -->
                             {% else %}
-                                <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart fa-lg" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}}
+                                <form action="" method="POST" class="like-btn">
+                                    <button type="submit"><i class="far fa-heart fa-lg" style="color: rgb(95, 95, 95);"></i></button>{{post.good.count}}
+                                </form>
+                                <!-- <a href="{% url 'good_top' post.pk %}" class="like-btn" tabindex="-1" role="button" aria-disabled="true"><i class="far fa-heart fa-lg" style="color: rgb(95, 95, 95);"></i></a> {{post.good.count}} -->
                             {% endif %}
                         </div>
                     </div>

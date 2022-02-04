@@ -447,6 +447,13 @@ ul.form_list li a {
   color: rgb(167, 166, 166);
 }
 
+
+/* like-btn */
+form.like-btn button {
+  border: 0px;
+  background-color: white;
+}
+
 @media screen and (min-width: 700px) {
 
 .bottom-nav {

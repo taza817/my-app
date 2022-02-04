@@ -90,3 +90,13 @@ $(function() {
     localStorage.clear();
   });
 });
+
+
+// good signal
+$(".like-btn").submit(function(event) {
+  event.preventDefault();
+  var likebtn = $(this);
+  $.ajax({
+    url
+  })
+})
